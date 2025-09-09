@@ -7,24 +7,28 @@ public class Lexer {
     private List<Token> tokens;
     private List<AFD> afds;
     private CharacterIterator code;
+    private int line;
     
     public Lexer(String code){
         tokens = new ArrayList<>();
         afds = new ArrayList<>();
         this.code = new StringCharacterIterator(code);
-
+        this.line = 1;
         //ao inves disso, fazer metodo set afds e na main passo todos afds
         afds.add(new MathOperator());
         afds.add(new IntegerNumber());
     }
-    
+     
     public void skipWhiteSpace(){
         while(code.current() == ' ' || code.current() == '\n' || code.current() == '\r'){ //quebra de linha (\r \n)
-            code.next(); /
+             if (code.current() == '\n') {
+                line++;
+            }
+            code.next(); 
         }
     }
     public void error(){
-        throw new RuntimeException("Token not recognized"+ code.current()+ "at line" + code.getLineNumber());
+        throw new RuntimeException("Token not recognized"+ code.current()+ "at line" + line);
     }
     
     public List<Token> getTokens(){
