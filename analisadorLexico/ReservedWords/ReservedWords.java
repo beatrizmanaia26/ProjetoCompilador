@@ -4,9 +4,12 @@ import analisadorLexico.AFD;
 import analisadorLexico.Token;
 
 public class ReservedWords extends AFD{
+    
     private String[] reservedWords = {
-        "Se", "ouSe","Senao","para","enquanto","entrada","imprima","criar","retorna"
+        "Se", "ouSe","Senao","para","enquanto","entrada","imprima",
+        "criar","retorna", "inteiro","decimal","verdadeiroFalso"
     };
+    
 
     @Override
     public Token evaluate(CharacterIterator code){

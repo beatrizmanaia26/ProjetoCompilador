@@ -10,8 +10,7 @@ public class Main{
         System.out.println(op);
         System.out.println(num2);
      */ 
-    
-        String code = "10+11.2+";
+        String code = "inteiro 1+2";
         Lexer lexer = new Lexer(code);
         List<Token> tokens = lexer.getTokens();
 
