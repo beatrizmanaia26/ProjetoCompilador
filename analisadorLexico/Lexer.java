@@ -1,7 +1,13 @@
+package analisadorLexico;
 import java.text.CharacterIterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.text.StringCharacterIterator;
+import analisadorLexico.LogicOperator.LogicOperator;
+import analisadorLexico.MathOperators.MathOperator;
+import analisadorLexico.Numbers.DecimalNumbers;
+import analisadorLexico.Numbers.IntegerNumber;
+import analisadorLexico.ReservedWords.ReservedWords;
 
 public class Lexer {
     private List<Token> tokens;
@@ -16,7 +22,11 @@ public class Lexer {
         this.line = 1;
         //ao inves disso, fazer metodo set afds e na main passo todos afds
         afds.add(new MathOperator());
+        afds.add(new LogicOperator());
+        afds.add(new ReservedWords());
         afds.add(new IntegerNumber());
+        afds.add(new DecimalNumbers());
+        
     }
      
     public void skipWhiteSpace(){

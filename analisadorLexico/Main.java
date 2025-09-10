@@ -1,3 +1,4 @@
+package analisadorLexico;
 import java.util.List;
 
 public class Main{
@@ -10,7 +11,7 @@ public class Main{
         System.out.println(num2);
      */ 
     
-        String code = "++ +";
+        String code = "10+11.2+";
         Lexer lexer = new Lexer(code);
         List<Token> tokens = lexer.getTokens();
 
