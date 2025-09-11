@@ -3,11 +3,15 @@ import java.text.CharacterIterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.text.StringCharacterIterator;
+
+import analisadorLexico.Comment.Comment;
+import analisadorLexico.Identifiers.Identifiers;
 import analisadorLexico.LogicOperator.LogicOperator;
 import analisadorLexico.MathOperators.MathOperator;
 import analisadorLexico.Numbers.DecimalNumbers;
 import analisadorLexico.Numbers.IntegerNumber;
 import analisadorLexico.ReservedWords.ReservedWords;
+import analisadorLexico.Text.Text;
 
 public class Lexer {
     private List<Token> tokens;
@@ -26,6 +30,9 @@ public class Lexer {
         afds.add(new ReservedWords());
         afds.add(new IntegerNumber());
         afds.add(new DecimalNumbers());
+        afds.add(new Comment());
+        afds.add(new Text());
+        afds.add(new Identifiers());
         
     }
      
