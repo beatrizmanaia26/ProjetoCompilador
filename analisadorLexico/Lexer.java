@@ -12,6 +12,7 @@ import analisadorLexico.Numbers.DecimalNumbers;
 import analisadorLexico.Numbers.IntegerNumber;
 import analisadorLexico.ReservedWords.ReservedWords;
 import analisadorLexico.Text.Text;
+import analisadorLexico.AssignmentOperator.AssignmentOperator;
 
 public class Lexer {
     private List<Token> tokens;
@@ -25,6 +26,8 @@ public class Lexer {
         this.code = new StringCharacterIterator(code);
         this.line = 1;
         //ao inves disso, fazer metodo set afds e na main passo todos afds
+        afds.add(new AssignmentOperator());
+        afds.add(new RelationalOperators());
         afds.add(new MathOperator());
         afds.add(new LogicOperator());
         afds.add(new ReservedWords());
@@ -33,7 +36,8 @@ public class Lexer {
         afds.add(new Comment());
         afds.add(new Text());
         afds.add(new Identifiers());
-        
+        afds.add(new Delimiters());
+        afds.add(new EndOfLine());        
     }
      
     public void skipWhiteSpace(){
