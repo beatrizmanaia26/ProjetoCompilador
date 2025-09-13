@@ -7,7 +7,7 @@ public class ReservedWords extends AFD{
     
     private String[] reservedWords = {
         "Se", "ouSe","Senao","para","enquanto","entrada","imprima",
-        "criar","retorna", "inteiro","decimal","verdadeiroFalso","e","ou"
+        "criar","retorna", "inteiro","decimal","verdadeiroFalso","e","ou","texto"
     };
 
     @Override
