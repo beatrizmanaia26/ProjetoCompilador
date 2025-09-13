@@ -10,7 +10,7 @@ public class Main{
         System.out.println(op);
         System.out.println(num2);
      */ 
-        String code = "inteiro 1+2";
+        String code = "Trem_string -> \"Olha o trem\";";
         Lexer lexer = new Lexer(code);
         List<Token> tokens = lexer.getTokens();
 
