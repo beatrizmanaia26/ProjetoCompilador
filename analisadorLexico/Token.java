@@ -11,7 +11,7 @@ public class Token{
 
     @Override
     public String toString(){
-        return "<"+tipo+","+lexema+">";
+        return "<"+tipo+","+"'" + lexema +"'"+">";
     }
     //especifico token com exp regular -> transformo exp regular em codigo com afd
 }

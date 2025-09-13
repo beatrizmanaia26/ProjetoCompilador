@@ -25,14 +25,15 @@ public class Lexer {
         this.code = new StringCharacterIterator(code);
         this.line = 1;
         //ao inves disso, fazer metodo set afds e na main passo todos afds
-        afds.add(new MathOperator());
         afds.add(new LogicOperator());
+        afds.add(new Identifiers());
+        afds.add(new MathOperator());
         afds.add(new ReservedWords());
         afds.add(new IntegerNumber());
         afds.add(new DecimalNumbers());
         afds.add(new Comment());
         afds.add(new Text());
-        afds.add(new Identifiers());
+        
         
     }
      
