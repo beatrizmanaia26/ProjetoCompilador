@@ -12,7 +12,6 @@ import analisadorLexico.Numbers.DecimalNumbers;
 import analisadorLexico.Numbers.IntegerNumber;
 import analisadorLexico.ReservedWords.ReservedWords;
 import analisadorLexico.Text.Text;
-import analisadorLexico.AssignmentOperator.AssignmentOperator;
 
 public class Lexer {
     private List<Token> tokens;
