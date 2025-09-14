@@ -10,7 +10,7 @@ public class Main{
         System.out.println(op);
         System.out.println(num2);
      */ 
-        String code = "Trem_string -> \"Olha o trem\";";
+        String code = "(;)+2.4+3+{Se}+<>->><->>=<=<#uai...bloco de comentarios...so#";
         Lexer lexer = new Lexer(code);
         List<Token> tokens = lexer.getTokens();
 
