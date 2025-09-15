@@ -10,42 +10,42 @@
 - Kayky Pires de Paula — RA: 22.222.040-2  
 
 ## Expressões Regulares
- numeroInteiro = [0-9]+
-numeroDecimal = [0-9]+’.’[0-9]+
-Texto = “[A-Za-z0-9,*&¨@ (tudo)]*”’
-tipos_dadoInt = ‘inteiro’
-tipo_dadoDecimal = ‘decimal’
-tipo_dadoVerdadeiroFalso = verdadeiroFalso
-tipo_dadoTexto = ‘texto’
-identificadores =  Trem_[a-zA-Z]+[0-9]*
-palavra_reservada_condicionalSe = ‘se’
-palavra_reservada_condicionalOuSe = ‘ouSe’
-palavra_reservada_condicionalSenao = ‘senao’
-palavra_reservada_estruturaPara = ‘para’
-palavra_reservada_estruturaEnquanto = ‘enquanto’
-palavra_reservadaEntrada = ‘entrada’
-palavra_reservadaImprima = ‘imprima’
-palavra_reservadaDefinirFuncao = ‘criar’
-palavra_reservadaRetornoFuncao = ‘retorna’
-operador_logicoE = ‘e’
-operador_logicoOu = ‘ou’
-palavra_reservadaNomeFuncao = [A-Z][a-z0-9]*
-operadorAtribuicao = ‘ ->’  
- operadorDiferente = ‘<>’
- operadorIgualdade = ‘<->’
-operadorMenorIgual = ‘<=’
-operadorMaiorigual = ‘>=’
-operadorSoma = ‘+’
-operadorSubtracao = ‘-’
-operadorMultiplicacao = ’*’
-operadorPotencia =  ‘^’
-oparadorDivisao = ‘/’
-comentarioVariasLinhas = #uai [A-Za-z0-9 , - . : “ (adicionar td)]so#
-fim_linha = ‘;’
-aberturaChave = ‘{‘
-fecharChave = ‘}’
-abreParenteses = ‘(‘
-fechaParenteses = ‘)’
+<br>numeroInteiro = [0-9]+
+<br>numeroDecimal = [0-9]+’.’[0-9]+
+<br>Texto = “[A-Za-z0-9,*&¨@ (tudo)]*”’
+<br>tipos_dadoInt = ‘inteiro’
+<br>tipo_dadoDecimal = ‘decimal’
+<br>tipo_dadoVerdadeiroFalso = verdadeiroFalso
+<br>tipo_dadoTexto = ‘texto’
+<br>identificadores =  Trem_[a-zA-Z]+[0-9]*
+<br>palavra_reservada_condicionalSe = ‘se’
+<br>palavra_reservada_condicionalOuSe = ‘ouSe’
+<br>palavra_reservada_condicionalSenao = ‘senao’
+<br>palavra_reservada_estruturaPara = ‘para’
+<br>palavra_reservada_estruturaEnquanto = ‘enquanto’
+<br>palavra_reservadaEntrada = ‘entrada’
+<br>palavra_reservadaImprima = ‘imprima’
+<br>palavra_reservadaDefinirFuncao = ‘criar’
+<br>palavra_reservadaRetornoFuncao = ‘retorna’
+<br>operador_logicoE = ‘e’
+<br>operador_logicoOu = ‘ou’
+<br>palavra_reservadaNomeFuncao = [A-Z][a-z0-9]*
+<br>operadorAtribuicao = ‘ ->’  
+<br> operadorDiferente = ‘<>’
+<br> operadorIgualdade = ‘<->’
+<br>operadorMenorIgual = ‘<=’
+<br>operadorMaiorigual = ‘>=’
+<br>operadorSoma = ‘+’
+<br>operadorSubtracao = ‘-’
+<br>operadorMultiplicacao = ’*’
+<br>operadorPotencia =  ‘^’
+<br>oparadorDivisao = ‘/’
+<br>comentarioVariasLinhas = #uai [A-Za-z0-9 , - . : “ (adicionar td)]so#
+<br>fim_linha = ‘;’
+<br>aberturaChave = ‘{‘
+<br>fecharChave = ‘}’
+<br>abreParenteses = ‘(‘
+<br>fechaParenteses = ‘)’
 
 
 ## Palavras Reservadas
@@ -74,8 +74,8 @@ Chaves:             { }
 <br>Fim de linha:       ;
 
 ## leituras teclado
-entrada 
-imprima
+<br>entrada 
+<br>imprima
 
 
 ## Comentários
