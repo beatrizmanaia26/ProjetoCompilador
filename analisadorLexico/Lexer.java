@@ -10,7 +10,7 @@ import analisadorLexico.Delimiters.Delimiters;
 import analisadorLexico.Identifiers.Identifiers;
 import analisadorLexico.LogicOperator.LogicOperator;
 import analisadorLexico.MathOperators.MathOperator;
-import analisadorLexico.Numbers.DecimalNumbers;
+import analisadorLexico.Numbers.DecimalNumber;
 import analisadorLexico.Numbers.IntegerNumber;
 import analisadorLexico.RelationalOperators.RelationalOperators;
 import analisadorLexico.ReservedWords.ReservedWords;
@@ -35,8 +35,8 @@ public class Lexer {
         afds.add(new Comment());
         afds.add(new MathOperator());
         afds.add(new ReservedWords());
+        afds.add(new DecimalNumber());
         afds.add(new IntegerNumber());
-        afds.add(new DecimalNumbers());
         afds.add(new Text());
         afds.add(new Delimiters());
         
