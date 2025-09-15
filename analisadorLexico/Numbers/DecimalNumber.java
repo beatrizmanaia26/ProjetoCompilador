@@ -17,7 +17,7 @@ public class DecimalNumber extends AFD{
                 number += readNumber(code);
             }
             if (isTokenSeparator(code)){
-                return new Token("NUM", number);
+                return new Token("DECIMAL", number);
             }
         }
         return null;

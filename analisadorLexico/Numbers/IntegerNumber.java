@@ -12,7 +12,7 @@ public class IntegerNumber extends AFD{
         if(Character.isDigit(code.current())){
             String number = readNumber(code);
             if (isTokenSeparator(code)){
-                return new Token("NUM", number);
+                return new Token("INTEGER", number);
             }
         }
         return null;
