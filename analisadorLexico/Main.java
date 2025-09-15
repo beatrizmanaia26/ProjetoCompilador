@@ -10,7 +10,7 @@ public class Main{
         System.out.println(op);
         System.out.println(num2);
      */ 
-        String code = "1.2+5";
+        String code = "Trem_numero -> 1.2 + 5\n Trem_string -> \"Hello World\" \n";
         Lexer lexer = new Lexer(code);
         List<Token> tokens = lexer.getTokens();
 
