@@ -28,6 +28,6 @@ public class FunctionName extends AFD{
             return new Token("FUNCTION_NAME", word.toString());
         }
         code.setIndex(startPosition);
-        throw new RuntimeException("Nome de função incorreto"+ code.current()+ "na linha" + line +"no índice"+ code.getIndex());
+        throw new RuntimeException("Nome de função incorreto, deve começar com letra maiúscula mas está"+ code.current()+ "na linha" + line +"no índice"+ code.getIndex());
     }
 }

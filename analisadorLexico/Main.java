@@ -10,7 +10,7 @@ public class Main{
         System.out.println(op);
         System.out.println(num2);
      */ 
-        String code = "criar Inteiro() criar Texto9 \n";
+        String code = "criar Inteiro() criar Texto9 ou \n";
         Lexer lexer = new Lexer(code);
         List<Token> tokens = lexer.getTokens();
 
