@@ -7,6 +7,7 @@ import java.text.StringCharacterIterator;
 import analisadorLexico.AssignmentOperator.AssignmentOperator;
 import analisadorLexico.Comment.Comment;
 import analisadorLexico.Delimiters.Delimiters;
+import analisadorLexico.FunctionName.FunctionName;
 import analisadorLexico.Identifiers.Identifiers;
 import analisadorLexico.LogicOperator.LogicOperator;
 import analisadorLexico.MathOperators.MathOperator;
@@ -39,6 +40,7 @@ public class Lexer {
         afds.add(new IntegerNumber());
         afds.add(new DecimalNumber());
         afds.add(new Text());
+        afds.add(new FunctionName());
         afds.add(new Delimiters());
     }
      
