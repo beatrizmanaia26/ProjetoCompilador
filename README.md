@@ -48,58 +48,78 @@
 <br>fechaParenteses = ‘)’
 
 
-## Palavras Reservadas
 
-Condicional: se, ouSe, senao
-<br>Laços: para, enquanto
-<br>Funções: criar, retorna
-<br>Entrada/Saída: entrada, imprima
+# Características da linguagem criada
+ 
+## tipos de variáveis:<br>
+- inteiro<br>
+- decimal<br>
+- texto<br>
+- verdadeiroFalso<br>
 
-## Operadores
-Atribuição:         ->
-<br>Igualdade:          <->
-<br>Diferença:          <>
-<br>Menor ou igual:     <=
-<br>Maior ou igual:     >=
-<br>Soma:               +
-<br>Subtração:          -
-<br>Multiplicação:      *
-<br>Potência:           ^
-<br>Divisão:            /
-<br>Lógicos:            e, ou
+## retorno de funcao<br>
+retorna<br>
 
-## Delimitadores
-Chaves:             { }
-<br>Parênteses:         ( )
-<br>Fim de linha:       ;
+## estrutura condicional de controle de fluxo<br>
+-se{}<br>
+-ouSe{}<br>
+-senao{}<br>
 
-## leituras teclado
-<br>entrada 
-<br>imprima
+## funcoes<br>
+criar Nomequalquer(qualquer coisa) {}<br>
+
+## estruturas de repetição<br>
+- para{}<br>
+- enquanto {}<br>
+ 
+## atribuicao<br>
+  ->  <br>
+## operador relacional<br>
+  <>  diferente<br>
+ <->  igualdade<br>
+  <=  menor ou igual
+  >=  maior ou igual
+
+## operador matemático<br>
+soma +<br>
+subtracao -<br>
+vezes *<br>
+potencia ^<br>
+divisao /<br>
+
+## comentario<br>
+#uai<br>
+#so (várias linhas)<br>
+
+## leituras teclado<br>
+entrada <br>
+imprima<br>
+
+# operador logico <br>
+e<br>
+ou<br>
+ 
+# Exemplos de código na sua linguagem criada e a tradução equivalente.
+
+inteiro Trem_inteiro;<br>
+decimal Trem_decimal -> 1.1;<br>
+texto Trem_texto -> “oi”;<br>
+verdadeiroFalso Trem_vf -> false;<br>
+
+Entrada(“digita um numero”, Trem_inteiro);<br>
 
 
-## Comentários
-#uai ... so#      
+criar Imprimir(inteiro Trem_num){<br>
+	*uai funcao pra imprimir<br>
+Imprima(“numero digitado”, Trem_num);<br>
+}<br>
+se(Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
+Imprimir(Trem_inteiro);<br>
+#uai<br>
+ código basico<br>
+so#<br>
+}<br>
 
-
-## Exemplo código:
-inteiro Trem_inteiro;
-<br>decimal Trem_decimal -> 1.1;
-<br>texto Trem_texto -> "oi";
-<br>verdadeiroFalso Trem_vf -> false;
-<br>
-<br>entrada("digita um numero", Trem_inteiro);
-<br>
-<br>criar Imprimir(inteiro Trem_num) {
-  <br>#uai funcao pra imprimir
-  <br>imprima("numero digitado", Trem_num);
-}
-<br>
-<br>se(Trem_inteiro <> 10 e Trem_inteiro <= 20) {
-  <br>imprimir(Trem_inteiro);
-  <br>#uai
-  <br>código basico
-  <br>so#
-<br>}
+<br>}<br>
 
 
