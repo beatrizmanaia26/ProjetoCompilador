@@ -33,7 +33,7 @@ public class Main{
             e.printStackTrace();
         } finally {
             if (scanner != null) {
-                scanner.close(); // Fecha o Scanner para liberar recursos
+                scanner.close(); 
             }
         }
 

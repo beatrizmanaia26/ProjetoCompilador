@@ -1,10 +1,6 @@
-inteiro Trem_inteiro;
-decimal Trem_decimal -> 1.1;
-texto Trem_texto -> “oi”;
-verdadeiroFalso Trem_vf -> false;
-se(Trem_inteiro <> 10 e Trem_inteiro <= 20){
-Imprimir(Trem_inteiro);
+<>->><->>=
+(;)+2.4+3+{Se}+<>->><->>=<=<
 #uai...
- código basico
-...so#
-}
+bloco de comentarios
+comente aqui
+...s#
