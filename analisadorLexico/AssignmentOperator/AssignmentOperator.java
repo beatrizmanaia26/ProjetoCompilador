@@ -1,3 +1,4 @@
+package analisadorLexico.AssignmentOperator;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
 import analisadorLexico.Token;

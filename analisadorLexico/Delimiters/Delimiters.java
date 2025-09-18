@@ -1,3 +1,5 @@
+package analisadorLexico.Delimiters;
+
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
 import analisadorLexico.Token;
@@ -19,6 +21,9 @@ public class Delimiters extends AFD {
             case ')':
                 code.next();
                 return new Token("FCH_PAR", ")");
+            case ';':
+                code.next();
+                return new Token("END_LINE", ";");
             default:
                 return null;
         }

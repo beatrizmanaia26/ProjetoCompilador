@@ -1,3 +1,4 @@
+package analisadorLexico.RelationalOperators;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
 import analisadorLexico.Token;
@@ -16,8 +17,10 @@ public class RelationalOperators extends AFD {
                 word.append('=');
                 code.next();
 
+                // retorna >=
                 return new Token("OP_REL", word.toString());
             } else {
+                // retorna >
                 return new Token("OP_REL", word.toString());
             }
             
@@ -31,12 +34,14 @@ public class RelationalOperators extends AFD {
                 word.append('>');
                 code.next();
 
+                // retorna <>
                 return new Token("OP_REL", word.toString());
 
             } else if (code.current() == '=') {
                 word.append('=');
                 code.next();
                 
+                // retorna <=
                 return new Token("OP_REL", word.toString());
 
             } else if (code.current() == '-') { 
@@ -47,9 +52,11 @@ public class RelationalOperators extends AFD {
                     word.append('>');
                     code.next();
                     
+                    // retorna <->
                     return new Token("OP_REL", word.toString());
                 }
             } else { 
+                // retorna <
                 return new Token("OP_REL", word.toString());
             }
         }
