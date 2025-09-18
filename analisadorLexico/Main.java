@@ -6,17 +6,11 @@ import java.util.Scanner;
 
 public class Main{
     public static void main(String[] args){
-     /* Token num = new Token("NUM","2");
-        Token op = new Token("op_mat","+");
-        Token num2 = new Token("NUM","5");
-        System.out.println(num);
-        System.out.println(op);
-        System.out.println(num2);
-     */ 
-        String code = "";
-        
       
-        String nomeArquivo = "C:\\ProjetoCompilador\\analisadorLexico\\arquivo.txt"; // Substitua pelo caminho do seu arquivo
+        String code = "";
+     
+        String nomeArquivo = "C:\\ProjetoCompilador\\analisadorLexico\\arquivo.txt"; 
+        
         File arquivo = new File(nomeArquivo);
         Scanner scanner = null;
 
