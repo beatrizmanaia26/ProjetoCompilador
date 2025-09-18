@@ -7,7 +7,7 @@ public class ReservedWords extends AFD{
     
     private String[] reservedWords = {
         "Se", "ouSe","Senao","para","enquanto","entrada","imprima",
-        "criar","retorna", "inteiro","decimal","verdadeiroFalso","e","ou"
+        "criar","retorna", "inteiro","decimal","verdadeiroFalso"
     };
 
     @Override
@@ -28,6 +28,7 @@ public class ReservedWords extends AFD{
             if(reserved.equals(strWord)){
                 return new Token("PALAVRA_RESERVADA"+reserved, strWord);
             }
+
         }
         code.setIndex(startPosition); //se n for reservada volta pro começo
 

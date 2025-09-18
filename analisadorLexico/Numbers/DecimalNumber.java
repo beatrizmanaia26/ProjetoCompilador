@@ -5,14 +5,19 @@ import analisadorLexico.AFD;
 import analisadorLexico.Token;
 
 //esse inclui int e float (separar em 2)
-public class IntegerNumber extends AFD{
+public class DecimalNumber extends AFD{
 
     @Override
     public Token evaluate(CharacterIterator code){
         if(Character.isDigit(code.current())){
             String number = readNumber(code);
+            if(code.current() == '.'){
+                number += '.';
+                code.next();
+                number += readNumber(code);
+            }
             if (isTokenSeparator(code)){
-                return new Token("INTEGER", number);
+                return new Token("DECIMAL", number);
             }
         }
         return null;

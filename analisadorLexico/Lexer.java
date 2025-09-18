@@ -7,10 +7,11 @@ import java.text.StringCharacterIterator;
 import analisadorLexico.AssignmentOperator.AssignmentOperator;
 import analisadorLexico.Comment.Comment;
 import analisadorLexico.Delimiters.Delimiters;
+import analisadorLexico.FunctionName.FunctionName;
 import analisadorLexico.Identifiers.Identifiers;
 import analisadorLexico.LogicOperator.LogicOperator;
 import analisadorLexico.MathOperators.MathOperator;
-import analisadorLexico.Numbers.DecimalNumbers;
+import analisadorLexico.Numbers.DecimalNumber;
 import analisadorLexico.Numbers.IntegerNumber;
 import analisadorLexico.RelationalOperators.RelationalOperators;
 import analisadorLexico.ReservedWords.ReservedWords;
@@ -27,6 +28,7 @@ public class Lexer {
         afds = new ArrayList<>();
         this.code = new StringCharacterIterator(code);
         this.line = 1;
+
         //ao inves disso, fazer metodo set afds e na main passo todos afds
         afds.add(new AssignmentOperator());
         afds.add(new RelationalOperators());
@@ -36,11 +38,10 @@ public class Lexer {
         afds.add(new MathOperator());
         afds.add(new ReservedWords());
         afds.add(new IntegerNumber());
-        afds.add(new DecimalNumbers());
+        afds.add(new DecimalNumber());
         afds.add(new Text());
+        afds.add(new FunctionName());
         afds.add(new Delimiters());
-        
-        
     }
      
     public void skipWhiteSpace(){
@@ -52,7 +53,7 @@ public class Lexer {
         }
     }
     public void error(){
-        throw new RuntimeException("Token not recognized "+ code.current()+ "at line" + line);
+        throw new RuntimeException("Token not recognized "+ code.current()+ "at line" + line + "at indice" + code.getIndex());
     }
     
     public List<Token> getTokens(){

@@ -13,7 +13,7 @@ public class MathOperator extends AFD{
                 return new Token("PLUS","+"); 
              case '-': 
                 code.next(); 
-                return new Token("MINUS","-"); 
+                return new Token("LESS","-"); 
              case '*': 
                 code.next(); 
                 return new Token("MULTI","*"); 
