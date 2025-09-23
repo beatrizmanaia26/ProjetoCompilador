@@ -9,7 +9,7 @@ public class Main{
       
         String code = "";
      
-        String nomeArquivo = "C:\\ProjetoCompilador\\analisadorLexico\\arquivo.txt"; 
+        String nomeArquivo = "/workspaces/ProjetoCompilador/analisadorLexico/arquivo.txt"; 
         
         File arquivo = new File(nomeArquivo);
         Scanner scanner = null;
