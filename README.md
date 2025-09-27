@@ -47,7 +47,9 @@
 <br>abreParenteses = ‘(‘
 <br>fechaParenteses = ‘)’
 
+# Gramática completa do analisador sintático 
 
+# Como executar o compilador
 
 # Características da linguagem criada
  
