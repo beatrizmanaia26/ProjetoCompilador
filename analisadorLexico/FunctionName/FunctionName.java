@@ -16,9 +16,8 @@ public class FunctionName extends AFD{
         }
 
         StringBuilder word = new StringBuilder();
-        word.append(code.current());
-        char c = code.next();
-
+        char c = code.current();
+        
         while ((c = code.current()) != CharacterIterator.DONE && (Character.isLetterOrDigit(c) || c == '_')){ // Continua lendo enquanto for letra, número ou _
             word.append(c);
             c = code.next();
@@ -31,6 +30,7 @@ public class FunctionName extends AFD{
             return new Token("FUNCTION_NAME", word.toString());
         }
         code.setIndex(startPosition);
-        throw new RuntimeException("Nome de função incorreto, deve começar com letra maiúscula mas está "+ code.current()+ " na linha " + line +" no índice "+ code.getIndex());
+        throw new RuntimeException( "Nome de função incorreto, deve começar com letra maiúscula mas está '"
+        + word.toString() + "' na linha " + line + " no índice " + startPosition);
     }
 }

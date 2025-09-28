@@ -27,6 +27,8 @@
 <br>palavra_reservadaImprima = ‘imprima’
 <br>palavra_reservadaDefinirFuncao = ‘criar’
 <br>palavra_reservadaRetornoFuncao = ‘retorna’
+<br>palavra_reservadaTrue = ‘true’
+<br>palavra_reservadaFalse -> ‘false’
 <br>operador_logicoE = ‘e’
 <br>operador_logicoOu = ‘ou’
 <br>palavra_reservadaNomeFuncao = [A-Z][a-z0-9]*
@@ -114,7 +116,7 @@ Entrada(“digita um numero”, Trem_inteiro);<br>
 criar Imprimir(inteiro Trem_num){<br>
 Imprima(“numero digitado”, Trem_num);<br>
 }<br>
-se(Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
+Se(Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
 Imprimir(Trem_inteiro);<br>
 #uai<br>
  código basico<br>

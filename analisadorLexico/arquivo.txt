@@ -1,3 +1,16 @@
 inteiro Trem_inteiro;
 decimal Trem_decimal -> 1.1;
-texto Trem_texto -> “
+texto Trem_texto -> "oi";
+verdadeiroFalso Trem_vf -> false;
+Entrada("a", Trem_inteiro);
+criar Imprimir(inteiro Trem_num){
+Imprima("número digitado", Trem_num);
+}
+Se (Trem_inteiro <> 10 e Trem_inteiro <= 20){
+Imprimir(Trem_inteiro);
+#uai...
+código basico
+...so#
+}
+
+}

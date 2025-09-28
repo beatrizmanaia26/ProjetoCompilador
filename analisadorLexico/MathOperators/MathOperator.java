@@ -1,7 +1,6 @@
 package analisadorLexico.MathOperators;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
-import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class MathOperator extends AFD{

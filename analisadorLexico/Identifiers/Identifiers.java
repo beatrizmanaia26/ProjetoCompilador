@@ -1,7 +1,6 @@
 package analisadorLexico.Identifiers;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
-import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 

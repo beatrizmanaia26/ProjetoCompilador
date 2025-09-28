@@ -2,7 +2,6 @@ package analisadorLexico.Delimiters;
 
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
-import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class Delimiters extends AFD {
@@ -25,6 +24,9 @@ public class Delimiters extends AFD {
             case ';':
                 code.next();
                 return new Token("END_LINE", ";");
+            case ',':
+                code.next();
+                return new Token("COMMA", ",");
             default:
                 return null;
         }

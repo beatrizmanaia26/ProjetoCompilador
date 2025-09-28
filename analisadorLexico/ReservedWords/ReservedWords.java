@@ -8,7 +8,8 @@ public class ReservedWords extends AFD{
 
     private String[] reservedWords = {
         "Se", "ouSe","Senao","para","enquanto","entrada","imprima",
-        "criar","retorna", "inteiro","decimal", "texto", "verdadeiroFalso"
+        "criar","retorna", "inteiro","decimal", "texto", "verdadeiroFalso",
+         "true", "false"
     };
 
     @Override
@@ -37,6 +38,6 @@ public class ReservedWords extends AFD{
 
         }
         code.setIndex(startPosition); //se n for reservada volta pro começo
-        throw new RuntimeException("Palavra reservada incorreta/não encontrada, está assim: "+ code.current()+ " na linha " + line +" no índice "+ code.getIndex());
+        throw new RuntimeException("Palavra reservada incorreta/não encontrada, está assim: "+  word.toString() + " na linha " + line +" no índice "+ code.getIndex());
     }
 }

@@ -2,7 +2,6 @@ package analisadorLexico.Numbers;
 import java.text.CharacterIterator;
 
 import analisadorLexico.AFD;
-import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 //esse inclui int e float (separar em 2)

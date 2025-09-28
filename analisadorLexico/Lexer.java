@@ -35,11 +35,11 @@ public class Lexer {
         afds.add(new Identifiers());
         afds.add(new Comment());
         afds.add(new MathOperator());
+        afds.add(new FunctionName());
         afds.add(new ReservedWords());
         afds.add(new IntegerNumber());
         afds.add(new DecimalNumber());
         afds.add(new Text());
-        afds.add(new FunctionName());
         afds.add(new Delimiters());
     }
      
@@ -52,7 +52,7 @@ public class Lexer {
         }
     }
     public void error(){
-        throw new RuntimeException("Token não reconhecido "+ code.current()+ "na linha " + line + " no índice " + code.getIndex());
+        throw new RuntimeException("Token não reconhecido "+ "na linha " + line + " no índice " + code.getIndex());
     }
     
     public List<Token> getTokens(){
