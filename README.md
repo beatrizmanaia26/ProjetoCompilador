@@ -22,7 +22,7 @@
 <br>palavra_reservada_condicionalOuSe = ‘ouSe’
 <br>palavra_reservada_condicionalSenao = ‘senao’
 <br>palavra_reservada_estruturaPara = ‘para’
-<br>palavra_reservada_estruturaEnquanto = ‘enquanto’
+<br>palavra_reservada_estruturaEnquanto = ‘lacoEnquanto’
 <br>palavra_reservadaEntrada = ‘entrada’
 <br>palavra_reservadaImprima = ‘imprima’
 <br>palavra_reservadaDefinirFuncao = ‘criar’
@@ -51,6 +51,13 @@
 
 # Gramática completa do analisador sintático 
 
+## Estruturas do código
+<br> se, ouSe, senao
+<br> para, enquanto
+<br> ...
+
+<br>-A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
+<br> permitir ifs encadeados e lacos encadeados
 # Como executar o compilador
 
 # Características da linguagem criada
