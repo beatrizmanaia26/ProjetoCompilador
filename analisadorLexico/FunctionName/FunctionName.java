@@ -19,15 +19,18 @@ public class FunctionName extends AFD{
         word.append(code.current());
         char c = code.next();
 
-        while (Character.isLetterOrDigit(c) || c == '_') { // Continua lendo enquanto for letra, número ou _
+        while ((c = code.current()) != CharacterIterator.DONE && (Character.isLetterOrDigit(c) || c == '_')){ // Continua lendo enquanto for letra, número ou _
             word.append(c);
             c = code.next();
+            if (c == '\n') {
+                line++;
+            }
         }
 
         if (isTokenSeparator(code)) {
             return new Token("FUNCTION_NAME", word.toString());
         }
         code.setIndex(startPosition);
-        throw new RuntimeException("Nome de função incorreto, deve começar com letra maiúscula mas está"+ code.current()+ "na linha" + line +"no índice"+ code.getIndex());
+        throw new RuntimeException("Nome de função incorreto, deve começar com letra maiúscula mas está "+ code.current()+ " na linha " + line +" no índice "+ code.getIndex());
     }
 }

@@ -90,8 +90,8 @@ potencia ^<br>
 divisao /<br>
 
 ## comentario<br>
-#uai<br>
-#so (várias linhas)<br>
+#uai...<br>
+...so# (várias linhas)<br>
 
 ## leituras teclado<br>
 entrada <br>
@@ -112,7 +112,6 @@ Entrada(“digita um numero”, Trem_inteiro);<br>
 
 
 criar Imprimir(inteiro Trem_num){<br>
-	*uai funcao pra imprimir<br>
 Imprima(“numero digitado”, Trem_num);<br>
 }<br>
 se(Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>

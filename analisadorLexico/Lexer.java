@@ -27,7 +27,6 @@ public class Lexer {
         tokens = new ArrayList<>();
         afds = new ArrayList<>();
         this.code = new StringCharacterIterator(code);
-        this.line = 1;
 
         //ao inves disso, fazer metodo set afds e na main passo todos afds
         afds.add(new AssignmentOperator());
@@ -53,7 +52,7 @@ public class Lexer {
         }
     }
     public void error(){
-        throw new RuntimeException("Token not recognized "+ code.current()+ "at line" + line + "at indice" + code.getIndex());
+        throw new RuntimeException("Token não reconhecido "+ code.current()+ "na linha " + line + " no índice " + code.getIndex());
     }
     
     public List<Token> getTokens(){
@@ -67,6 +66,13 @@ public class Lexer {
         return tokens;
     }
 
+    public int getLine() {
+    return line;
+    }
+
+    public void incrementLine() {
+        line++;
+    }
     private Token searchNextToken(){
         int position = code.getIndex(); //salva indice de reconhecimento (posicao atual)
         for (AFD afd : afds){

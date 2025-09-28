@@ -1,6 +1,7 @@
 package analisadorLexico.RelationalOperators;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
+import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class RelationalOperators extends AFD {
