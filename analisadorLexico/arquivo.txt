@@ -3,7 +3,6 @@ decimal Trem_decimal -> 1.1;
 texto Trem_texto -> "oi";
 verdadeiroFalso Trem_vf -> true;
 
-for
 Entrada("digite um numero", Trem_inteiro);
 
 criar Imprimir(inteiro Trem_num){

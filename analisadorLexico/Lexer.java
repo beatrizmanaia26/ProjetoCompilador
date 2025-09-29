@@ -35,8 +35,8 @@ public class Lexer {
         afds.add(new Identifiers());
         afds.add(new Comment());
         afds.add(new MathOperator());
-        afds.add(new FunctionName());
         afds.add(new ReservedWords());
+        afds.add(new FunctionName());
         afds.add(new IntegerNumber());
         afds.add(new DecimalNumber());
         afds.add(new Text());
