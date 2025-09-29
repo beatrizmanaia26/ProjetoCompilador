@@ -3,21 +3,21 @@ decimal Trem_decimal -> 1.1;
 texto Trem_texto -> "oi";
 verdadeiroFalso Trem_vf -> true;
 
+for
 Entrada("digite um numero", Trem_inteiro);
 
 criar Imprimir(inteiro Trem_num){
-Imprima("número digitado", Trem_num);
+    Imprima("número digitado", Trem_num);
 }
 se (Trem_inteiro <> 10 e Trem_inteiro <= 20){
     para (inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){
         Imprima(Trem_x)
     }
-Imprimir(Trem_inteiro);
-#uai...
-código basico
-...so#
+    Imprimir(Trem_inteiro);
+    #uai...
+    código basico
+    ...so#
 }
-
 senao{
     retorna false;
 }
