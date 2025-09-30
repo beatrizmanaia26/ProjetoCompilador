@@ -52,24 +52,26 @@
 # Gramática completa do analisador sintático 
 
 ## Estruturas do código
+
 <br> consdierar q td linha termina com ;
+
 <br>comando -> se | ouSe | senao | para | lacoEnquanto | comando | atribuicao 
 <br>se -> 'se' (condicao){comando}
 <br>ouSe -> ouSe (condicao){comando}
 <br>senao -> senao (condicao){comando}
-<br>para -> senao(condicao){comando}
-<br>lacoEnquanto - > lacoEnquanto(condicao){comando}
-<br> condicao -> identificador operadorRelacional identificador|numero 
+<br>para -> para(condicao){comando}
+<br>lacoEnquanto - > palavra_reservada_estruturaEnquanto(condicao){comando}
+<br> condicao -> identificadores|operacaoMatematica|numero operadorRelacional identificadores|numero 
 <br> -considerar operadorMatematico e operadorLogico !!!!!
 <br> atribuicao -> declararInteiro | declararDecimal | declararTexto | declararVerdadeiroFalso
-<br> declararInteiro -> 'inteiro' identificador operadorAtribuicao numeroInteiro ';'
-<br> declararDecimal ->  'decimal' identificador operadorAtribuicao numeroDecimal ';'
-<br> declararTexto ->  'texto' identificador operadorAtribuicao texto ';'
-<br> declararVerdadeiroFalso -> 'verdadeiroFalso' identificador operadorAtribuicao boolean ';'
+<br> declararInteiro -> 'inteiro' identificadores operadorAtribuicao numeroInteiro ';'
+<br> declararDecimal ->  'decimal' identificadores operadorAtribuicao numeroDecimal ';'
+<br> declararTexto ->  'texto' identificadores operadorAtribuicao texto ';'
+<br> declararVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
 <br> numero -> numeroDecimal| numeroInteiro 
 <br> boolean -> true|false 
+<br> operadorRelacional -> operadorIgualdade | operadorMenorIgual | operadorMaiorigual
 <br>
-<br> declarar variavel 
 <br> comentario ???
 <br> funcao
 <br> Imprima e Entrada ????
