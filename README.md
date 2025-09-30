@@ -51,6 +51,8 @@
 
 # Gramática completa do analisador sintático 
 
+a gramática não pode conter recursividade à esquerda
+
 ## Estruturas do código
 
 <br> consdierar q td linha termina com ;
@@ -63,11 +65,17 @@
 <br>lacoEnquanto - > palavra_reservada_estruturaEnquanto(condicao){comando}
 <br> condicao -> identificadores|operacaoMatematica|numero operadorRelacional identificadores|numero 
 <br> -considerar operadorMatematico e operadorLogico !!!!!
-<br> atribuicao -> declararInteiro | declararDecimal | declararTexto | declararVerdadeiroFalso
-<br> declararInteiro -> 'inteiro' identificadores operadorAtribuicao numeroInteiro ';'
-<br> declararDecimal ->  'decimal' identificadores operadorAtribuicao numeroDecimal ';'
-<br> declararTexto ->  'texto' identificadores operadorAtribuicao texto ';'
-<br> declararVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
+<br> atribuicao -> declaraEAtribui | atribui 
+<br> atribui -> identificadores operadorAtribuicao numeroInteiro|numeroDecimal|texto|boolean ';'
+<br> declaraEAtribui -> declaraEAtribuiInteiro | declaraEAtribuiDecimal | declaraEAtribuiTexto | declaraEAtribuiVerdadeiroFalso
+<br> declararInteiro -> 'inteiro' identificadores ';'
+<br> declaraEAtribuiInteiro -> 'inteiro' identificadores operadorAtribuicao numeroInteiro ';'
+<br> declararDecimal ->  'decimal' identificadores ';' 
+<br> declaraEAtribuiDecimal -> 'decimal' identificadores operadorAtribuicao numeroDecimal ';'
+<br> declararTexto ->  'texto' identificadores ';'
+<br> declaraEAtribuiTexto -> 'texto' identificadores operadorAtribuicao texto ';'
+<br> declararVerdadeiroFalso -> 'verdadeiroFalso' identificadores ';' 
+<br> declaraEAtrivuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
 <br> numero -> numeroDecimal| numeroInteiro 
 <br> boolean -> true|false 
 <br> operadorRelacional -> operadorIgualdade | operadorMenorIgual | operadorMaiorigual

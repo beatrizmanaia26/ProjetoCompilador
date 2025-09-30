@@ -21,7 +21,7 @@ public class Lexer {
     private List<Token> tokens;
     private List<AFD> afds;
     private CharacterIterator code;
-    private int line;
+    private int line = 1;
     
     public Lexer(String code){
         tokens = new ArrayList<>();

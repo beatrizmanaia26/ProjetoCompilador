@@ -4,12 +4,10 @@ import analisadorLexico.AFD;
 import analisadorLexico.Token;
 
 public class FunctionName extends AFD{
-    private int line;
     
     @Override
     public Token evaluate(CharacterIterator code) {
         int startPosition = code.getIndex();
-        this.line = 1;
 
         if (!Character.isUpperCase(code.current())) { // delimitador de nome funcao tem que começar com letra maiúscula
             return null;
@@ -21,9 +19,6 @@ public class FunctionName extends AFD{
         while ((c = code.current()) != CharacterIterator.DONE && (Character.isLetterOrDigit(c) || c == '_')){ // Continua lendo enquanto for letra, número ou _
             word.append(c);
             c = code.next();
-            if (c == '\n') {
-                line++;
-            }
         }
 
         if (isTokenSeparator(code)) {
@@ -31,6 +26,6 @@ public class FunctionName extends AFD{
         }
         code.setIndex(startPosition);
         throw new RuntimeException( "Nome de função incorreto, deve começar com letra maiúscula mas está '"
-        + word.toString() + "' na linha " + line + " no índice " + startPosition);
+        + word.toString() );
     }
 }

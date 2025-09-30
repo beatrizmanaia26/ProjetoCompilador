@@ -19,7 +19,8 @@ public class Main{
 
             while (scanner.hasNextLine()) { 
                 String linha = scanner.nextLine(); 
-                code += linha; 
+                code += linha  + "\n"; //quebrar em linhas pra mostrar corretamente a linha do erro
+                //System.out.println("Linha lida: " + linha);
             }
 
         } catch (FileNotFoundException e) {
