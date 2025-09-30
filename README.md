@@ -53,7 +53,7 @@
 
 ## Estruturas do código
 <br> consdierar q td linha termina com ;
-<br>comando -> se | ouSe | senao | para | lacoEnquanto 
+<br>comando -> se | ouSe | senao | para | lacoEnquanto | comando | atribuicao 
 <br>se -> 'se' (condicao){comando}
 <br>ouSe -> ouSe (condicao){comando}
 <br>senao -> senao (condicao){comando}
@@ -61,6 +61,7 @@
 <br>lacoEnquanto - > lacoEnquanto(condicao){comando}
 <br> condicao -> identificador operadorRelacional identificador|numero 
 <br> -considerar operadorMatematico e operadorLogico !!!!!
+<br> atribuicao -> declararInteiro | declararDecimal | declararTexto | declararVerdadeiroFalso
 <br> declararInteiro -> 'inteiro' identificador operadorAtribuicao numeroInteiro ';'
 <br> declararDecimal ->  'decimal' identificador operadorAtribuicao numeroDecimal ';'
 <br> declararTexto ->  'texto' identificador operadorAtribuicao texto ';'
