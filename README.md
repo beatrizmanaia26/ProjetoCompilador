@@ -28,7 +28,7 @@
 <br>palavra_reservadaDefinirFuncao = ‘criar’
 <br>palavra_reservadaRetornoFuncao = ‘retorna’
 <br>palavra_reservadaTrue = ‘true’
-<br>palavra_reservadaFalse -> ‘false’
+<br>palavra_reservadaFalse = ‘false’
 <br>operador_logicoE = ‘e’
 <br>operador_logicoOu = ‘ou’
 <br>palavra_reservadaNomeFuncao = [A-Z][a-z0-9]*
@@ -52,12 +52,32 @@
 # Gramática completa do analisador sintático 
 
 ## Estruturas do código
-<br> se, ouSe, senao
-<br> para, enquanto
+<br> consdierar q td linha termina com ;
+<br>comando -> se | ouSe | senao | para | lacoEnquanto 
+<br>se -> 'se' (condicao){comando}
+<br>ouSe -> ouSe (condicao){comando}
+<br>senao -> senao (condicao){comando}
+<br>para -> senao(condicao){comando}
+<br>lacoEnquanto - > lacoEnquanto(condicao){comando}
+<br> condicao -> identificador operadorRelacional identificador|numero 
+<br> -considerar operadorMatematico e operadorLogico !!!!!
+<br> declararInteiro -> 'inteiro' identificador operadorAtribuicao numeroInteiro ';'
+<br> declararDecimal ->  'decimal' identificador operadorAtribuicao numeroDecimal ';'
+<br> declararTexto ->  'texto' identificador operadorAtribuicao texto ';'
+<br> declararVerdadeiroFalso -> 'verdadeiroFalso' identificador operadorAtribuicao boolean ';'
+<br> numero -> numeroDecimal| numeroInteiro 
+<br> boolean -> true|false 
+<br>
+<br> declarar variavel 
+<br> comentario ???
+<br> funcao
+<br> Imprima e Entrada ????
 <br> ...
 
 <br>-A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
-<br> permitir ifs encadeados e lacos encadeados
+
+<br> permitir ifs encadeados e lacos encadeados (com "comando" permite)
+
 # Como executar o compilador
 
 # Características da linguagem criada
@@ -81,13 +101,13 @@ criar Nomequalquer(qualquer coisa) {}<br>
 
 ## estruturas de repetição<br>
 - para{}<br>
-- enquanto {}<br>
+- lacoEnquanto {}<br>
  
 ## atribuicao<br>
   ->  <br>
 ## operador relacional<br>
   <>  diferente<br>
- <->  igualdade<br>
+  <->  igualdade<br>
   <=  menor ou igual
   >=  maior ou igual
 
