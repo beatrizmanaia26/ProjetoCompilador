@@ -24,6 +24,9 @@ public class Delimiters extends AFD {
             case ';':
                 code.next();
                 return new Token("END_LINE", ";");
+            case ',':
+                code.next();
+                return new Token("COMMA", ",");
             default:
                 return null;
         }

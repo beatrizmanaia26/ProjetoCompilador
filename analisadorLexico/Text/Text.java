@@ -16,7 +16,7 @@ public class Text extends AFD {
 			if (code.current() == '"') {
 				code.next(); // pula o " final
 				if (isTokenSeparator(code)) {
-					return new Token("text", palavra.toString());
+					return new Token("TEXT", palavra.toString());
 				}
 			}
 		}
