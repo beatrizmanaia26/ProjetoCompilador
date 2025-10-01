@@ -8,15 +8,28 @@ import analisadorLexico.Token;
 public class DecimalNumber extends AFD{
 
     @Override
-    public Token evaluate(CharacterIterator code){
-        if(Character.isDigit(code.current())){
+    public Token evaluate(CharacterIterator code) {
+        // caso comece com ponto
+        if (code.current() == '.') {
+            throw new IllegalArgumentException("Erro: Um número decimal não pode começar com ponto. Função: DecimalNumber");
+        }
+        if (Character.isDigit(code.current())) {
             String number = readNumber(code);
-            if(code.current() == '.'){
+            // Caso tenha ponto
+            if (code.current() == '.') {
                 number += '.';
                 code.next();
+                // caso haja dois pontos seguidos"
+                if (code.current() == '.') {
+                    throw new IllegalArgumentException("Erro: Dois pontos consecutivos em número decimal. Função: DecimalNumber");
+                }
+                // Caso termine com ponto
+                if (!Character.isDigit(code.current())) {
+                    throw new IllegalArgumentException("Erro: Após o ponto deve haver ao menos um dígito inteiro. Função: DecimalNumber");
+                }
                 number += readNumber(code);
             }
-            if (isTokenSeparator(code)){
+            if (isTokenSeparator(code)) {
                 return new Token("DECIMAL", number);
             }
         }
