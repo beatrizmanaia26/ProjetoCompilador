@@ -31,6 +31,7 @@
 <br>palavra_reservadaFalse = ‘false’
 <br>operador_logicoE = ‘e’
 <br>operador_logicoOu = ‘ou’
+<br>operador_logicoNot = ‘!’
 <br>palavra_reservadaNomeFuncao = [A-Z][a-z0-9]*
 <br>operadorAtribuicao = ‘ ->’  
 <br> operadorDiferente = ‘<>’
@@ -42,7 +43,7 @@
 <br>operadorMultiplicacao = ’*’
 <br>operadorPotencia =  ‘^’
 <br>oparadorDivisao = ‘/’
-<br>comentarioVariasLinhas = #uai [A-Za-z0-9 , - . : “ (adicionar td)]so#
+<br>comentarioVariasLinhas = #uai... [A-Za-z0-9 , - . : “ (adicionar td)]...so#
 <br>fim_linha = ‘;’
 <br>aberturaChave = ‘{‘
 <br>fecharChave = ‘}’
@@ -60,7 +61,7 @@ a gramática não pode conter recursividade à esquerda
 <br>comando -> se | ouSe | senao | para | lacoEnquanto | comando | atribuicao 
 <br>se -> 'se' (condicao){comando}
 <br>ouSe -> ouSe (condicao){comando}
-<br>senao -> senao (condicao){comando}
+<br>senao -> senao{comando}
 <br>para -> para(condicao){comando}
 <br>lacoEnquanto - > palavra_reservada_estruturaEnquanto(condicao){comando}
 <br> condicao -> identificadores|operacaoMatematica|numero operadorRelacional identificadores|numero 
@@ -80,14 +81,20 @@ a gramática não pode conter recursividade à esquerda
 <br> boolean -> true|false 
 <br> operadorRelacional -> operadorIgualdade | operadorMenorIgual | operadorMaiorigual
 <br>
-<br> comentario ???
-<br> funcao
-<br> Imprima e Entrada ????
+<br> comentario nao precisa pq na linguagem so vai gera o executzvel de outrs ling nao um codigo p ler q precise de comentario, entao nao passa comentario pro token.
+<br> criar funcao
+<br> chamar funcao 
+<br> Imprima e Entrada como delcara e como chama ex imprima("oi") ou imprima("oi",oi)????
 <br> ...
 
 <br>-A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
 
 <br> permitir ifs encadeados e lacos encadeados (com "comando" permite)
+
+# Analisador semantico
+
+-como comparo string
+-coloquei valor = ao tipo que declarei...
 
 # Como executar o compilador
 
@@ -103,12 +110,12 @@ a gramática não pode conter recursividade à esquerda
 retorna<br>
 
 ## estrutura condicional de controle de fluxo<br>
--se{}<br>
--ouSe{}<br>
+-se(){}<br>
+-ouSe(){}<br>
 -senao{}<br>
 
 ## funcoes<br>
-criar Nomequalquer(qualquer coisa) {}<br>
+criar Nomequalquer(qualquer coisa){}<br>
 
 ## estruturas de repetição<br>
 - para{}<br>
@@ -140,7 +147,8 @@ imprima<br>
 # operador logico <br>
 e<br>
 ou<br>
- 
+!(not)<br>
+
 # Exemplos de código na sua linguagem criada e a tradução equivalente.
 
 inteiro Trem_inteiro;<br>
