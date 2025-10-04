@@ -21,7 +21,7 @@ public class Identifiers extends AFD{
 		if (matches && (Character.isLetterOrDigit(code.current()) || code.current() == '_')) {
 			String palavra = prefix + readWord(code);
 			if (isTokenSeparator(code)) {
-				return new Token("id", palavra);
+				return new Token("IDENTIFIER", palavra);
 			}
 		} else {
 			// Volta o ponteiro caso não seja 'Trem_'

@@ -1,0 +1,90 @@
+#uai... 
+inteiro Trem_inteiro;
+decimal Trem_decimal -> 1.1;
+texto Trem_texto -> "oi";
+verdadeiroFalso Trem_vf -> true;
+
+Entrada("digite um numero", Trem_inteiro);
+
+criar Imprimir(inteiro Trem_num){
+    Imprima("número digitado", Trem_num);
+}
+se (Trem_inteiro <> 10 e Trem_inteiro <= 20){
+    para (inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){
+        Imprima(Trem_x)
+    }
+    Imprimir(Trem_inteiro);
+}
+senao{
+    retorna false;
+}
+lacoEnquanto
+} 
+...so#
+
+decimal Trem_limiteSaque -> 2000.00;
+decimal Trem_transferencia -> 2.5;
+inteiro Trem_maxTentativasSenha -> 3;
+
+criar Main(){
+    texto Trem_nome -> "Beatriz";
+    texto Trem_numeroConta -> "12345-6";
+    decimal Trem_saldo -> 16000.00;
+    texto Trem_senhaCorreta -> "1234"
+    verdadeiroFalso Trem_userLogado -> false;
+    inteiro Trem_tentativasSenha -> 0;
+    Imprima("bem vindo");
+
+    lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){
+        texto Trem_senha;
+        Imprima("Digite a senha", Trem_senhaDigitada);
+
+        se(Trem_senhaDigitada <-> Trem_senhaCorreta){
+        Trem_userLogado -> true;
+           Imprima("login realizado");
+        }
+    
+        senao{
+            Trem_tentativasSenha -> Trem_tentativasSenha + 1;
+            Imprima("senha incorreta, tentativas restantes",Trem_maxTentativasSenha -  Trem_tentativasSenha);
+            se(Trem_tentativasSenha >= Trem_maxTentativasSenha){
+                Imprima("conta bloqueada por excesso de tentativas");
+            }
+        }
+    }
+   verdadeiroFalso Trem_sistemaAtivo -> true;
+   lacoEnquanto(Trem_sistemaAtivo e Trem_userLogado){
+        Imprima(" MENU PRINCIPAL");
+        Imprima("Cliente: ", Trem_nome);
+        Imprima("Conta: ", Trem_numeroConta);
+        Imprima("Saldo: R$ ",Trem_saldo);
+        Imprima("1 - Saque");
+        Imprima("2 - Depósito");
+        Imprima("3 - Transferência");
+        Imprima("4 - Extrato");
+        Imprima("5 - Alterar Senha");
+        Imprima("0 - Sair");
+        Imprima("Escolha uma opção: ");
+        inteiro Trem_opcao;
+        Entrada("Digite a opcao ", Trem_opcao);
+        se(Trem_opcao <-> 1){
+        Imprima("Digite o valor do saque");
+        decimal Trem_valorSaque;
+        se(Trem_valorSaque > 0 e Trem_valorSaque <= Trem_saldo){
+            se(Trem_valorSaque <= Trem_limiteSaque){
+                Trem_saldo -> Trem_valorSaque - Trem_saldo;
+                Imprima("Saque  realizado com sucesso no valor de R$ ", Trem_valorSaque);
+                Imprima("Novo saldo: R$ " Trem_saldo);
+            }
+            senao{
+                Imprima("Valor excede o limite de saque de R$", Trem_limiteSaque);
+            }
+        }
+    }
+}
+
+
+
+
+
+    

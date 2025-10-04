@@ -7,25 +7,21 @@ import analisadorLexico.Token;
 public class LogicOperator extends AFD{
     @Override
     public Token evaluate(CharacterIterator code) {
-        if (code.current() == ',') {
+        if (code.current() == 'e') {
             code.next();
-            return new Token("Virgula", ",");
+            return new Token("OPR_LOGIC", "e");
         } 
-        else if (code.current() == ';') {
+        else if (code.current() == 'o') {
             code.next();
-            return new Token("FimDeInstrucao", ";");
-        } 
-        else if (code.current() == '-') {
-            int pos = code.getIndex();
-            code.next();
-            if (code.current() == '>') {
+            if (code.current() == 'u') {
                 code.next();
-                return new Token("OperadorDeAtribuicao", "->");
-            } else {
-                // Volta para o caractere '-' se não for '>'
-                code.setIndex(pos);
+                return new Token("OPR_LOGIC", "ou");
             }
-        }
+        } 
+        else if (code.current() == '!') {
+            code.next();
+            return new Token("OPR_LOGIC", "!");
+        } 
         return null;
     }
 }
