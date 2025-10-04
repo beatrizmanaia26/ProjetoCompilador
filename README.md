@@ -17,14 +17,14 @@
 <br>tipo_dadoDecimal = ‘decimal’
 <br>tipo_dadoVerdadeiroFalso = verdadeiroFalso
 <br>tipo_dadoTexto = ‘texto’
-<br>identificadores =  Trem_[a-zA-Z]+[0-9]*
+<br>identificadores = Trem_[a-zA-Z]+[0-9]*
 <br>palavra_reservada_condicionalSe = ‘se’
 <br>palavra_reservada_condicionalOuSe = ‘ouSe’
 <br>palavra_reservada_condicionalSenao = ‘senao’
 <br>palavra_reservada_estruturaPara = ‘para’
 <br>palavra_reservada_estruturaEnquanto = ‘lacoEnquanto’
-<br>palavra_reservadaEntrada = ‘entrada’
-<br>palavra_reservadaImprima = ‘imprima’
+<br>palavra_reservadaEntrada = ‘Entrada’
+<br>palavra_reservadaImprima = ‘Imprima’
 <br>palavra_reservadaDefinirFuncao = ‘criar’
 <br>palavra_reservadaRetornoFuncao = ‘retorna’
 <br>palavra_reservadaTrue = ‘true’
@@ -33,9 +33,9 @@
 <br>operador_logicoOu = ‘ou’
 <br>operador_logicoNot = ‘!’
 <br>palavra_reservadaNomeFuncao = [A-Z][a-z0-9]*
-<br>operadorAtribuicao = ‘ ->’  
-<br> operadorDiferente = ‘<>’
-<br> operadorIgualdade = ‘<->’
+<br>operadorAtribuicao = ‘->’  
+<br>operadorDiferente = ‘<>’
+<br>operadorIgualdade = ‘<->’
 <br>operadorMenorIgual = ‘<=’
 <br>operadorMaiorigual = ‘>=’
 <br>operadorSoma = ‘+’
@@ -54,11 +54,11 @@
 
 a gramática não pode conter recursividade à esquerda
 
-## Estruturas do código
+## Estruturas do código COLOCAR TODAS AS VARIAVEIS (ESQ) com letra maiuscula
 
 <br> consdierar q td linha termina com ;
 
-<br>comando -> se | ouSe | senao | para | lacoEnquanto | comando | atribuicao 
+<br>comando -> se | ouSe | senao | para | lacoEnquanto | comando | atribuicao| declaraEAtribui | 
 <br>se -> 'se' (condicao){comando}
 <br>ouSe -> ouSe (condicao){comando}
 <br>senao -> senao{comando}
@@ -69,6 +69,7 @@ a gramática não pode conter recursividade à esquerda
 <br> atribuicao -> declaraEAtribui | atribui 
 <br> atribui -> identificadores operadorAtribuicao numeroInteiro|numeroDecimal|texto|boolean ';'
 <br> declaraEAtribui -> declaraEAtribuiInteiro | declaraEAtribuiDecimal | declaraEAtribuiTexto | declaraEAtribuiVerdadeiroFalso
+<br> declarar -> declararInteiro | declararDecimal | declararTexto | declararVerdadeiroFalso 
 <br> declararInteiro -> 'inteiro' identificadores ';'
 <br> declaraEAtribuiInteiro -> 'inteiro' identificadores operadorAtribuicao numeroInteiro ';'
 <br> declararDecimal ->  'decimal' identificadores ';' 
@@ -79,14 +80,25 @@ a gramática não pode conter recursividade à esquerda
 <br> declaraEAtrivuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
 <br> numero -> numeroDecimal| numeroInteiro 
 <br> boolean -> true|false 
+<br> identificadores -> !identificadores | identificadores
 <br> operadorRelacional -> operadorIgualdade | operadorMenorIgual | operadorMaiorigual
 <br>
 <br> comentario nao precisa pq na linguagem so vai gera o executzvel de outrs ling nao um codigo p ler q precise de comentario, entao nao passa comentario pro token.
+
+<br> DUVIDAS:
+
 <br> criar funcao
 <br> chamar funcao 
 <br> Imprima e Entrada como delcara e como chama ex imprima("oi") ou imprima("oi",oi)????
 <br> ...
 
+<br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao(argumentosFuncao){comando}
+<br> argumentosFuncao -> e | parametrosFuncao
+<br> parametrosFuncao -> parametro | parametro , parametrosfuncao
+<br> parametro -> tipoVariavel identificador
+<br> tipoVariavel -> tipos_dadoInt | tipo_dadoDecimal | tipo_dadoVerdadeiroFalso | tipo_dadoTexto identificadores 
+<br> chamarFuncao -> palavra_reservadaNomeFuncao(Texto, identificadores) ';' |  palavra_reservadaNomeFuncao(argumentosFuncao) ';' ?????????????
+<br>
 <br>-A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
 
 <br> permitir ifs encadeados e lacos encadeados (com "comando" permite)
