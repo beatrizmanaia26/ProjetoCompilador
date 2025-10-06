@@ -85,19 +85,12 @@ a gramática não pode conter recursividade à esquerda
 <br>
 <br> comentario nao precisa pq na linguagem so vai gera o executzvel de outrs ling nao um codigo p ler q precise de comentario, entao nao passa comentario pro token.
 
-<br> DUVIDAS:
-
-<br> criar funcao
-<br> chamar funcao 
-<br> Imprima e Entrada como delcara e como chama ex imprima("oi") ou imprima("oi",oi)????
-<br> ...
-
 <br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao(argumentosFuncao){comando}
 <br> argumentosFuncao -> e | parametrosFuncao
 <br> parametrosFuncao -> parametro | parametro , parametrosfuncao
 <br> parametro -> tipoVariavel identificador
 <br> tipoVariavel -> tipos_dadoInt | tipo_dadoDecimal | tipo_dadoVerdadeiroFalso | tipo_dadoTexto identificadores 
-<br> chamarFuncao -> palavra_reservadaNomeFuncao(Texto, identificadores) ';' |  palavra_reservadaNomeFuncao(argumentosFuncao) ';' ?????????????
+<br> chamarFuncao -> palavra_reservadaNomeFuncao(Texto, identificadores) ';' |  palavra_reservadaNomeFuncao(argumentosFuncao) ';' !!!!!!!!!
 <br>
 <br>-A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
 
