@@ -58,18 +58,45 @@ a gramática não pode conter recursividade à esquerda
 
 <br> consdierar q td linha termina com ;
 
-<br>comando -> se | ouSe | senao | para | lacoEnquanto | comando | atribuicao| declaraEAtribui | 
-<br>se -> 'se' (condicao){comando}
-<br>ouSe -> ouSe (condicao){comando}
-<br>senao -> senao{comando}
-<br>para -> para(condicao){comando}
-<br>lacoEnquanto - > palavra_reservada_estruturaEnquanto(condicao){comando}
-<br> condicao -> identificadores|operacaoMatematica|numero operadorRelacional identificadores|numero 
+<br> comando -> se|ouSe|senao|para|lacoEnquanto|comando|atribuicao|declaraEAtribui|chamarFuncao
+<br> se -> 'se'(condicao){comando}
+<br> ouSe -> 'ouSe'(condicao){comando}
+<br> senao -> 'senao'{comando}
+<br> para -> 'para'(cabecalhoPara){comando}
+<br> lacoEnquanto - > 'lacoEnquanto'(condicao){comando} FAZER CONDICAO O LACOENQUANTO = JAVA!!!!!!!!!!!
+<br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
+<br> inicializacao -> tipoVariavel identificadores "->" numero|identificadores|chamarFuncao 
+<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificador
+<br> operacaoIncremento -> ++|--|+=|+=|-=|*=|/= ou precisaria ser operadorsomaoperadorsoma...?????????
+
+<br> condicao -> identificadores|operacaoMatematica|numero operadorRelacional identificadores|numero (em correcao)
+<br> inicio correcao "condicao" (ver se da certo e se n tem recursao ou fatoracao a esquerda):
+<br> condicao -> identificadores|negacaoCondicao|condicaoComparacoesBasicas 
+<br> condicaoComparacoesBasicas -> identificadores|numero operacao identificadores|numero|boolean  |  condicao operacao condicao
+(esses 2 de cima nao sao problema né?? condicao chama condicaocomparacoesbasicas e condicaocomparaoesbasicas chamar condicoes????????????????????????)
+<br> negacaoCondicao -> '!'condicao
+<br> operacao -> operacaoMatematica|operacaoRelacional|operacaoLogica
+<br> operacaoMatematica -> operadorSoma|operadorSubtracao|operadorMultiplicacao|operadorPotencia|oparadorDivisao 
+<br> operacaoRelacional -> operadorDiferente|operadorIgualdade|operadorMenorIgual|operadorMaiorigual
+<br> operacaoLogica -> operador_logicoE|operador_logicoOu|operador_logicoNot
+
 <br> -considerar operadorMatematico e operadorLogico !!!!!
-<br> atribuicao -> declaraEAtribui | atribui 
+(a > b 
+1 > b
+a > 1
+1 > 1
+id
+!id
+id 
+id <-> true) ate aqui faz!!
+
+a > b || a < c
+(a>b) < (a<c && a>b) || !(a<b)
+
+<br> atribuicao -> declaraEAtribui|atribui 
 <br> atribui -> identificadores operadorAtribuicao numeroInteiro|numeroDecimal|texto|boolean ';'
-<br> declaraEAtribui -> declaraEAtribuiInteiro | declaraEAtribuiDecimal | declaraEAtribuiTexto | declaraEAtribuiVerdadeiroFalso
-<br> declarar -> declararInteiro | declararDecimal | declararTexto | declararVerdadeiroFalso 
+<br> declaraEAtribui -> declaraEAtribuiInteiro|declaraEAtribuiDecimal|declaraEAtribuiTexto|declaraEAtribuiVerdadeiroFalso
+<br> declarar -> declararInteiro|declararDecimal|declararTexto|declararVerdadeiroFalso 
 <br> declararInteiro -> 'inteiro' identificadores ';'
 <br> declaraEAtribuiInteiro -> 'inteiro' identificadores operadorAtribuicao numeroInteiro ';'
 <br> declararDecimal ->  'decimal' identificadores ';' 
@@ -78,21 +105,20 @@ a gramática não pode conter recursividade à esquerda
 <br> declaraEAtribuiTexto -> 'texto' identificadores operadorAtribuicao texto ';'
 <br> declararVerdadeiroFalso -> 'verdadeiroFalso' identificadores ';' 
 <br> declaraEAtrivuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
-<br> numero -> numeroDecimal| numeroInteiro 
+<br> numero -> numeroDecimal|numeroInteiro 
 <br> boolean -> true|false 
-<br> identificadores -> !identificadores | identificadores
-<br> operadorRelacional -> operadorIgualdade | operadorMenorIgual | operadorMaiorigual
-<br>
-<br> comentario nao precisa pq na linguagem so vai gera o executzvel de outrs ling nao um codigo p ler q precise de comentario, entao nao passa comentario pro token.
-
+<br> identificadores -> !identificadores|identificadores
+<br> operadorRelacional -> operadorIgualdade|operadorMenorIgual|operadorMaiorigual
 <br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao(argumentosFuncao){comando}
-<br> argumentosFuncao -> e | parametrosFuncao
-<br> parametrosFuncao -> parametro | parametro , parametrosfuncao
+<br> argumentosFuncao -> e|parametrosFuncao
+<br> parametroFuncao -> parametro restoParametrosFuncao
+<br> restoParametrosFuncao -> e|, parametroFuncao 
 <br> parametro -> tipoVariavel identificador
-<br> tipoVariavel -> tipos_dadoInt | tipo_dadoDecimal | tipo_dadoVerdadeiroFalso | tipo_dadoTexto identificadores 
-<br> chamarFuncao -> palavra_reservadaNomeFuncao(Texto, identificadores) ';' |  palavra_reservadaNomeFuncao(argumentosFuncao) ';' !!!!!!!!!
+<br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto identificadores 
+<br> chamarFuncao -> palavra_reservadaNomeFuncao(Texto, identificadores) ';'|palavra_reservadaNomeFuncao(argumentosFuncao)';'
 <br>
 <br>-A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
+<br> comentario nao precisa pq na linguagem so vai gera o executzvel de outrs ling nao um codigo p ler q precise de comentario, entao nao passa comentario pro token.
 
 <br> permitir ifs encadeados e lacos encadeados (com "comando" permite)
 
