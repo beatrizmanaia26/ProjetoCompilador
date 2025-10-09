@@ -118,6 +118,21 @@ a > b || a < c
 <br> chamarFuncao -> palavra_reservadaNomeFuncao(Texto, identificadores) ';'|palavra_reservadaNomeFuncao(argumentosFuncao)';'
 <br>
 <br>-A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
+<br> Parênteses → Multiplicação/Divisão → Adição/Subtração
+
+E  → E + T | E - T | T                   
+T  → T * F | T / F | F                    
+F  → F ^ P | P                          
+P  → id | num | (E) 
+
+<br> inicioExpressoesMatematicas -> precedenciaInferior 
+<br> precedenciaInferior -> precedenciaInferior'+'precedenciaIntermediaria | precedenciaInferior'-'precedenciaIntermediaria | precedenciaIntermediaria  
+precedenciaIntermediaria -> precedenciaIntermediaria * precedenciaAlta | precedenciaIntermediaria/precedenciaAlta | precedenciaAlta
+precedenciaAlta -> precedenciaAlta^precedenciaSuperior| precedenciaSuperior
+precedenciaSuperior -> identificadores|numero|e
+
+
+
 <br> comentario nao precisa pq na linguagem so vai gera o executzvel de outrs ling nao um codigo p ler q precise de comentario, entao nao passa comentario pro token.
 
 <br> permitir ifs encadeados e lacos encadeados (com "comando" permite)
