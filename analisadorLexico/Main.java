@@ -9,7 +9,7 @@ public class Main{
       
         String code = "";
      
-        String nomeArquivo = "analisadorLexico\\arquivo.txt"; 
+        String nomeArquivo = "analisadorLexico\\script.txt"; 
         
         File arquivo = new File(nomeArquivo);
         Scanner scanner = null;
@@ -32,11 +32,13 @@ public class Main{
             }
         }
 
-        Lexer lexer = new Lexer(code);
-        List<Token> tokens = lexer.getTokens();
+        try {
+            Lexer lexer = new Lexer(code);
+            List<Token> tokens = lexer.getTokens();
+            tokens.forEach(System.out::println);
+        } catch (LexicalException e) {
+        System.err.println(e.getMessage());
+}
 
-        for(Token t: tokens){
-            System.out.println(t);
-        }
     }
 }

@@ -29,7 +29,7 @@ public class ReservedWords extends AFD{
         //itera pela lista de palavras reservadas pra ver se é igual ao que foi digitado
         for (String reserved : reservedWords){
             if(reserved.equals(strWord)){
-                return new Token("PALAVRA_RESERVADA"+reserved, strWord);
+                return new Token("PALAVRA_RESERVADA", strWord);
             }
 
         }

@@ -1,14 +1,16 @@
 package analisadorLexico;
+
 import java.text.CharacterIterator;
+import java.text.StringCharacterIterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.text.StringCharacterIterator;
 
 import analisadorLexico.AssignmentOperator.AssignmentOperator;
 import analisadorLexico.Comment.Comment;
 import analisadorLexico.Delimiters.Delimiters;
 import analisadorLexico.FunctionName.FunctionName;
 import analisadorLexico.Identifiers.Identifiers;
+import analisadorLexico.IncrementDecrementOperators.IncrementDecrementOperator;
 import analisadorLexico.LogicOperator.LogicOperator;
 import analisadorLexico.MathOperators.MathOperator;
 import analisadorLexico.Numbers.DecimalNumber;
@@ -22,64 +24,113 @@ public class Lexer {
     private List<AFD> afds;
     private CharacterIterator code;
     private int line = 1;
-    
-    public Lexer(String code){
+    private int column = 1;
+
+    public Lexer(String code) {
         tokens = new ArrayList<>();
         afds = new ArrayList<>();
         this.code = new StringCharacterIterator(code);
 
-        //ao inves disso, fazer metodo set afds e na main passo todos afds
+        // Inicializa os AFDs
         afds.add(new AssignmentOperator());
         afds.add(new RelationalOperators());
         afds.add(new LogicOperator());
         afds.add(new Identifiers());
         afds.add(new Comment());
+        afds.add(new IncrementDecrementOperator());
         afds.add(new MathOperator());
         afds.add(new ReservedWords());
         afds.add(new FunctionName());
-        afds.add(new IntegerNumber());
         afds.add(new DecimalNumber());
+        afds.add(new IntegerNumber());
         afds.add(new Text());
         afds.add(new Delimiters());
     }
-     
-    public void skipWhiteSpace(){
-        while(code.current() == ' ' || code.current() == '\n' || code.current() == '\r'){ //quebra de linha (\r \n)
-             if (code.current() == '\n') {
+
+    // Ignora espaços, quebras de linha e tabulações
+    public void skipWhiteSpace() {
+        while (code.current() == ' ' || code.current() == '\n' || 
+               code.current() == '\r' || code.current() == '\t') {
+            if (code.current() == '\n') {
                 line++;
+                column = 1;
+            } else {
+                column++;
             }
-            code.next(); 
+            code.next();
         }
     }
-    public void error(){
-        throw new RuntimeException("Token não reconhecido "+ "na linha " + line + " no índice " + code.getIndex());
-    }
-    
-    public List<Token> getTokens(){
+
+    public List<Token> getTokens() {
         Token t;
-        do{
+        do {
             skipWhiteSpace();
+
+            if (code.current() == CharacterIterator.DONE) {
+                tokens.add(new Token("EOF", "EOF"));
+                break;
+            }
+
             t = searchNextToken();
-            if (t == null) error(); 
-            tokens.add(t); 
-        }while(!t.tipo.equals("EOF"));
+            if (t == null) {
+                handleUnrecognizedToken();
+            } else {
+                tokens.add(t);
+            }
+
+        } while (code.current() != CharacterIterator.DONE);
+
         return tokens;
     }
 
+    private void handleUnrecognizedToken() {
+        char invalidChar = code.current();
+
+        // Se chegou ao fim do código, não faz nada
+        if (invalidChar == CharacterIterator.DONE) {
+            return;
+        }
+
+        int errorLine = line;
+        int errorIndex = code.getIndex();
+
+        // Avança o ponteiro (para não travar o lexer)
+        code.next();
+        column++;
+
+        throw new LexicalException(String.format(
+            "Erro léxico: token não reconhecido \"%c\" na linha %d, índice %d",
+            invalidChar, errorLine, errorIndex
+        ));
+    }
+
+    private Token searchNextToken() {
+        int startIndex = code.getIndex();
+
+        for (AFD afd : afds) {
+            int before = code.getIndex();
+            Token t = afd.evaluate(code);
+
+            if (t != null) {
+                // Atualiza coluna com base no avanço do ponteiro
+                column += (code.getIndex() - before);
+                return t;
+            }
+
+            // se AFD falhou completamente, volta o ponteiro
+            code.setIndex(before);
+        }
+
+        // Nenhum AFD reconheceu o token
+        code.setIndex(startIndex);
+        return null;
+    }
+
     public int getLine() {
-    return line;
+        return line;
     }
 
     public void incrementLine() {
         line++;
     }
-    private Token searchNextToken(){
-        int position = code.getIndex(); //salva indice de reconhecimento (posicao atual)
-        for (AFD afd : afds){
-            Token t = afd.evaluate(code);
-            if(t != null) return t;
-            code.setIndex(position);
-        }
-        return null;
-    }
-} 
+}
