@@ -4,22 +4,39 @@ import analisadorLexico.AFD;
 import analisadorLexico.Token;
 
 public class Text extends AFD {
-	@Override
-	public Token evaluate(CharacterIterator code) {
-		StringBuilder palavra = new StringBuilder();
-		if (code.current() == '"') {
-			code.next(); // pula o " inicial
-			while (code.current() != '"' && code.current() != CharacterIterator.DONE) {
-				palavra.append(code.current());
-				code.next();
-			}
-			if (code.current() == '"') {
-				code.next(); // pula o " final
-				if (isTokenSeparator(code)) {
-					return new Token("TEXT", palavra.toString());
-				}
-			}
-		}
-		return null;
-	}
+
+    private int line;
+
+    @Override
+    public Token evaluate(CharacterIterator code) {
+        this.line = 1;
+        if (code.current() == '"') {
+            code.next();
+
+			StringBuilder text = new StringBuilder();
+			
+            while (code.current() != CharacterIterator.DONE) {
+                char c = code.current();
+
+				if (c == '"') {
+					code.next();
+                    return new Token("TEXT", text.toString());
+                }
+
+                text.append(c);
+                code.next();
+
+                if (c == '\n') {
+                    line++;
+                }
+                
+                
+            }
+
+            throw new RuntimeException("Erro léxico: Falta fechamento de aspas" + " na linha " + line + "no índice " + code.getIndex());
+        }
+        return null;
+    }
+
+
 }
