@@ -3,7 +3,7 @@ import java.text.CharacterIterator;
 
 public abstract class AFD {
     
-    public abstract Token evaluate(CharacterIterator code, Lexer lexer);
+    public abstract Token evaluate(CharacterIterator code); 
 
     //simbolo para parar reconhecimento do token e finaliza cm caracteres que leu
     public boolean isTokenSeparator(CharacterIterator code){

@@ -2,14 +2,13 @@ package analisadorLexico.Numbers;
 import java.text.CharacterIterator;
 
 import analisadorLexico.AFD;
-import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 //esse inclui int e float (separar em 2)
 public class DecimalNumber extends AFD{
 
     @Override
-    public Token evaluate(CharacterIterator code,Lexer lexer){
+    public Token evaluate(CharacterIterator code){
         if(Character.isDigit(code.current())){
             String number = readNumber(code);
             if(code.current() == '.'){

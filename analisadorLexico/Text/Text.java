@@ -1,43 +1,25 @@
 package analisadorLexico.Text;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
-import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class Text extends AFD {
-
-    private int line;
-
-    @Override
-    public Token evaluate(CharacterIterator code, Lexer lexer) {
-        this.line = 1;
-        if (code.current() == '"') {
-            code.next();
-
-			StringBuilder text = new StringBuilder();
-			
-            while (code.current() != CharacterIterator.DONE) {
-                char c = code.current();
-
-				if (c == '"') {
-					code.next();
-                    return new Token("TEXT", text.toString());
-                }
-
-                text.append(c);
-                code.next();
-
-                if (c == '\n') {
-                    lexer.incrementLine(); 
-                }
-                
-                
-            }
-
-            throw new RuntimeException("Erro léxico: Falta fechamento de aspas" + " na linha " + lexer.getLine() + "no índice " + code.getIndex());
-        }
-        return null;
-    }
-
-
+	@Override
+	public Token evaluate(CharacterIterator code) {
+		StringBuilder palavra = new StringBuilder();
+		if (code.current() == '"') {
+			code.next(); // pula o " inicial
+			while (code.current() != '"' && code.current() != CharacterIterator.DONE) {
+				palavra.append(code.current());
+				code.next();
+			}
+			if (code.current() == '"') {
+				code.next(); // pula o " final
+				if (isTokenSeparator(code)) {
+					return new Token("TEXT", palavra.toString());
+				}
+			}
+		}
+		return null;
+	}
 }
