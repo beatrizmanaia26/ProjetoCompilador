@@ -18,6 +18,10 @@ public class LogicOperator extends AFD{
                 return new Token("OPR_LOGIC", "ou");
             }
         } 
+        else if (code.current() == '!') {
+            code.next();
+            return new Token("OPR_LOGIC", "!");
+        } 
         return null;
     }
 }

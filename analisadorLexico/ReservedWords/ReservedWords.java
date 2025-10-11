@@ -4,7 +4,6 @@ import analisadorLexico.AFD;
 import analisadorLexico.Token;
 
 public class ReservedWords extends AFD{
-    private int line;
 
     private String[] reservedWords = {
         "se", "ouSe","senao","para","lacoEnquanto","criar","retorna",
@@ -15,7 +14,6 @@ public class ReservedWords extends AFD{
     @Override
     public Token evaluate(CharacterIterator code){
         int startPosition = code.getIndex(); 
-        this.line = 1;
 
         if (!Character.isLetter(code.current())) {
             return null;
@@ -25,9 +23,7 @@ public class ReservedWords extends AFD{
          while((c = code.current()) != CharacterIterator.DONE && Character.isLetter(c)){
             word.append(c);
             c = code.next();
-            if (c == '\n') {
-                line++;
-            }
+            
         }
         String strWord = word.toString();
         //itera pela lista de palavras reservadas pra ver se é igual ao que foi digitado
