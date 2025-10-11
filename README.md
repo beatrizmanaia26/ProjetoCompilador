@@ -62,86 +62,51 @@ a gramática não pode conter recursividade à esquerda
 
 ## Estruturas do código COLOCAR TODAS AS VARIAVEIS (ESQ) com letra maiuscula
 
-<br> consdierar q td linha termina com ;
-
-AJUSTAR TD Q TEM OPERACOES MATEMATICAS P COLOCAR A GLC EXPRESSOESMATEMATICAS (AJUSTAR CONDICAO (CABECALHOPARA (INICIALIZACAO...)))
-
 VER SE TEM DERIVACAO OU FATORACAO P ARRUMAR 
 
 fazer so comparacoes mais simples
 
 condciao so n faz chamada de metodo ex: exto.startsWith("A")
 
-<br> comando -> se|ouSe|senao|para|lacoEnquanto|comando|atribuicao|declaraEAtribui|chamarFuncao
-<br> se -> 'se'(condicao){comando}
-<br> ouSe -> 'ouSe'(condicao){comando}
-<br> senao -> 'senao'{comando}
-<br> para -> 'para'(cabecalhoPara){comando}
-<br> lacoEnquanto - > 'lacoEnquanto'(condicao){comando} FAZER CONDICAO O LACOENQUANTO = JAVA!!!!!!!!!!!
+<br> listaComandos -> comando listaComandos | ε 
+<br> comando -> se|ouSe|senao|para|lacoEnquanto|atribuicao|declaraEAtribui|chamarFuncao
+<br> se -> 'se''('condicao')''{'listaComandos'}'
+<br> ouSe -> 'ouSe''('condicao')''{'listaComandos'}'
+<br> senao -> 'senao''{'listaComandos'}'
+<br> para -> 'para''('cabecalhoPara')''{'listaComandos'}'
+<br> lacoEnquanto -> 'lacoEnquanto''('condicao')''{'listaComandos'}' 
 <br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
 <br> inicializacao -> tipoVariavel identificadores "->" numero|identificadores|chamarFuncao|expressoesMatematicas
-<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificador | identficiador operacaoIncremento expressoesMatematicas
+<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificadores | identficiador operacaoIncremento expressoesMatematicas
 <br> operacaoIncremento -> operadorIncremento++|operadorIncremento--|operadorIncremento+=|operadorIncremento-=|operadorIncremento*=|operadorIncremento/=
+<br> condicao -> '('condicao')' | identificadores|negacaoCondicao|condicaoComparacoesBasicas (ARRUMAR)
 
-<br> inicio correcao "condicao" (ver se da certo e se n tem recursao ou fatoracao a esquerda):
-<br> condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas 
+<br>DERIVACAO:
 
-DERIVACAO:
+<br>condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas 
 
-condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas 
+<br>ε = alpha1 ?????????????????????????????????
+<br>identificadores = beta1
+<br>negacaoCondicao = beta2
+<br>condicaoComparacoesBasica = beta3
 
-e = alpha1 ?????????????????????????????????
-identificadores = beta1
-negacaoCondicao = beta2
-condicaoComparacoesBasica = beta3
-
-condicao -> identificadores condicao' | negacaoCondicao condicao' | condicaoComparacoesBasica condicao'
-condicao' -> e condicao' | e
+<br>condicao -> identificadores condicao' | negacaoCondicao condicao' | condicaoComparacoesBasica condicao'
+<br>condicao' -> ε condicao' | ε
 
 <br> condicaoComparacoesBasicas -> expressoesMatematicas | identificadores|numero operacao identificadores|numero|boolean  |  condicao operacao condicao
-(esses 2 de cima nao sao problema né?? condicao chama condicaocomparacoesbasicas e condicaocomparaoesbasicas chamar condicoes???????????????????????? TDBM RECURSAO INDIRETA?????)
+<br>(esses 2 de cima nao sao problema né?? condicao chama condicaocomparacoesbasicas e condicaocomparaoesbasicas chamar condicoes???????????????????????? TDBM RECURSAO INDIRETA?????)
 <br> negacaoCondicao -> '!'condicao
 <br> operacao -> operacaoRelacional|operacaoLogica
 <br> operacaoRelacional -> operadorDiferente|operadorIgualdade|operadorMenorIgual|operadorMaiorigual
 <br> operacaoLogica -> operador_logicoE|operador_logicoOu|operador_logicoNot
 <br> expressoesMatematicas -> precedenciaInferior 
-<br> precedenciaInferior -> precedenciaInferior'+'precedenciaIntermediaria | precedenciaInferior'-'precedenciaIntermediaria | precedenciaIntermediaria  
-<br> precedenciaIntermediaria -> precedenciaIntermediaria * precedenciaAlta | precedenciaIntermediaria/precedenciaAlta | precedenciaAlta
-<br> precedenciaAlta -> precedenciaAlta^precedenciaSuperior|precedenciaSuperior
-<br> precedenciaSuperior -> identificadores|numero|(expressoesMatematicas)
-
-<br>-A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
-<br> Parênteses → potencia -> Multiplicação/Divisão → Adição/Subtração
-<br>DERIVACAO:
-
-1-
-precedenciaInferior -> precedenciaInferior'+'precedenciaIntermediaria | precedenciaInferior'-'precedenciaIntermediaria | precedenciaIntermediaria  
-
-'+'precedenciaIntermediaria = alpha1
-'-'precedenciaIntermediaria = alpha2
-precedenciaIntermediaria = beta
-
-precedenciaInferior -> precedenciaIntermediaria precedenciaInferior'
-precedenciaInferior' -> '+'precedenciaIntermediaria precedenciaInferior' | '-'precedenciaIntermediaria precedenciaInferior' | e
-
-2-
-precedenciaIntermediaria -> precedenciaIntermediaria * precedenciaAlta | precedenciaIntermediaria/precedenciaAlta | precedenciaAlta
-
-* precedenciaAlta = alpha1
-/precedenciaAlta = alpha2
-precedenciaAlta = beta
-
-precedenciaIntermediaria -> precedenciaAlta precedenciaIntermediaria' 
-precedenciaIntermediaria' -> * precedenciaAlta precedenciaIntermediaria' | /precedenciaAlta precedenciaIntermediaria' | e
-
-3-  precedenciaAlta -> precedenciaAlta^precedenciaSuperior|precedenciaSuperior
-
-^precedenciaSuperior = alpha1
-precedenciaSuperior = beta1
-
-precedenciaAlta -> precedenciaSuperior precedenciaAlta'
-precedenciaAlta' -> ^precedenciaSuperior precedenciaAlta' | e
-
+<br> precedenciaInferior -> precedenciaIntermediaria precedenciaInferior'
+<br> precedenciaInferior' -> '+'precedenciaIntermediaria precedenciaInferior' | '-'precedenciaIntermediaria precedenciaInferior' | ε
+<br> precedenciaIntermediaria -> precedenciaAlta precedenciaIntermediaria' 
+<br> precedenciaIntermediaria' -> '*' precedenciaAlta precedenciaIntermediaria' | /precedenciaAlta precedenciaIntermediaria' | ε
+<br> precedenciaAlta -> precedenciaSuperior precedenciaAlta'
+<br> precedenciaAlta' -> '^'precedenciaSuperior precedenciaAlta' | ε
+<br> precedenciaSuperior -> identificadores|numero|'('expressoesMatematicas')'
 <br> atribuicao -> declaraEAtribui|atribui 
 <br> atribui -> identificadores operadorAtribuicao numeroInteiro|numeroDecimal|texto|boolean ';'
 <br> declaraEAtribui -> declaraEAtribuiInteiro|declaraEAtribuiDecimal|declaraEAtribuiTexto|declaraEAtribuiVerdadeiroFalso
@@ -156,20 +121,21 @@ precedenciaAlta' -> ^precedenciaSuperior precedenciaAlta' | e
 <br> declaraEAtrivuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
 <br> numero -> numeroDecimal|numeroInteiro 
 <br> boolean -> true|false 
-<br> identificadores -> !identificadores|identificadores
+<br> identificadores -> '!'identificadores|identificadores
 <br> operadorRelacional -> operadorIgualdade|operadorMenorIgual|operadorMaiorigual
-<br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao(argumentosFuncao){comando}
+<br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'comando'}'
 <br> argumentosFuncao -> e|parametrosFuncao
 <br> parametroFuncao -> parametro restoParametrosFuncao
 <br> restoParametrosFuncao -> e|, parametroFuncao 
-<br> parametro -> tipoVariavel identificador
+<br> parametro -> tipoVariavel identificadores
 <br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto identificadores 
-<br> chamarFuncao -> palavra_reservadaNomeFuncao(Texto, identificadores) ';'|palavra_reservadaNomeFuncao(argumentosFuncao)';'
+<br> chamarFuncao -> palavra_reservadaNomeFuncao'('Texto, identificadores')' ';'|palavra_reservadaNomeFuncao'('argumentosFuncao')'';'
 
+<br> INFORMAÇÕES GERAIS:
 
-<br> comentario nao precisa pq na linguagem so vai gera o executzvel de outrs ling nao um codigo p ler q precise de comentario, entao nao passa comentario pro token.
-
+<br> comentario nao precisa pq na linguagem so vai gera o executável de outra linguagem não um código para ler que precise de comentário, então não passa comentário para o token que gera gramática.
 <br> permitir ifs encadeados e lacos encadeados (com "comando" permite)
+<br> A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
 
 # Analisador semantico
 
