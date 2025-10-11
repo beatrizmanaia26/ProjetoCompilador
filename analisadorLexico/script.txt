@@ -1,4 +1,5 @@
-#uai... 
+"" ++; ; += -=
+inteiro Trem_ -> 77;
 inteiro Trem_inteiro;
 decimal Trem_decimal -> 1.1;
 texto Trem_texto -> "oi";
@@ -20,7 +21,6 @@ senao{
 }
 lacoEnquanto
 } 
-...so#
 
 decimal Trem_limiteSaque -> 2000.00;
 decimal Trem_transferencia -> 2.5;
