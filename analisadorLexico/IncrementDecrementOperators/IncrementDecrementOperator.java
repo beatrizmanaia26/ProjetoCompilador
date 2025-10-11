@@ -10,30 +10,36 @@ IncrementDecrementOperator extends AFD {
 
     @Override
     public Token evaluate(CharacterIterator code) {
-        char c = code.current();
+        char current = code.current();
 
-        // Incremento "++"
-        if (c == '+') {
-            code.next();
-            if (code.current() == '+') {
-                code.next();
-                return new Token("OPE_INCR", "++");
-            } else {
-                code.previous(); // volta para o '+' inicial
-                return null; // deixa outro AFD lidar com operador '+'
-            }
-        }
+        // Verifica se é '+' ou '-'
+        if (current == '+' || current == '-') {
+            char symbol = current;
+            code.next(); // avança para o próximo caractere
 
-        // Decremento "--"
-        if (c == '-') {
-            code.next();
-            if (code.current() == '-') {
+            // Se o próximo caractere for o mesmo (++, --)
+            if (code.current() == symbol) {
                 code.next();
-                return new Token("OPE_DECR", "--");
-            } else {
-                code.previous(); // volta para o '-' inicial
-                return null; // deixa outro AFD lidar com operador '-'
+                if (symbol == '+') {
+                    return new Token("INCREMENT", "++");
+                } else {
+                    return new Token("DECREMENT", "--");
+                }
             }
+
+            // Se o próximo caractere for '=', então é += ou -=
+            if (code.current() == '=') {
+                code.next();
+                if (symbol == '+') {
+                    return new Token("PLUS_ASSIGN", "+=");
+                } else {
+                    return new Token("MINUS_ASSIGN", "-=");
+                }
+            }
+
+            // Se não formar ++, --, += ou -=, retrocede um passo
+            code.previous(); 
+            return null; // permite que outro AFD trate (+ ou -)
         }
 
         return null;

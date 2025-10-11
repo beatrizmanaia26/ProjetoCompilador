@@ -1,4 +1,4 @@
-"" ++; testando
+"" ++; ; += -=
 inteiro Trem_ -> 77;
 inteiro Trem_inteiro;
 decimal Trem_decimal -> 1.1;
