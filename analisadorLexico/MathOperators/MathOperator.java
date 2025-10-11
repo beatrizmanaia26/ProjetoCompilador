@@ -1,12 +1,13 @@
 package analisadorLexico.MathOperators;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
+import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class MathOperator extends AFD{
 
     @Override
-    public Token evaluate(CharacterIterator code){
+    public Token evaluate(CharacterIterator code,Lexer lexer){
         switch (code.current()){
             case '+': 
                 code.next(); 

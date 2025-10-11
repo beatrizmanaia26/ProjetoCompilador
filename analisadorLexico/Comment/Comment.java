@@ -1,6 +1,7 @@
 package analisadorLexico.Comment;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
+import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class Comment extends AFD {
@@ -8,7 +9,7 @@ public class Comment extends AFD {
     private int line;
 
     @Override
-    public Token evaluate(CharacterIterator code) {
+    public Token evaluate(CharacterIterator code,Lexer lexer) {
         this.line = 1;
         if (code.current() == '#') {
             code.next();
@@ -25,7 +26,7 @@ public class Comment extends AFD {
                 code.next();
 
                 if (c == '\n') {
-                    line++;  
+                    lexer.incrementLine(); 
                 }
                 
                 if (c == '.') {
@@ -36,7 +37,7 @@ public class Comment extends AFD {
                 }
             }
 
-            throw new RuntimeException("Erro léxico: comentário não fechado corretamente (esperado '...so#')." + " na linha " + line + "no índice " + code.getIndex());
+            throw new RuntimeException("Erro léxico: comentário não fechado corretamente (esperado '...so#')." + " na linha " + lexer.getLine() + "no índice " + code.getIndex());
         }
         return null;
     }

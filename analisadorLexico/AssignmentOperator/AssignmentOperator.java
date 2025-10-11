@@ -1,12 +1,13 @@
 package analisadorLexico.AssignmentOperator;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
+import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class AssignmentOperator extends AFD {
 
     @Override
-    public Token evaluate(CharacterIterator code) {
+    public Token evaluate(CharacterIterator code,Lexer lexer){
         char c = code.current();
 
         if (c == '-') {

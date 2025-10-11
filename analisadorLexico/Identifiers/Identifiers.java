@@ -1,12 +1,13 @@
 package analisadorLexico.Identifiers;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
+import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 
 public class Identifiers extends AFD{
 	@Override
-	public Token evaluate(CharacterIterator code) {
+	public Token evaluate(CharacterIterator code,Lexer lexer) {
 		// Verifica se começa com 'Trem_'
 		int start = code.getIndex();
 		String prefix = "Trem_";
