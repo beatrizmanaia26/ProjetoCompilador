@@ -6,14 +6,10 @@ import java.util.Scanner;
 
 public class Main{
     public static void main(String[] args){
-      
         String code = "";
-     
         String nomeArquivo = "/workspaces/ProjetoCompilador/analisadorLexico/script.txt"; 
-        
         File arquivo = new File(nomeArquivo);
         Scanner scanner = null;
-
         try {
             scanner = new Scanner(arquivo); 
 
@@ -34,11 +30,11 @@ public class Main{
 
         try {
             Lexer lexer = new Lexer(code);
-            List<Token> tokens = lexer.getTokens();
-            tokens.forEach(System.out::println);
+            List<Token> tokens = lexer.getTokens();//add todos os tokens na lista
+            tokens.forEach(System.out::println); 
         } catch (LexicalException e) {
         System.err.println(e.getMessage());
-}
+    }
 
     }
 }

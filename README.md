@@ -42,7 +42,7 @@
 <br>operadorSubtracao = ‘-’
 <br>operadorMultiplicacao = ’*’
 <br>operadorPotencia =  ‘^’
-<br>oparadorDivisao = ‘/’
+<br>operadorDivisao = ‘/’
 <br>comentarioVariasLinhas = #uai... [A-Za-z0-9 , - . : “ (adicionar td)]...so#
 <br>fim_linha = ‘;’
 <br>aberturaChave = ‘{‘
@@ -66,24 +66,27 @@ VER SE TEM DERIVACAO OU FATORACAO P ARRUMAR
 
 fazer so comparacoes mais simples
 
-condciao so n faz chamada de metodo ex: exto.startsWith("A")
+**condciao so n faz chamada de metodo ex: exto.startsWith("A")
 
 <br> listaComandos -> comando listaComandos | ε 
-<br> comando -> se|ouSe|senao|para|lacoEnquanto|atribuicao|declaraEAtribui|chamarFuncao
-<br> se -> 'se''('condicao')''{'listaComandos'}'
-<br> ouSe -> 'ouSe''('condicao')''{'listaComandos'}'
-<br> senao -> 'senao''{'listaComandos'}'
-<br> para -> 'para''('cabecalhoPara')''{'listaComandos'}'
-<br> lacoEnquanto -> 'lacoEnquanto''('condicao')''{'listaComandos'}' 
+<br> comando -> se|ouSe|senao|para|lacoEnquanto|atribuicao|criarFuncao|chamarFuncao
+<br> se -> 'se''('condicao')''{'listaComandosInternos'}'
+<br> ouSe -> 'ouSe''('condicao')''{'listaComandosInternos'}'
+<br> senao -> 'senao''{'listaComandosInternos'}'
+<br> para -> 'para''('cabecalhoPara')''{'listaComandosInternos'}'
+<br> lacoEnquanto -> 'lacoEnquanto''('condicao')''{'listaComandosInternos'}' 
+<br> listaComandosInternos -> comandoInterno listaComandosInternos | ε
+<br> comandoInterno -> se|ouSe|senao|para|lacoEnquanto|atribuicao|chamarFuncao|retornar
+<br> retornar -> palavra_reservadaRetornoFuncao identificadores|expressoesMatematicas|numero';'
 <br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
 <br> inicializacao -> tipoVariavel identificadores "->" numero|identificadores|chamarFuncao|expressoesMatematicas
-<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificadores | identficiador operacaoIncremento expressoesMatematicas
+<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificadores | identficiadores operacaoIncremento expressoesMatematicas
 <br> operacaoIncremento -> operadorIncremento++|operadorIncremento--|operadorIncremento+=|operadorIncremento-=|operadorIncremento*=|operadorIncremento/=
 <br> condicao -> '('condicao')' | identificadores|negacaoCondicao|condicaoComparacoesBasicas (ARRUMAR)
 
 <br>DERIVACAO:
 
-<br>condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas 
+<br>condicao -> (condicao) |identificadores|negacaoCondicao|condicaoComparacoesBasicas 
 
 <br>ε = alpha1 ?????????????????????????????????
 <br>identificadores = beta1
@@ -94,7 +97,7 @@ condciao so n faz chamada de metodo ex: exto.startsWith("A")
 <br>condicao' -> ε condicao' | ε
 
 <br> condicaoComparacoesBasicas -> expressoesMatematicas | identificadores|numero operacao identificadores|numero|boolean  |  condicao operacao condicao
-<br>(esses 2 de cima nao sao problema né?? condicao chama condicaocomparacoesbasicas e condicaocomparaoesbasicas chamar condicoes???????????????????????? TDBM RECURSAO INDIRETA?????)
+<br>(esses 2 de cima nao sao problema né?? condicao chama condicaocomparacoesbasicas e condicaocomparaoesbasicas chamar condicoes) ARRUMAR RECURSAO INDIDRETA!!!!!!!!!!!!!!!!!
 <br> negacaoCondicao -> '!'condicao
 <br> operacao -> operacaoRelacional|operacaoLogica
 <br> operacaoRelacional -> operadorDiferente|operadorIgualdade|operadorMenorIgual|operadorMaiorigual
@@ -108,7 +111,7 @@ condciao so n faz chamada de metodo ex: exto.startsWith("A")
 <br> precedenciaAlta' -> '^'precedenciaSuperior precedenciaAlta' | ε
 <br> precedenciaSuperior -> identificadores|numero|'('expressoesMatematicas')'
 <br> atribuicao -> declaraEAtribui|atribui 
-<br> atribui -> identificadores operadorAtribuicao numeroInteiro|numeroDecimal|texto|boolean ';'
+<br> atribui -> identificadores operadorAtribuicao numero|texto|boolean ';'
 <br> declaraEAtribui -> declaraEAtribuiInteiro|declaraEAtribuiDecimal|declaraEAtribuiTexto|declaraEAtribuiVerdadeiroFalso
 <br> declarar -> declararInteiro|declararDecimal|declararTexto|declararVerdadeiroFalso 
 <br> declararInteiro -> 'inteiro' identificadores ';'
@@ -118,18 +121,20 @@ condciao so n faz chamada de metodo ex: exto.startsWith("A")
 <br> declararTexto ->  'texto' identificadores ';'
 <br> declaraEAtribuiTexto -> 'texto' identificadores operadorAtribuicao texto ';'
 <br> declararVerdadeiroFalso -> 'verdadeiroFalso' identificadores ';' 
-<br> declaraEAtrivuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
+<br> declaraEAtribuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
 <br> numero -> numeroDecimal|numeroInteiro 
 <br> boolean -> true|false 
-<br> identificadores -> '!'identificadores|identificadores
 <br> operadorRelacional -> operadorIgualdade|operadorMenorIgual|operadorMaiorigual
-<br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'comando'}'
-<br> argumentosFuncao -> e|parametrosFuncao
+<br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'
+<br> argumentosFuncao -> ε|parametrosFuncao
 <br> parametroFuncao -> parametro restoParametrosFuncao
-<br> restoParametrosFuncao -> e|, parametroFuncao 
+<br> restoParametrosFuncao -> ε|',' parametroFuncao restoParametrosFuncao ?????????????
 <br> parametro -> tipoVariavel identificadores
 <br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto identificadores 
-<br> chamarFuncao -> palavra_reservadaNomeFuncao'('Texto, identificadores')' ';'|palavra_reservadaNomeFuncao'('argumentosFuncao')'';'
+<br> chamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' ';'
+<br> argumentosChamada -> ε | valor restoArgumentosChamada
+<br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas
+<br> restoArgumentosChamada -> ε | ',' valor restoArgumentosChamada
 
 <br> INFORMAÇÕES GERAIS:
 
@@ -204,11 +209,10 @@ verdadeiroFalso Trem_vf -> false;<br>
 
 Entrada(“digita um numero”, Trem_inteiro);<br>
 
-
 criar Imprimir(inteiro Trem_num){<br>
 Imprima(“numero digitado”, Trem_num);<br>
 }<br>
-Se(Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
+se(Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
 Imprimir(Trem_inteiro);<br>
 #uai<br>
  código basico<br>
@@ -216,5 +220,3 @@ so#<br>
 }<br>
 
 <br>}<br>
-
-
