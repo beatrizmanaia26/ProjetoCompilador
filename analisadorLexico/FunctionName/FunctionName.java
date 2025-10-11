@@ -1,13 +1,12 @@
 package analisadorLexico.FunctionName;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
-import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class FunctionName extends AFD{
     
     @Override
-    public Token evaluate(CharacterIterator code,Lexer lexer){
+    public Token evaluate(CharacterIterator code) {
         int startPosition = code.getIndex();
 
         if (!Character.isUpperCase(code.current())) { // delimitador de nome funcao tem que começar com letra maiúscula

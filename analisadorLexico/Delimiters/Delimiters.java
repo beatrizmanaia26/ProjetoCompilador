@@ -2,13 +2,12 @@ package analisadorLexico.Delimiters;
 
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
-import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class Delimiters extends AFD {
 
     @Override
-    public Token evaluate(CharacterIterator code,Lexer lexer) {
+    public Token evaluate(CharacterIterator code) {
         switch (code.current()) {
             case '{':
                 code.next();

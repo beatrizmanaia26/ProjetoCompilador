@@ -1,7 +1,6 @@
 package analisadorLexico.ReservedWords;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
-import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class ReservedWords extends AFD{
@@ -13,7 +12,7 @@ public class ReservedWords extends AFD{
     };
 
     @Override
-    public Token evaluate(CharacterIterator code,Lexer lexer){
+    public Token evaluate(CharacterIterator code){
         int startPosition = code.getIndex(); 
 
         if (!Character.isLetter(code.current())) {

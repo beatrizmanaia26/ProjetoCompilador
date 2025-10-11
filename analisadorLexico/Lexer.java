@@ -74,9 +74,9 @@ public class Lexer {
         line++;
     }
     private Token searchNextToken(){
-        int position = code.getIndex();
+        int position = code.getIndex(); //salva indice de reconhecimento (posicao atual)
         for (AFD afd : afds){
-            Token t = afd.evaluate(code, this); // passa o próprio Lexer
+            Token t = afd.evaluate(code);
             if(t != null) return t;
             code.setIndex(position);
         }
