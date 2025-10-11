@@ -1,12 +1,13 @@
 package analisadorLexico.RelationalOperators;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
+import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class RelationalOperators extends AFD {
 
     @Override
-    public Token evaluate(CharacterIterator code) {
+    public Token evaluate(CharacterIterator code,Lexer lexer) {
         StringBuilder word = new StringBuilder();
 
         if (code.current() == '>') {

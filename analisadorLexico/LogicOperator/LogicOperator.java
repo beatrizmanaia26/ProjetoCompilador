@@ -2,11 +2,12 @@ package analisadorLexico.LogicOperator;
 import java.text.CharacterIterator;
 
 import analisadorLexico.AFD;
+import analisadorLexico.Lexer;
 import analisadorLexico.Token;
 
 public class LogicOperator extends AFD{
     @Override
-    public Token evaluate(CharacterIterator code) {
+    public Token evaluate(CharacterIterator code,Lexer lexer) {
         if (code.current() == 'e') {
             code.next();
             return new Token("OPR_LOGIC", "e");
