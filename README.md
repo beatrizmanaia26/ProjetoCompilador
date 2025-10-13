@@ -69,14 +69,14 @@ fazer so comparacoes mais simples
 **condciao so n faz chamada de metodo ex: exto.startsWith("A")
 
 <br> listaComandos -> comando listaComandos | ε 
-<br> comando -> se|ouSe|senao|para|lacoEnquanto|atribuicao|criarFuncao|chamarFuncao
+<br> comando -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao
 <br> se -> 'se''('condicao')''{'listaComandosInternos'}'
 <br> ouSe -> 'ouSe''('condicao')''{'listaComandosInternos'}'
 <br> senao -> 'senao''{'listaComandosInternos'}'
 <br> para -> 'para''('cabecalhoPara')''{'listaComandosInternos'}'
 <br> lacoEnquanto -> 'lacoEnquanto''('condicao')''{'listaComandosInternos'}' 
 <br> listaComandosInternos -> comandoInterno listaComandosInternos | ε
-<br> comandoInterno -> se|ouSe|senao|para|lacoEnquanto|atribuicao|chamarFuncao|retornar
+<br> comandoInterno -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|chamarFuncao|retornar
 <br> retornar -> palavra_reservadaRetornoFuncao identificadores|expressoesMatematicas|numero';'
 <br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
 <br> inicializacao -> tipoVariavel identificadores "->" numero|identificadores|chamarFuncao|expressoesMatematicas
@@ -111,17 +111,17 @@ fazer so comparacoes mais simples
 <br> precedenciaAlta' -> '^'precedenciaSuperior precedenciaAlta' | ε
 <br> precedenciaSuperior -> identificadores|numero|'('expressoesMatematicas')'
 <br> atribuicao -> declaraEAtribui|atribui 
-<br> atribui -> identificadores operadorAtribuicao numero|texto|boolean ';'
+<br> atribui -> identificadores '->' valor ';'
 <br> declaraEAtribui -> declaraEAtribuiInteiro|declaraEAtribuiDecimal|declaraEAtribuiTexto|declaraEAtribuiVerdadeiroFalso
 <br> declarar -> declararInteiro|declararDecimal|declararTexto|declararVerdadeiroFalso 
 <br> declararInteiro -> 'inteiro' identificadores ';'
-<br> declaraEAtribuiInteiro -> 'inteiro' identificadores operadorAtribuicao numeroInteiro ';'
+<br> declaraEAtribuiInteiro -> 'inteiro' identificadores '->' numeroInteiro ';'
 <br> declararDecimal ->  'decimal' identificadores ';' 
-<br> declaraEAtribuiDecimal -> 'decimal' identificadores operadorAtribuicao numeroDecimal ';'
+<br> declaraEAtribuiDecimal -> 'decimal' identificadores '->' numeroDecimal ';'
 <br> declararTexto ->  'texto' identificadores ';'
-<br> declaraEAtribuiTexto -> 'texto' identificadores operadorAtribuicao texto ';'
+<br> declaraEAtribuiTexto -> 'texto' identificadores '->' texto ';'
 <br> declararVerdadeiroFalso -> 'verdadeiroFalso' identificadores ';' 
-<br> declaraEAtribuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
+<br> declaraEAtribuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores '->' boolean ';'
 <br> numero -> numeroDecimal|numeroInteiro 
 <br> boolean -> true|false 
 <br> operadorRelacional -> operadorIgualdade|operadorMenorIgual|operadorMaiorigual
@@ -130,7 +130,7 @@ fazer so comparacoes mais simples
 <br> parametroFuncao -> parametro restoParametrosFuncao
 <br> restoParametrosFuncao -> ε|',' parametroFuncao restoParametrosFuncao ?????????????
 <br> parametro -> tipoVariavel identificadores
-<br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto identificadores 
+<br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto
 <br> chamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' ';'
 <br> argumentosChamada -> ε | valor restoArgumentosChamada
 <br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas
