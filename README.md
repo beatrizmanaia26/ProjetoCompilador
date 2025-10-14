@@ -68,6 +68,9 @@ fazer so comparacoes mais simples
 
 **condciao so n faz chamada de metodo ex: exto.startsWith("A")
 
+RESOLVER FATORACAO A ESQUERDA NO INCREMENTO!!!!!!!!!!!!!! 
+RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
+
 <br> listaComandos -> comando listaComandos | ε 
 <br> comando -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao
 <br> se -> 'se''('condicao')''{'listaComandosInternos'}'
@@ -80,7 +83,27 @@ fazer so comparacoes mais simples
 <br> retornar -> palavra_reservadaRetornoFuncao identificadores|expressoesMatematicas|numero';'
 <br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
 <br> inicializacao -> tipoVariavel identificadores "->" numero|identificadores|chamarFuncao|expressoesMatematicas
-<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificadores | identficiadores operacaoIncremento expressoesMatematicas
+
+<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificadores | identificadores operacaoIncremento expressoesMatematicas
+
+RESOLUCAO FATORACAO A ESQUERDA:????????????????????????????????
+
+repeticaoIncremento -> identificadores restoIncremento
+restoIncremento -> operacaoIncremento | numero|identificadores | operacaoIncremento expressoesMatematicas
+
+RESOLUCAO FATORACAO A ESQUERDA DA FATORACAO A ESQUERDA:
+
+repeticao1Incremento -> identificadores repeticao2Incremento
+repeticao2Incremento -> operacaoIncremento restoIncremento |(numero|identificadores)
+restoIncremento -> e | expressoes matematicas
+
+EX1: A-> aAb|aBc|aAc
+A->a X
+X->Ab|Bc|Ac
+X-> AY |bc (mantem oq já tava certo) ->RESPOSTA FINAL
+Y->b|c
+
+
 <br> operacaoIncremento -> operadorIncremento++|operadorIncremento--|operadorIncremento+=|operadorIncremento-=|operadorIncremento*=|operadorIncremento/=
 <br> condicao -> '('condicao')' | identificadores|negacaoCondicao|condicaoComparacoesBasicas (ARRUMAR)
 
@@ -106,7 +129,7 @@ fazer so comparacoes mais simples
 <br> precedenciaInferior -> precedenciaIntermediaria precedenciaInferior'
 <br> precedenciaInferior' -> '+'precedenciaIntermediaria precedenciaInferior' | '-'precedenciaIntermediaria precedenciaInferior' | ε
 <br> precedenciaIntermediaria -> precedenciaAlta precedenciaIntermediaria' 
-<br> precedenciaIntermediaria' -> '*' precedenciaAlta precedenciaIntermediaria' | /precedenciaAlta precedenciaIntermediaria' | ε
+<br> precedenciaIntermediaria' -> '*' precedenciaAlta precedenciaIntermediaria' | '/'precedenciaAlta precedenciaIntermediaria' | ε
 <br> precedenciaAlta -> precedenciaSuperior precedenciaAlta'
 <br> precedenciaAlta' -> '^'precedenciaSuperior precedenciaAlta' | ε
 <br> precedenciaSuperior -> identificadores|numero|'('expressoesMatematicas')'
@@ -124,11 +147,20 @@ fazer so comparacoes mais simples
 <br> declaraEAtribuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores '->' boolean ';'
 <br> numero -> numeroDecimal|numeroInteiro 
 <br> boolean -> true|false 
-<br> operadorRelacional -> operadorIgualdade|operadorMenorIgual|operadorMaiorigual
 <br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'
 <br> argumentosFuncao -> ε|parametrosFuncao
+
+ARRUMAR RECURSIVIDADE INDIRETA
+
 <br> parametroFuncao -> parametro restoParametrosFuncao
 <br> restoParametrosFuncao -> ε|',' parametroFuncao restoParametrosFuncao ?????????????
+
+1-reescrever restoParametrosFuncao colocando parametroFuncao dentro dele
+
+<br> parametroFuncao -> parametro restoParametrosFuncao
+<br> restoParametrosFuncao -> ε|',' parametro restoParametrosFuncao restoParametrosFuncao ?????
+-------------------------------
+
 <br> parametro -> tipoVariavel identificadores
 <br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto
 <br> chamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' ';'
