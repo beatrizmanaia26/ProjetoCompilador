@@ -54,9 +54,10 @@ public class Parser {
 
   //REGRAS DA GRAMÁTICA
 
+  //fazer que qnd passa lista de tokens pro sintatico nao passa nenhum token de comentario
+
   //VER SE COMO USEI MATCHT E MATCHL TA CERTO
   //VER SE FIZ CERTO EPSULON:Palavra vazia é sair de uma regra sem casar token = return true
-  //colocar glc equivalente antes da funcao pra facilitar entendimento
   //VERIFICAR SE FIZ TD GLC CORRETA (ex: terminar com ;)
   //ONDE NAO TEM RETURN FALSE (E SIM RETURN TRUE)  //testar passar coisa incorreta para ver se aceita (EX: Aargumentoschamada)
   //VE SE DA P OTIMIZA ALGUM CODIGO (ex: estoArgumentosChamada())
@@ -73,7 +74,7 @@ public class Parser {
     return false;
   }
 
-  //comando -> se|ouSe|senao|para|lacoEnquanto|atribuicao|criarFuncao|chamarFuncao
+  //comando -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao
   private boolean comando(){
     if(se()||ouSe()||senao()||para()||lacoEnquanto()||declarar()||atribuicao()||criarFuncao()||chamarFuncao()){
       return true;
@@ -183,7 +184,7 @@ public class Parser {
     return true;
   }
 
-  //COLOCAR PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
+  //COLOCAR PARAMETROFUNCAO E RESTOPARAMETROFUNCAO!!!!!!!!!!!!!!!!!!!!!!!
   private boolean parametroFuncao(){
     return false;
   }
@@ -197,7 +198,7 @@ public class Parser {
     return false;
   }
 
-  //arrumar recursividade na glc!!!!!!!!!!!!!!!!!!!!!!!!
+  //condicao -> identificadores|negacaoCondicao|condicaoComparacoesBasicas 
   private boolean condicao(){ 
     erro("condicao");
     return false;
@@ -273,7 +274,9 @@ public class Parser {
   
   //declaraEAtribui -> declaraEAtribuiInteiro|declaraEAtribuiDecimal|declaraEAtribuiTexto|declaraEAtribuiVerdadeiroFalso
   private boolean declaraEAtribui(){ 
-    if(declaraEAtribuiInteiro()||declaraEAtribuiDecimal()||declaraEAtribuiTexto()||declaraEAtribuiVerdadeiroFalso())
+    if(declaraEAtribuiInteiro()||declaraEAtribuiDecimal()||declaraEAtribuiTexto()||declaraEAtribuiVerdadeiroFalso()){
+      return true;
+    }
     erro("declaraEAtribui");
     return false;
   }
@@ -491,7 +494,11 @@ public class Parser {
     return true;
   }
 
+  //incremento -> identificadores '->' expressoesMatematicas
   private boolean incremento(){ 
+    if(identificadores() && matchL("->") && expressoesMatematicas()){
+      return true;
+    }
     erro("incremento");
     return false;
   }
@@ -505,14 +512,6 @@ public class Parser {
     return false;
   }
 
-  //operacaoIncremento -> operadorIncremento++|operadorIncremento--|operadorIncremento+=|operadorIncremento-=|operadorIncremento*=|operadorIncremento/=
-  private boolean operacaoIncremento(){ 
-    if(matchL("++")||matchL("--")||matchL("+=")||matchL("-=")|| matchL("*=")||matchL("/=")){
-      return true;
-    }
-    erro("operacaoIncremento");
-    return false;
-  }
 
   //match t de tokens para expressao regular 
 

@@ -49,12 +49,6 @@
 <br>fecharChave = ‘}’
 <br>abreParenteses = ‘(‘
 <br>fechaParenteses = ‘)’
-<br>operadorIncremento++ = ‘++’
-<br>operadorIncremento-- = ‘--’
-<br>operadorIncremento+= = ‘+=’
-<br>operadorIncremento-= = ‘-=’
-<br>operadorIncremento*= = ‘*=’
-<br>operadorIncremento/= = ‘/=’
 
 # Gramática completa do analisador sintático 
 
@@ -66,9 +60,8 @@ VER SE TEM DERIVACAO OU FATORACAO P ARRUMAR
 
 fazer so comparacoes mais simples
 
-**condciao so n faz chamada de metodo ex: exto.startsWith("A")
+**condiciao so n faz chamada de metodo ex: exto.startsWith("A")
 
-RESOLVER FATORACAO A ESQUERDA NO INCREMENTO!!!!!!!!!!!!!! 
 RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 
 <br> listaComandos -> comando listaComandos | ε 
@@ -83,44 +76,63 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> retornar -> palavra_reservadaRetornoFuncao identificadores|expressoesMatematicas|numero';'
 <br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
 <br> inicializacao -> tipoVariavel identificadores "->" numero|identificadores|chamarFuncao|expressoesMatematicas
+<br> incremento -> identificadores '->' expressoesMatematicas
 
-<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificadores | identificadores operacaoIncremento expressoesMatematicas
+<br>CONDICAO MAIS BÁSICA PARA DEPOIS APRIMORAR (ver se precisa do '('condicao')' )!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+<br> condicao -> identificadores|negacaoCondicao|condicaoComparacoesBasicas 
 
-RESOLUCAO FATORACAO A ESQUERDA:????????????????????????????????
+<br> condicaoComparacoes -> expressoesMatematicas | condicaoComparacoes |  condicao operacao condicao
+<br> condicaoComparacõesBasicas ->  identificadores|numero operacao identificadores|numero|boolean
 
-repeticaoIncremento -> identificadores restoIncremento
-restoIncremento -> operacaoIncremento | numero|identificadores | operacaoIncremento expressoesMatematicas
+<br>(condicao chama condicaocomparacoes e condicaocomparaoes chamar condicoes) 
+ARRUMAR RECURSAO INDIDRETA!!!!!!!!!!!!!!!!!
 
-RESOLUCAO FATORACAO A ESQUERDA DA FATORACAO A ESQUERDA:
+--RESOLUCAO:
+Duvida se ta certo
 
-repeticao1Incremento -> identificadores repeticao2Incremento
-repeticao2Incremento -> operacaoIncremento restoIncremento |(numero|identificadores)
-restoIncremento -> e | expressoes matematicas
+condicao -> identificadores|negacaoCondicao|condicaoComparacoes
 
-EX1: A-> aAb|aBc|aAc
-A->a X
-X->Ab|Bc|Ac
-X-> AY |bc (mantem oq já tava certo) ->RESPOSTA FINAL
-Y->b|c
+<br> condicaoComparacoes -> expressoesMatematicas | condicaoComparacoesBasicas | condicao operacao condicao
+
+<br> condicaoComparacõesBasicas ->  identificadores|numero operacao identificadores|numero|boolean
 
 
-<br> operacaoIncremento -> operadorIncremento++|operadorIncremento--|operadorIncremento+=|operadorIncremento-=|operadorIncremento*=|operadorIncremento/=
-<br> condicao -> '('condicao')' | identificadores|negacaoCondicao|condicaoComparacoesBasicas (ARRUMAR)
+condicao -> identificadores|negacaoCondicao|condicaoComparacoes
+a -> b|c|d
 
-<br>DERIVACAO:
+condicaoComparacoes -> expressoesMatematicas | condicaoComparacoesBasicas | condicao operacao condicao
+d-> e|f|a g a
 
-<br>condicao -> (condicao) |identificadores|negacaoCondicao|condicaoComparacoesBasicas 
+a -> b|c|d
+d-> e|f|a g a
 
-<br>ε = alpha1 ?????????????????????????????????
-<br>identificadores = beta1
-<br>negacaoCondicao = beta2
-<br>condicaoComparacoesBasica = beta3
+condicaocomparacoes dentro de condição (d dentro de a)
 
-<br>condicao -> identificadores condicao' | negacaoCondicao condicao' | condicaoComparacoesBasica condicao'
-<br>condicao' -> ε condicao' | ε
+a ->b|c|e|f| a g a
 
-<br> condicaoComparacoesBasicas -> expressoesMatematicas | identificadores|numero operacao identificadores|numero|boolean  |  condicao operacao condicao
-<br>(esses 2 de cima nao sao problema né?? condicao chama condicaocomparacoesbasicas e condicaocomparaoesbasicas chamar condicoes) ARRUMAR RECURSAO INDIDRETA!!!!!!!!!!!!!!!!!
+condicao -> identificadores|negacaoCondicao| expressoesMatematicas | condicaoComparacoesBasicas| condicao operacao condição
+
+resolver recursividade a esquerda
+a ->b|c|e|f| a g a
+ga = alpha1
+b = beta1
+c = beta2
+e = beta3
+f = beta4
+a->beta1a´| beta2a´| beta3a´| beta4a´
+a´-> alpha1a´|e
+substitui
+
+a->ba´| ca´| ea´| fa´
+a´-> gaa´|e
+final
+<br>condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
+
+<br> condicao’ -> operacao condição condicao’
+<br> condicaoComparacõesBasicas ->  identificadores|numero operacao identificadores|numero|boolean
+
+
+
 <br> negacaoCondicao -> '!'condicao
 <br> operacao -> operacaoRelacional|operacaoLogica
 <br> operacaoRelacional -> operadorDiferente|operadorIgualdade|operadorMenorIgual|operadorMaiorigual
@@ -150,15 +162,41 @@ Y->b|c
 <br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'
 <br> argumentosFuncao -> ε|parametrosFuncao
 
+
 ARRUMAR RECURSIVIDADE INDIRETA
 
 <br> parametroFuncao -> parametro restoParametrosFuncao
-<br> restoParametrosFuncao -> ε|',' parametroFuncao restoParametrosFuncao ?????????????
+A -> b c
+<br> restoParametrosFuncao -> ε|',' parametroFuncao restoParametrosFuncao (fiz assim p poder ter vários parâmetros)
+C -> d | e a c
 
-1-reescrever restoParametrosFuncao colocando parametroFuncao dentro dele
+A -> b c
+C -> d | e a c
 
-<br> parametroFuncao -> parametro restoParametrosFuncao
-<br> restoParametrosFuncao -> ε|',' parametro restoParametrosFuncao restoParametrosFuncao ?????
+1-colocar c dentro de a (restoparametrsoFuncao dentro de parametrofuncao)
+A -> b d | b e a c 
+ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
+
+(fatoração e recursividade)
+
+1-resolver recursividade
+A -> b d | b e a c 
+Beta1= bd
+Alpha1= bec ??(estaria trocando a ordem)
+
+
+
+Então 1 resolver fatoração:
+A -> b d | b e a c 
+ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
+
+A-> b X
+ParâmetroFuncao-> parâmetro emComumParametro
+X -> d | e a c
+emComumParametro -> ε | ‘,’ parametroFuncao restoParametrosFuncao
+
+
+
 -------------------------------
 
 <br> parametro -> tipoVariavel identificadores
