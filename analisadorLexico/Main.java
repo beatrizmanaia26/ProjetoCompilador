@@ -9,7 +9,8 @@ import java.util.stream.Collectors;
 public class Main{
     public static void main(String[] args){
         String code = "";
-        String nomeArquivo = "/workspaces/ProjetoCompilador/analisadorLexico/script.txt"; 
+       // String nomeArquivo = "/workspaces/ProjetoCompilador/analisadorLexico/script.txt"; 
+        String nomeArquivo = "C:\\ProjetoCompilador\\analisadorLexico\\script.txt"; 
         File arquivo = new File(nomeArquivo);
         Scanner scanner = null;
         try {

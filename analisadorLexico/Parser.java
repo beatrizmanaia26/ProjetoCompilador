@@ -59,7 +59,7 @@ public class Parser {
   //VER SE COMO USEI MATCHT E MATCHL TA CERTO
   //VER SE FIZ CERTO EPSULON:Palavra vazia é sair de uma regra sem casar token = return true
   //VERIFICAR SE FIZ TD GLC CORRETA (ex: terminar com ;)
-  //ONDE NAO TEM RETURN FALSE (E SIM RETURN TRUE)  //testar passar coisa incorreta para ver se aceita (EX: Aargumentoschamada)
+  //ONDE NAO TEM RETURN FALSE (E SIM RETURN TRUE)  //testar passar coisa incorreta para ver se aceita (EX: Aargumentoschamada, senaoopcional, listaouse...)
   //VE SE DA P OTIMIZA ALGUM CODIGO (ex: estoArgumentosChamada())
 
   // listaComandos -> comando listaComandos | ε
@@ -76,14 +76,37 @@ public class Parser {
 
   //comando -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao
   private boolean comando(){
-    if(se()||ouSe()||senao()||para()||lacoEnquanto()||declarar()||atribuicao()||criarFuncao()||chamarFuncao()){
+    if(seCompleto()||para()||lacoEnquanto()||declarar()||atribuicao()||criarFuncao()||chamarFuncao()){
       return true;
     }
     erro("comando"); 
     return false;
   }
   
-  //duvida se o mlhr jeito eh fazer assim mesmo: seousesenao td junto!!!!!!!!!!!!!!
+  //seCompleto ->se listaOuSe senaoOpcional
+  private boolean seCompleto(){
+    if(se() && listaOuSe() && senaoOpcional()){
+      return true;
+    }
+    return false; // n tem erro especifico pq a regra especifcia (se, ouse e senao) darao o erro
+  }
+
+  //listaOuSe > ouSe listaOuSe | e
+  private boolean listaOuSe(){
+    if(ouSe() && listaOuSe()){
+      return true;
+    }
+    else{
+      return true;//ε
+    }
+  }
+
+  private boolean senaoOpcional(){
+    if(senao()){
+      return true;
+    }
+    return true;//ε
+  }
   //se -> 'se''('condicao')''{'listaComandosInternos'}'
   private boolean se(){ 
      if (matchL("se") && matchL("(") && condicao() && matchL(")") && matchL("{") && listaComandosInternos() && matchL("}")){
@@ -93,7 +116,7 @@ public class Parser {
     return false;
   }
 
-  //ouSe -> 'ouSe''('condicao')''{'listaComandosInternos'}'
+  //ouSes -> 'ouSe''('condicao')''{'listaComandosInternos'}' ouSes | ε 
   private boolean ouSe(){
     if(matchL("ouSe") && matchL("(") && condicao() && matchL(")") && matchL("{") && listaComandosInternos() && matchL("}")){
         return true;
@@ -244,17 +267,6 @@ public class Parser {
 
   //listaComandosInternos -> comandoInterno listaComandosInternos | ε
   private boolean listaComandosInternos(){ 
- /*
-     * pode: 
-     * se(){} ouse(){} senao(){} 
-     * ou
-     * se(){} senao(){}
-     * ou
-     * se(){} ouSe(){}
-     * ou se(){} senao(){}
-     * ............
-     * é aqui que considera td possibilidade de ordem de se, ou se e senao ou no proprio funcao do se() senao() que faco isso?????????????????
-     */
     if(comandoInterno() && listaComandosInternos()){
       return true;
     }
@@ -401,7 +413,7 @@ public class Parser {
 
   //comandoInterno -> se|ouSe|senao|para|lacoEnquanto|atribuicao|chamarFuncao|retornar
   private boolean comandoInterno(){
-    if(se()||ouSe()||senao()||para()||lacoEnquanto()||declarar()||atribuicao()||chamarFuncao()||retornar()){
+    if(seCompleto()||para()||lacoEnquanto()||declarar()||atribuicao()||chamarFuncao()||retornar()){
       return true;
     }
     erro("comandoInterno"); 

@@ -1,18 +1,17 @@
 # 🛠️ minasScript
 
-**minasScript** é um compilador escrito em **Java** que traduz uma linguagem criada por nós, Mineires — inspirada no português com sotaque mineiro — para outra linguagem de programação.
+**minasScript** é um compilador escrito em **Java** que traduz uma linguagem criada por nós, Mineires — inspirada java e no português com sotaque mineiro — para outra linguagem de programação.
 
 ## 👥 Integrantes
-
-- Beatriz Manaia Lourenço Berto — RA: 22.125.060-8  
-- Mariane Souza Carvalho — RA: 22.123.105-3  
-- Rafael Dias Silva Costa — RA: 22.222.039-4  
-- Kayky Pires de Paula — RA: 22.222.040-2  
+<br>- Beatriz Manaia Lourenço Berto — RA: 22.125.060-8  
+<br>- Mariane Souza Carvalho — RA: 22.123.105-3  
+<br>- Rafael Dias Silva Costa — RA: 22.222.039-4  
+<br>- Kayky Pires de Paula — RA: 22.222.040-2  
 
 ## Expressões Regulares
 <br>numeroInteiro = [0-9]+
 <br>numeroDecimal = [0-9]+’.’[0-9]+
-<br>Texto = “[A-Za-z0-9,*&¨@ (tudo)]*”’
+<br>Texto = “[A-Za-z0-9,*&¨@.]*”’ (tudo)
 <br>tipos_dadoInt = ‘inteiro’
 <br>tipo_dadoDecimal = ‘decimal’
 <br>tipo_dadoVerdadeiroFalso = verdadeiroFalso
@@ -65,7 +64,11 @@ fazer so comparacoes mais simples
 RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 
 <br> listaComandos -> comando listaComandos | ε 
-<br> comando -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao
+<br> comando -> seCompleto|para|lacoEnquanto|declarar|atribuicao|
+<br> criarFuncao|chamarFuncao
+<br> seCompleto ->se listaOuSe senaoOpcional
+<br> listaOuSe > ouSe listaOuSe | e
+<br> senaoOpcional -> senão | e
 <br> se -> 'se''('condicao')''{'listaComandosInternos'}'
 <br> ouSe -> 'ouSe''('condicao')''{'listaComandosInternos'}'
 <br> senao -> 'senao''{'listaComandosInternos'}'
@@ -87,45 +90,44 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br>(condicao chama condicaocomparacoes e condicaocomparaoes chamar condicoes) 
 ARRUMAR RECURSAO INDIDRETA!!!!!!!!!!!!!!!!!
 
---RESOLUCAO:
-Duvida se ta certo
+<br>--RESOLUCAO:
+<br>Duvida se ta certo
 
-condicao -> identificadores|negacaoCondicao|condicaoComparacoes
+<br>condicao -> identificadores|negacaoCondicao|condicaoComparacoes
 
 <br> condicaoComparacoes -> expressoesMatematicas | condicaoComparacoesBasicas | condicao operacao condicao
 
 <br> condicaoComparacõesBasicas ->  identificadores|numero operacao identificadores|numero|boolean
 
 
-condicao -> identificadores|negacaoCondicao|condicaoComparacoes
-a -> b|c|d
+<br>condicao -> identificadores|negacaoCondicao|condicaoComparacoes
+<br>a -> b|c|d
 
-condicaoComparacoes -> expressoesMatematicas | condicaoComparacoesBasicas | condicao operacao condicao
-d-> e|f|a g a
+<br>condicaoComparacoes -> expressoesMatematicas | condicaoComparacoesBasicas | condicao operacao condicao
+<br>d-> e|f|a g a
 
-a -> b|c|d
-d-> e|f|a g a
+<br>a -> b|c|d
+<br>d-> e|f|a g a
 
-condicaocomparacoes dentro de condição (d dentro de a)
+<br>condicaocomparacoes dentro de condição (d dentro de a)
+<br>a ->b|c|e|f| a g a
 
-a ->b|c|e|f| a g a
+<br>condicao -> identificadores|negacaoCondicao| expressoesMatematicas | condicaoComparacoesBasicas| condicao operacao condição
 
-condicao -> identificadores|negacaoCondicao| expressoesMatematicas | condicaoComparacoesBasicas| condicao operacao condição
+<br>resolver recursividade a esquerda
+<br>a ->b|c|e|f| a g a
+<br>ga = alpha1
+<br>b = beta1
+<br>c = beta2
+<br>e = beta3
+<br>f = beta4
+<br>a->beta1a´| beta2a´| beta3a´| beta4a´
+<br>a´-> alpha1a´|e
+<br>substitui
 
-resolver recursividade a esquerda
-a ->b|c|e|f| a g a
-ga = alpha1
-b = beta1
-c = beta2
-e = beta3
-f = beta4
-a->beta1a´| beta2a´| beta3a´| beta4a´
-a´-> alpha1a´|e
-substitui
-
-a->ba´| ca´| ea´| fa´
-a´-> gaa´|e
-final
+<br>a->ba´| ca´| ea´| fa´
+<br>a´-> gaa´|e
+<br>final
 <br>condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
 
 <br> condicao’ -> operacao condição condicao’
@@ -166,36 +168,33 @@ final
 ARRUMAR RECURSIVIDADE INDIRETA
 
 <br> parametroFuncao -> parametro restoParametrosFuncao
-A -> b c
+<br>A -> b c
 <br> restoParametrosFuncao -> ε|',' parametroFuncao restoParametrosFuncao (fiz assim p poder ter vários parâmetros)
-C -> d | e a c
+<br>C -> d | e a c
 
-A -> b c
-C -> d | e a c
+<br>A -> b c
+<br>C -> d | e a c
 
-1-colocar c dentro de a (restoparametrsoFuncao dentro de parametrofuncao)
-A -> b d | b e a c 
-ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
+<br>1-colocar c dentro de a (restoparametrsoFuncao dentro de parametrofuncao)
+<br>A -> b d | b e a c 
+<br>ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
 
-(fatoração e recursividade)
+<br>(fatoração e recursividade)
 
-1-resolver recursividade
-A -> b d | b e a c 
-Beta1= bd
-Alpha1= bec ??(estaria trocando a ordem)
-
-
-
-Então 1 resolver fatoração:
-A -> b d | b e a c 
-ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
-
-A-> b X
-ParâmetroFuncao-> parâmetro emComumParametro
-X -> d | e a c
-emComumParametro -> ε | ‘,’ parametroFuncao restoParametrosFuncao
+<br>1-resolver recursividade
+<br>A -> b d | b e a c 
+<br>Beta1= bd
+<br>Alpha1= bec ??(estaria trocando a ordem)
 
 
+<br>Então 1 resolver fatoração:
+<br>A -> b d | b e a c 
+<br>ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
+
+<br>A-> b X
+<br>ParâmetroFuncao-> parâmetro emComumParametro
+<br>X -> d | e a c
+<br>emComumParametro -> ε | ‘,’ parametroFuncao restoParametrosFuncao
 
 -------------------------------
 
@@ -214,13 +213,16 @@ emComumParametro -> ε | ‘,’ parametroFuncao restoParametrosFuncao
 
 # Analisador semantico
 
--como comparo string
--coloquei valor = ao tipo que declarei...
+<br>-como comparo string
+<br>-coloquei valor = ao tipo que declarei...
 
 # Como executar o compilador
 
+DESCREVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 # Características da linguagem criada
- 
+
 ## tipos de variáveis:<br>
 - inteiro<br>
 - decimal<br>
@@ -236,7 +238,7 @@ retorna<br>
 -senao{}<br>
 
 ## funcoes<br>
-criar Nomequalquer(qualquer coisa){}<br>
+criar NomeFuncao(qualquer coisa){}<br>
 
 ## estruturas de repetição<br>
 - para{}<br>
@@ -244,11 +246,12 @@ criar Nomequalquer(qualquer coisa){}<br>
  
 ## atribuicao<br>
   ->  <br>
+
 ## operador relacional<br>
   <>  diferente<br>
   <->  igualdade<br>
-  <=  menor ou igual
-  >=  maior ou igual
+  <=  menor ou igual<br>
+  >=  maior ou igual<br>
 
 ## operador matemático<br>
 soma +<br>
@@ -262,8 +265,8 @@ divisao /<br>
 ...so# (várias linhas)<br>
 
 ## leituras teclado<br>
-entrada <br>
-imprima<br>
+Entrada <br>
+Imprima<br>
 
 # operador logico <br>
 e<br>
@@ -272,6 +275,7 @@ ou<br>
 
 # Exemplos de código na sua linguagem criada e a tradução equivalente.
 
+## Exemplo 1:
 inteiro Trem_inteiro;<br>
 decimal Trem_decimal -> 1.1;<br>
 texto Trem_texto -> “oi”;<br>
@@ -290,3 +294,98 @@ so#<br>
 }<br>
 
 <br>}<br>
+
+## Exemplo 2:
+
+
+inteiro Trem_num -> 77;<br>
+inteiro Trem_inteiro;<br>
+decimal Trem_decimal -> 1.1;<br>
+texto Trem_texto -> "oi";<br>
+verdadeiroFalso Trem_vf -> true;<br>
+
+Entrada("digite um numero", Trem_inteiro);<br>
+
+criar Imprimir(inteiro Trem_num){<br>
+    Imprima("número digitado", Trem_num);<br>
+}<br>
+se (Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
+    para (inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){<br>
+        Imprima(Trem_x)<br>
+    }<br>
+    Imprimir(Trem_inteiro);<br>
+}<br>
+senao{<br>
+    retorna false;<br>
+}<br>
+lacoEnquanto<br>
+} <br>
+
+decimal Trem_limiteSaque -> 2000.00;<br>
+decimal Trem_transferencia -> 2.5;<br>
+inteiro Trem_maxTentativasSenha -> 3;<br>
+
+criar Main(){<br>
+    texto Trem_nome -> "Beatriz";<br>
+    texto Trem_numeroConta -> "12345-6";<br>
+    decimal Trem_saldo -> 16000.00;<br>
+    texto Trem_senhaCorreta -> "1234"<br>
+    verdadeiroFalso Trem_userLogado -> false;<br>
+    inteiro Trem_tentativasSenha -> 0;<br>
+    Imprima("bem vindo");<br>
+
+    lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){<br>
+        texto Trem_senha;<br>
+        Imprima("Digite a senha", Trem_senhaDigitada);<br>
+
+        se(Trem_senhaDigitada <-> Trem_senhaCorreta){<br>
+        Trem_userLogado -> true;<br>
+           Imprima("login realizado");<br>
+        }<br>
+    
+        senao{<br>
+            Trem_tentativasSenha -> Trem_tentativasSenha + 1;<br>
+            Imprima("senha incorreta, tentativas restantes" Trem_maxTentativasSenha -  Trem_tentativasSenha);<br>
+            se(Trem_tentativasSenha >= Trem_maxTentativasSenha){<br>
+                Imprima("conta bloqueada por excesso de tentativas");<br>
+            }<br>
+        }<br>
+    } <br>
+   verdadeiroFalso Trem_sistemaAtivo -> true;<br>
+   lacoEnquanto(Trem_sistemaAtivo e Trem_userLogado){<br>
+        Imprima(" MENU PRINCIPAL");<br>
+        Imprima("Cliente: ", Trem_nome);<br>
+        Imprima("Conta: ", Trem_numeroConta);<br>
+        Imprima("Saldo: R$ ",Trem_saldo);<br>
+        Imprima("1 - Saque");<br>
+        Imprima("2 - Depósito");<br>
+        Imprima("3 - Transferência");<br>
+        Imprima("4 - Extrato");<br>
+        Imprima("5 - Alterar Senha");<br>
+        Imprima("0 - Sair");<br>
+        Imprima("Escolha uma opção: ");<br>
+        inteiro Trem_opcao;<br>
+        Entrada("Digite a opcao ", Trem_opcao);<br>
+        se(Trem_opcao <-> 1){<br>
+        Imprima("Digite o valor do saque");<br>
+        decimal Trem_valorSaque;<br>
+        se(Trem_valorSaque > 0 e Trem_valorSaque <= Trem_saldo){<br>
+            se(Trem_valorSaque <= Trem_limiteSaque){<br>
+                Trem_saldo -> Trem_valorSaque - Trem_saldo;<br>
+                Imprima("Saque  realizado com sucesso no valor de R$ ", Trem_valorSaque);<br>
+                Imprima("Novo saldo: R$ " Trem_saldo);<br>
+            }<br>
+            senao{<br>
+                Imprima("Valor excede o limite de saque de R$", Trem_limiteSaque);<br>
+            }<br>
+        }<br>
+    }<br>
+}<br>
+
+#uai...<br>
+1hello"<br>
+...so#<br>
+"helloO" <br>
+
+
+    
