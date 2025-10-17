@@ -81,60 +81,12 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> inicializacao -> tipoVariavel identificadores "->" numero|identificadores|chamarFuncao|expressoesMatematicas
 <br> incremento -> identificadores '->' expressoesMatematicas
 
-<br>CONDICAO MAIS BÁSICA PARA DEPOIS APRIMORAR (ver se precisa do '('condicao')' )!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-<br> condicao -> identificadores|negacaoCondicao|condicaoComparacoesBasicas 
+<br>CONDICAO MAIS BÁSICA PARA DEPOIS APRIMORAR (ver se precisa do '('condicao')', tirei e arrumei )!!!!! condicao ->(condicao)| identificadores|negacaoCondicao|condicaoComparacoesBasicas 
 
-<br> condicaoComparacoes -> expressoesMatematicas | condicaoComparacoes |  condicao operacao condicao
-<br> condicaoComparacõesBasicas ->  identificadores|numero operacao identificadores|numero|boolean
-
-<br>(condicao chama condicaocomparacoes e condicaocomparaoes chamar condicoes) 
-ARRUMAR RECURSAO INDIDRETA!!!!!!!!!!!!!!!!!
-
-<br>--RESOLUCAO:
-<br>Duvida se ta certo
-
-<br>condicao -> identificadores|negacaoCondicao|condicaoComparacoes
-
-<br> condicaoComparacoes -> expressoesMatematicas | condicaoComparacoesBasicas | condicao operacao condicao
-
-<br> condicaoComparacõesBasicas ->  identificadores|numero operacao identificadores|numero|boolean
-
-
-<br>condicao -> identificadores|negacaoCondicao|condicaoComparacoes
-<br>a -> b|c|d
-
-<br>condicaoComparacoes -> expressoesMatematicas | condicaoComparacoesBasicas | condicao operacao condicao
-<br>d-> e|f|a g a
-
-<br>a -> b|c|d
-<br>d-> e|f|a g a
-
-<br>condicaocomparacoes dentro de condição (d dentro de a)
-<br>a ->b|c|e|f| a g a
-
-<br>condicao -> identificadores|negacaoCondicao| expressoesMatematicas | condicaoComparacoesBasicas| condicao operacao condição
-
-<br>resolver recursividade a esquerda
-<br>a ->b|c|e|f| a g a
-<br>ga = alpha1
-<br>b = beta1
-<br>c = beta2
-<br>e = beta3
-<br>f = beta4
-<br>a->beta1a´| beta2a´| beta3a´| beta4a´
-<br>a´-> alpha1a´|e
-<br>substitui
-
-<br>a->ba´| ca´| ea´| fa´
-<br>a´-> gaa´|e
-<br>final
 <br>condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
-
-<br> condicao’ -> operacao condição condicao’
-<br> condicaoComparacõesBasicas ->  identificadores|numero operacao identificadores|numero|boolean
-
-
-
+<br> condicao’ -> operacao condição condicao’| ε
+<br> condicaoComparacõesBasicas ->  identificadores|numero operacao valoresOperacao
+<br> valoresOperacao -> identificadores|numero|boolean
 <br> negacaoCondicao -> '!'condicao
 <br> operacao -> operacaoRelacional|operacaoLogica
 <br> operacaoRelacional -> operadorDiferente|operadorIgualdade|operadorMenorIgual|operadorMaiorigual
@@ -164,37 +116,29 @@ ARRUMAR RECURSAO INDIDRETA!!!!!!!!!!!!!!!!!
 <br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'
 <br> argumentosFuncao -> ε|parametrosFuncao
 
-
 ARRUMAR RECURSIVIDADE INDIRETA
 
 <br> parametroFuncao -> parametro restoParametrosFuncao
-<br>A -> b c
+A -> b c
 <br> restoParametrosFuncao -> ε|',' parametroFuncao restoParametrosFuncao (fiz assim p poder ter vários parâmetros)
-<br>C -> d | e a c
+C -> d | e a c
 
-<br>A -> b c
-<br>C -> d | e a c
+A -> b c
+C -> d | e a c
+1-colocar c dentro de a (restoparametrsoFuncao dentro de parametrofuncao)
+A -> b d | b e a c 
+ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
 
-<br>1-colocar c dentro de a (restoparametrsoFuncao dentro de parametrofuncao)
-<br>A -> b d | b e a c 
-<br>ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
+(fatoração)
 
-<br>(fatoração e recursividade)
+Então 1 resolver fatoração:
+A -> b d | b e a c 
+ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
 
-<br>1-resolver recursividade
-<br>A -> b d | b e a c 
-<br>Beta1= bd
-<br>Alpha1= bec ??(estaria trocando a ordem)
-
-
-<br>Então 1 resolver fatoração:
-<br>A -> b d | b e a c 
-<br>ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
-
-<br>A-> b X
-<br>ParâmetroFuncao-> parâmetro emComumParametro
-<br>X -> d | e a c
-<br>emComumParametro -> ε | ‘,’ parametroFuncao restoParametrosFuncao
+A-> b X
+ParâmetroFuncao-> parâmetro emComumParametro
+X -> d | e a c
+emComumParametro -> ε | ‘,’ parametroFuncao restoParametrosFuncao
 
 -------------------------------
 
