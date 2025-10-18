@@ -2,6 +2,7 @@ package analisadorLexico.Numbers;
 import java.text.CharacterIterator;
 
 import analisadorLexico.AFD;
+import analisadorLexico.LexicalException;
 import analisadorLexico.Token;
 
 //esse inclui int e float (separar em 2)
@@ -10,6 +11,7 @@ public class DecimalNumber extends AFD {
     @Override
     public Token evaluate(CharacterIterator code) {
         int start = code.getIndex();
+        int curIndex = start;
         StringBuilder number = new StringBuilder();
 
         boolean hasDigitsBeforeDot = false;
@@ -21,6 +23,7 @@ public class DecimalNumber extends AFD {
             hasDigitsBeforeDot = true;
             number.append(code.current());
             code.next();
+            curIndex++;
         }
 
         // Verifica se há ponto
@@ -28,21 +31,33 @@ public class DecimalNumber extends AFD {
             hasDot = true;
             number.append('.');
             code.next();
+            curIndex++;
 
             // Parte fracionária obrigatória após o ponto
             while (Character.isDigit(code.current())) {
                 hasDigitsAfterDot = true;
                 number.append(code.current());
                 code.next();
+                curIndex++;
             }
         }
 
         // Se tem ponto e pelo menos um dígito em algum lado
         if (hasDot && (hasDigitsBeforeDot || hasDigitsAfterDot)) {
+                    
             if (isTokenSeparator(code)) {
+                if (!hasDigitsBeforeDot &&hasDigitsAfterDot) {
+                    number.insert(0, '0');
+                } else if (hasDigitsBeforeDot && !hasDigitsAfterDot) {
+                    number.append('0');
+                }
+                curIndex++;
                 return new Token("DECIMAL", number.toString());
             } else {
-                return null;
+                int[] lc = computeLineColumn(curIndex);
+                String lineText = extractLineText(lc[0]);
+
+                throw new LexicalException("Numero decimal invalido.", lc[0], lc[1], lineText);
             }
         }
 
@@ -50,4 +65,5 @@ public class DecimalNumber extends AFD {
         code.setIndex(start);
         return null;
     }
+
 }
