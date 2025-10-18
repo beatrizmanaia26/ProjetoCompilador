@@ -76,7 +76,7 @@ public class Parser {
 
   //comando -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao
   private boolean comando(){
-    if(seCompleto()||para()||lacoEnquanto()||declarar()||atribuicao()||criarFuncao()||chamarFuncao()){
+    if(declarar()||seCompleto()||para()||lacoEnquanto()||atribuicao()||criarFuncao()||chamarFuncao()){
       return true;
     }
     erro("comando"); 
@@ -208,8 +208,22 @@ public class Parser {
   }
 
   //COLOCAR PARAMETROFUNCAO E RESTOPARAMETROFUNCAO!!!!!!!!!!!!!!!!!!!!!!!
+  
+  //parametroFuncao -> parâmetro emComumParametro
   private boolean parametroFuncao(){
+    if(parametro() && emComumParametro()){
+      return true;
+    }
+    erro("parametroFuncao");
     return false;
+  }
+
+  //emComumParametro -> ε | ‘,’ parametroFuncao emComumParametro
+  private boolean emComumParametro(){
+    if(matchL(",") && parametroFuncao() && emComumParametro()){
+      return true;
+    }
+    return true; //ε 
   }
 
   //parametro -> tipoVariavel identificadores
@@ -221,9 +235,47 @@ public class Parser {
     return false;
   }
 
-  //condicao -> identificadores|negacaoCondicao|condicaoComparacoesBasicas 
+  //condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
   private boolean condicao(){ 
+    if(identificadores() && condicaoDerivada()){
+      return true;
+    }
+    if(negacaoCondicao() && condicaoDerivada()){
+      return true;
+    }
+    if(expressoesMatematicas() && condicaoDerivada()){
+      return true;
+    }
+    if(condicaoComparacoesBasicas() && condicaoDerivada()){
+      return true;
+    }
     erro("condicao");
+    return false;
+  }
+
+  //condicao’ -> operacao condição condicao’| ε
+  private boolean condicaoDerivada(){
+    if(operacao() && condicao() && condicaoDerivada()){
+      return true;
+    }
+    return true; //ε
+  }
+
+  //condicaoComparacoesBasicas ->  identificadores|numero operacao valoresOperacao
+  private boolean condicaoComparacoesBasicas(){
+    if(identificadores() ||(numero() && operacao() && valoresOperacao())){
+      return true;
+    }
+    erro("condicaoComparacoesBasicas");
+    return false;
+  }
+
+  //valoresOperacao -> identificadores|numero|boolean
+  private boolean valoresOperacao(){
+    if(identificadores()|| numero()|| isBoolean()){
+      return true;
+    }
+    erro("valoresOperacao");
     return false;
   }
 
@@ -263,16 +315,12 @@ public class Parser {
     return false;
   }
 
-  //continuacao das glc de condicao
-
   //listaComandosInternos -> comandoInterno listaComandosInternos | ε
   private boolean listaComandosInternos(){ 
     if(comandoInterno() && listaComandosInternos()){
       return true;
     }
     return true; //ε
-    //erro("listaComandosInternos");
-    //return false;
   }
   
   //cabecalhoPara -> inicializacao ";" condicao ";" incremento
@@ -348,6 +396,7 @@ public class Parser {
     return false;
   }
 
+  
   //declarar -> declararInteiro|declararDecimal|declararTexto|declararVerdadeiroFalso
   private boolean declarar(){
     if(declararInteiro()||declararDecimal()||declararTexto()||declararVerdadeiroFalso()){

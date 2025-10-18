@@ -115,33 +115,8 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> boolean -> true|false 
 <br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'
 <br> argumentosFuncao -> ε|parametrosFuncao
-
-ARRUMAR RECURSIVIDADE INDIRETA
-
-<br> parametroFuncao -> parametro restoParametrosFuncao
-A -> b c
-<br> restoParametrosFuncao -> ε|',' parametroFuncao restoParametrosFuncao (fiz assim p poder ter vários parâmetros)
-C -> d | e a c
-
-A -> b c
-C -> d | e a c
-1-colocar c dentro de a (restoparametrsoFuncao dentro de parametrofuncao)
-A -> b d | b e a c 
-ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
-
-(fatoração)
-
-Então 1 resolver fatoração:
-A -> b d | b e a c 
-ParâmetroFuncao -> parâmetro ε | parâmetro ‘,’ parametroFuncao restoParametrosFuncao
-
-A-> b X
-ParâmetroFuncao-> parâmetro emComumParametro
-X -> d | e a c
-emComumParametro -> ε | ‘,’ parametroFuncao restoParametrosFuncao
-
--------------------------------
-
+<br> parâmetroFuncao -> parâmetro emComumParametro
+<br> emComumParametro -> ε | ‘,’ parametroFuncao emComumParametro
 <br> parametro -> tipoVariavel identificadores
 <br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto
 <br> chamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' ';'
