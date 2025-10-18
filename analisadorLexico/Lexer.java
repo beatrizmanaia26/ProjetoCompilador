@@ -25,6 +25,7 @@ public class Lexer {
     private final CharacterIterator code;
     private int line = 1;
     private int column = 1;
+    private String invalidTokens = "";
 
     public Lexer(String code) {
         this.source = code;
@@ -49,9 +50,7 @@ public class Lexer {
         for (AFD afd : afds) {
             afd.setSource(this.source);
         }
-    }
-
-    
+    }  
 
     public void skipWhiteSpace() {
         while (code.current() == ' ' || code.current() == '\n' || code.current() == '\r' || code.current() == '\t') {

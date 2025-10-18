@@ -1,21 +1,17 @@
 package analisadorLexico;
-// import java.io.File;
-// import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-// import java.util.Scanner;
 
 public class Main{
     public static void main(String[] args){
       
         String code = "";
-     
-        String nomeArquivo = "analisadorLexico\\script.txt"; 
-        
-        
+
+        String nomeArquivo = "./analisadorLexico/script.txt";
+
         try {
             code = lerArquivo(nomeArquivo);
         } catch (IOException e) {

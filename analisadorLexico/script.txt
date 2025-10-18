@@ -1,4 +1,12 @@
-"ola
+#comentario de linha
+#uai... comentario bloco...sô#
+inteiro Trem_incorreto -> 1a
+inteiro Trem_incorreto -> 1
+decimal Trem_incorreto -> 1.1
+decimal -> .2
+decimal -> 1.
+"exemplo de string com ponto final."
+"string fechada corretamente"
 inteiro
 inteiro Trem_ -> 77;
 inteiro Trem_inteiro;
