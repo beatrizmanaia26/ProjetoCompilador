@@ -1,43 +1,54 @@
 package analisadorLexico.Comment;
 import java.text.CharacterIterator;
 import analisadorLexico.AFD;
+import analisadorLexico.LexicalException;
 import analisadorLexico.Token;
 
 public class Comment extends AFD {
 
-    private int line;
-
     @Override
     public Token evaluate(CharacterIterator code) {
-        this.line = 1;
+        StringBuilder comment = new StringBuilder();
+        int start = code.getIndex();
+        int curIndex = start;
+
         if (code.current() == '#') {
             code.next();
+            curIndex++;
 
             if (!readPrefixSufix(code, "uai...")) {
-                throw new RuntimeException("Erro léxico: comentário iniciado de forma incorreta (esperado '#uai...').");
-            }
-
-            StringBuilder comment = new StringBuilder("#uai...");
-
-            while (code.current() != CharacterIterator.DONE) {
-                char c = code.current();
-                comment.append(c);
-                code.next();
-
-                if (c == '\n') {
-                    line++;  
+                // comentário de linha
+                while (code.current() != '\n') {
+                    comment.append(code.current());
+                    code.next();
+                    curIndex++;
                 }
+
+                return new Token("COMMENT", comment.toString());
+
+            } else {
+                curIndex += 5; // avançar o índice para após "uai..."
                 
-                if (c == '.') {
-                    if (readPrefixSufix(code, "..so#")) {
-                        comment.append("..so#");
-                        return new Token("COMMENT", comment.toString());
+                // comentário de bloco
+                while (!readPrefixSufix(code, "...sô#")) {
+                    comment.append(code.current());
+                    code.next();
+                    curIndex++;
+
+                    if (code.current() == CharacterIterator.DONE) {
+                        int[] lc = computeLineColumn(start);
+                        String lineText = extractLineText(lc[0]);
+
+                        throw new LexicalException("Erro lexico: comentario de bloco nao fechado corretamente (esperado '...sô#' antes do fim da proxima instrucao valida)", lc[0], lc[1], lineText);
                     }
                 }
+
+                return new Token("COMMENT", comment.toString());
+
             }
 
-            throw new RuntimeException("Erro léxico: comentário não fechado corretamente (esperado '...so#')." + " na linha " + line + "no índice " + code.getIndex());
         }
+
         return null;
     }
 
