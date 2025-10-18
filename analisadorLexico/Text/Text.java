@@ -16,7 +16,7 @@ public class Text extends AFD {
             int curIndex = startIndex;
             code.next();
 
-            while (code.current() != CharacterIterator.DONE) {
+            while (code.current() != '\n') {
                 
                 if (code.current() == '"') {
                     code.next(); // consome a aspa final
@@ -40,29 +40,5 @@ public class Text extends AFD {
 
         return null;
 
-    }
-
-    // --- Métodos auxiliares para localizar posição e linha ---
-    private int[] computeLineColumn(int index) {
-        int line = 1, column = 1;
-        if (source == null) return new int[]{line, column};
-        for (int i = 0; i < index && i < source.length(); i++) {
-            if (source.charAt(i) == '\n') {
-                line++;
-                column = 1;
-            } else {
-                column++;
-            }
-        }
-        return new int[]{line, column};
-    }
-
-    private String extractLineText(int targetLine) {
-        if (source == null) return "";
-        String[] lines = source.split("\n", -1);
-        if (targetLine - 1 >= 0 && targetLine - 1 < lines.length) {
-            return lines[targetLine - 1];
-        }
-        return "";
     }
 }
