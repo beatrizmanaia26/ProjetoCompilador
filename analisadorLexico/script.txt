@@ -1,6 +1,7 @@
+inteiro @
 #comentario de linha
 #uai... comentario bloco...sô#
-inteiro Trem_incorreto -> 1a
+inteiro Trem_incorreto -> 1
 inteiro Trem_incorreto -> 1
 decimal Trem_incorreto -> 1.1
 decimal -> .2
