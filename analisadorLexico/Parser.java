@@ -62,6 +62,10 @@ public class Parser {
   //ONDE NAO TEM RETURN FALSE (E SIM RETURN TRUE)  //testar passar coisa incorreta para ver se aceita (EX: Aargumentoschamada, senaoopcional, listaouse...)
   //VE SE DA P OTIMIZA ALGUM CODIGO (ex: estoArgumentosChamada())
 
+  
+  //site que calcula first e follow
+
+
   // listaComandos -> comando listaComandos | ε
   private boolean listaComandos(){
     if(token == null || token.tipo.equals("EOF")){
