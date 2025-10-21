@@ -62,11 +62,16 @@ public class Parser {
   //ONDE NAO TEM RETURN FALSE (E SIM RETURN TRUE)  //testar passar coisa incorreta para ver se aceita (EX: Aargumentoschamada, senaoopcional, listaouse...)
   //VE SE DA P OTIMIZA ALGUM CODIGO (ex: estoArgumentosChamada())
 
-  
-  //site que calcula first e follow
+
+  //site que calcula first e follow: !!!!!!!!!!!!!!!
 
 
   // listaComandos -> comando listaComandos | ε
+  /*
+   * simbulos           first
+   * comando            só tem regra, sem terminal
+   * listaComandos      só tem regra, sem terminal
+   */
   private boolean listaComandos(){
     if(token == null || token.tipo.equals("EOF")){
       return true; //ε
@@ -79,6 +84,16 @@ public class Parser {
   }
 
   //comando -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao
+  /*
+   * simbulos     first
+   * declarar      só tem regra, sem terminal
+   * seCompleto    só tem regra, sem terminal
+   * para          para
+   * lacoEnquanto  lacoEnquanto
+   * atribuicao    só tem regra, sem terminal
+   * criarFuncao   criar
+   * chamarFuncao  NAO É (palavrareservadanomeFuncao), sim: Entrada, Imprima
+   */
   private boolean comando(){
     if(declarar()||seCompleto()||para()||lacoEnquanto()||atribuicao()||criarFuncao()||chamarFuncao()){
       return true;
@@ -88,6 +103,12 @@ public class Parser {
   }
   
   //seCompleto ->se listaOuSe senaoOpcional
+  /*
+   * simbulos     first
+   * se           se
+   * listaOuSe    só tem regra, sem terminal (ouSe listaOuSe)
+   * senaoOpcional só tem regra, sem terminal (senao)
+   */
   private boolean seCompleto(){
     if(se() && listaOuSe() && senaoOpcional()){
       return true;
@@ -96,6 +117,11 @@ public class Parser {
   }
 
   //listaOuSe > ouSe listaOuSe | e
+   /*
+   * simbulos     first
+   * ouSe          ouSe
+   * listaOuSe   só tem regra, sem terminal (ouSe listaOuSe)
+   */
   private boolean listaOuSe(){
     if(ouSe() && listaOuSe()){
       return true;
@@ -105,12 +131,17 @@ public class Parser {
     }
   }
 
+   /*
+   * simbulos     first
+   * senao        senao
+   */
   private boolean senaoOpcional(){
     if(senao()){
       return true;
     }
     return true;//ε
   }
+
   //se -> 'se''('condicao')''{'listaComandosInternos'}'
   private boolean se(){ 
      if (matchL("se") && matchL("(") && condicao() && matchL(")") && matchL("{") && listaComandosInternos() && matchL("}")){
@@ -149,7 +180,7 @@ public class Parser {
 
   //lacoEnquanto -> 'lacoEnquanto''('condicao')''{'listaComandosInternos'}'
   private boolean lacoEnquanto(){ 
-    if(matchL("enquanto") && matchL("(") && condicao() && matchL(")") && matchL("{") && listaComandosInternos() && matchL("}")){
+    if(matchL("lacoEnquanto") && matchL("(") && condicao() && matchL(")") && matchL("{") && listaComandosInternos() && matchL("}")){
         return true;
      }
     erro("lacoEnquanto");
@@ -157,6 +188,11 @@ public class Parser {
   }
 
   //atribuicao -> declaraEAtribui|atribui
+   /*
+   * simbulos            first
+   * declaraEAtribui     só tem regra, sem terminal
+   * atribui             primeiro é regra: identificadores
+   */
   private boolean atribuicao(){ 
     if(declaraEAtribui()||atribui()){
       return true;
@@ -166,6 +202,10 @@ public class Parser {
   }
 
   //criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'
+  /*
+   * simbulos            first
+   * criarFuncao         criar
+   */
   private boolean criarFuncao(){ 
     if(matchL("criar") && palavraReservadaNomeFuncao() && matchL("(") && argumentosFuncao()&& matchL(")") && matchL("{") && listaComandosInternos()  && matchL("}")){
       return true;
@@ -175,6 +215,10 @@ public class Parser {
   }
 
   //chamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' ';'
+  /*
+   * simbulos            first
+   * chamarFuncao        palavraReservadaNomeFuncao
+   */
   private boolean chamarFuncao(){ 
     if ((palavraReservadaNomeFuncao()|| matchL("Entrada")||matchL("Imprima")) && matchL("(") && argumentosChamada() && matchL(")") &&  matchL(";")  ){
       return true;
@@ -184,6 +228,10 @@ public class Parser {
   }
 
   //argumentosChamada -> ε | valor restoArgumentosChamada
+   /*
+   * simbulos            first
+   * argumentosChamada   chama regra: valor
+   */
   private boolean argumentosChamada(){
     if (token != null && token.lexema.equals(")")) {
       return true; //n usei matchL pq ele pega o proximo token
@@ -204,6 +252,10 @@ public class Parser {
   }
 
   //argumentosFuncao -> ε|parametrosFuncao
+   /*
+   * simbulos            first
+   * parametroFuncao     só chama regra: parametro
+   */
   private boolean argumentosFuncao(){
       if(parametroFuncao()){
         return true;
@@ -214,6 +266,10 @@ public class Parser {
   //COLOCAR PARAMETROFUNCAO E RESTOPARAMETROFUNCAO!!!!!!!!!!!!!!!!!!!!!!!
   
   //parametroFuncao -> parâmetro emComumParametro
+  /*
+   * simbulos            first
+   * parametro           só chama regra: tipoVariavel
+   */
   private boolean parametroFuncao(){
     if(parametro() && emComumParametro()){
       return true;
@@ -231,6 +287,10 @@ public class Parser {
   }
 
   //parametro -> tipoVariavel identificadores
+  /*
+   * simbulos            first
+   * tipoVariavel        matchL("inteiro")||matchL("decimal")||matchL("texto")||matchL("verdadeiroFalso"
+   */
   private boolean parametro(){
     if(tipoVariavel() && identificadores()){
       return true;
@@ -240,17 +300,16 @@ public class Parser {
   }
 
   //condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
+   /*
+   * simbulos                            first
+   * identificadores                    matchT
+   * negacaoCondicao                        !
+   * expressoesMatematicas                 chama regra precedenciaInferior()
+   * condicaoComparacoesBasicas            chama regra  identificadores
+   */
   private boolean condicao(){ 
-    if(identificadores() && condicaoDerivada()){
-      return true;
-    }
-    if(negacaoCondicao() && condicaoDerivada()){
-      return true;
-    }
-    if(expressoesMatematicas() && condicaoDerivada()){
-      return true;
-    }
-    if(condicaoComparacoesBasicas() && condicaoDerivada()){
+    if(identificadores() && condicaoDerivada()||negacaoCondicao() && condicaoDerivada()||
+    expressoesMatematicas() && condicaoDerivada()||condicaoComparacoesBasicas() && condicaoDerivada()){
       return true;
     }
     erro("condicao");
@@ -258,6 +317,10 @@ public class Parser {
   }
 
   //condicao’ -> operacao condição condicao’| ε
+  /*
+   * simbulos     first
+   * operacao    só chama regra operacaoRelacional() || operacaoLogica()
+   */
   private boolean condicaoDerivada(){
     if(operacao() && condicao() && condicaoDerivada()){
       return true;
@@ -266,6 +329,11 @@ public class Parser {
   }
 
   //condicaoComparacoesBasicas ->  identificadores|numero operacao valoresOperacao
+  /*
+   * simbulos          first
+   * identificadores   matchT("IDENTIFIER")
+   * numero            chama regras decimal()||inteiro()
+   */
   private boolean condicaoComparacoesBasicas(){
     if(identificadores() ||(numero() && operacao() && valoresOperacao())){
       return true;
@@ -275,6 +343,10 @@ public class Parser {
   }
 
   //valoresOperacao -> identificadores|numero|boolean
+   /*
+   * simbulos          first
+   * 
+   */
   private boolean valoresOperacao(){
     if(identificadores()|| numero()|| isBoolean()){
       return true;
