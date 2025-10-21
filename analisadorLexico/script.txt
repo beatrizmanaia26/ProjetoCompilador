@@ -1,5 +1,5 @@
 
-inteiro Trem_ -> 77;
+inteiro Trem_num -> 77;
 inteiro Trem_inteiro;
 decimal Trem_decimal -> 1.1;
 texto Trem_texto -> "oi";
@@ -83,9 +83,10 @@ criar Main(){
     }
 }
 
-
-"hello"
-"hello"
+#uai...
+1hello"
+...so#
+"helloO"
 
 
     
