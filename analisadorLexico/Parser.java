@@ -83,6 +83,8 @@ public class Parser {
     return false;
   }
 
+  //IMPLEMENTAR FIRST SÓ AQUI E VE SE JA RESOLVE PROBLEMA!!!!!!!!!!!!!!!!!!!
+
   //comando -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao
   /*
    * simbulos     first
@@ -130,7 +132,6 @@ public class Parser {
       return true;//ε
     }
   }
-
    /*
    * simbulos     first
    * senao        senao
@@ -345,7 +346,8 @@ public class Parser {
   //valoresOperacao -> identificadores|numero|boolean
    /*
    * simbulos          first
-   * 
+   * identificadores   matchT("IDENTIFIER")
+   * numero            chama regras decimal()||inteiro()
    */
   private boolean valoresOperacao(){
     if(identificadores()|| numero()|| isBoolean()){
@@ -365,6 +367,11 @@ public class Parser {
   }
 
   //operacao -> operacaoRelacional|operacaoLogica
+   /*
+   * simbulos              first
+   * operacaoRelacional    <>, <=, >=
+   * operacaoLogica        e, ou, !
+   */
   private boolean operacao(){
     if(operacaoRelacional() || operacaoLogica()){
       return true;
@@ -392,6 +399,10 @@ public class Parser {
   }
 
   //listaComandosInternos -> comandoInterno listaComandosInternos | ε
+  /*
+   * simbulos              first
+   * comandoInterno        só chama regra
+   */
   private boolean listaComandosInternos(){ 
     if(comandoInterno() && listaComandosInternos()){
       return true;
@@ -400,6 +411,10 @@ public class Parser {
   }
   
   //cabecalhoPara -> inicializacao ";" condicao ";" incremento
+   /*
+   * simbulos              first
+   * inicializacao         so chama regra tipoVariavel()
+   */
   private boolean cabecalhoPara(){ 
     if(inicializacao() && matchL(";") && condicao() && matchL(";") && incremento()){
       return true;
@@ -409,6 +424,13 @@ public class Parser {
   }
   
   //declaraEAtribui -> declaraEAtribuiInteiro|declaraEAtribuiDecimal|declaraEAtribuiTexto|declaraEAtribuiVerdadeiroFalso
+  /*
+   * simbulos                        first
+   * declaraEAtribuiInteiro          inteiro
+   * declaraEAtribuiDecimal           decimal
+   * declaraEAtribuiTexto              texto
+   * declaraEAtribuiVerdadeiroFalso   verdadeiroFalso
+   */
   private boolean declaraEAtribui(){ 
     if(declaraEAtribuiInteiro()||declaraEAtribuiDecimal()||declaraEAtribuiTexto()||declaraEAtribuiVerdadeiroFalso()){
       return true;
@@ -418,6 +440,10 @@ public class Parser {
   }
 
   //atribui -> identificadores operadorAtribuicao valor ';'
+   /*
+   * simbulos          first
+   * identificadores   matchT("IDENTIFIER"
+   */
   private boolean atribui(){ 
     if(identificadores() && matchL("->") && valor()){
         return true;
@@ -464,6 +490,10 @@ public class Parser {
   }
 
   //expressoesMatematicas -> precedenciaInferior
+    /*
+   * simbulos              first
+   * precedenciaInferior   chama regra
+   */
   private boolean expressoesMatematicas(){
     if(precedenciaInferior()){
       return true;
@@ -474,6 +504,13 @@ public class Parser {
 
   
   //declarar -> declararInteiro|declararDecimal|declararTexto|declararVerdadeiroFalso
+    /*
+   * simbulos                     first
+   * declararInteiro             inteiro
+   * declararDecimal              decimal
+   * declararTexto                 texto
+   * declararVerdadeiroFalso  verdadeiroFalso
+   */
   private boolean declarar(){
     if(declararInteiro()||declararDecimal()||declararTexto()||declararVerdadeiroFalso()){
       return true;
@@ -519,6 +556,14 @@ public class Parser {
   }
   
  //valor -> numero|texto|boolean|identificadores|expressoesMatematicas
+    /*
+   * simbulos                     first
+   * numero                     so chama regras
+   * texto                       matchT("TEXT")
+   * isBoolean                   matchL("true")||matchL("false")
+   * identificadores             matchT("IDENTIFIER")
+   * expressoesMatematicas       so chama regra precedenciaInferior
+   */
   private boolean valor(){ 
     if(numero()||texto()||isBoolean()||identificadores()||expressoesMatematicas()){
       return true;
@@ -528,6 +573,11 @@ public class Parser {
   }
 
   //numero -> numeroDecimal|numeroInteiro
+   /*
+   * simbulos         first
+   * decimal         matchT("DECIMAL")
+   * inteiro         matchT("INTEGER")
+   */
   private boolean numero(){ 
     if(decimal()||inteiro()){
       return true;
@@ -537,6 +587,16 @@ public class Parser {
   }
 
   //comandoInterno -> se|ouSe|senao|para|lacoEnquanto|atribuicao|chamarFuncao|retornar
+  /*
+   * simbulos         first
+   * seCompleto        só chama regras
+   * para              para
+   * lacoEnquanto      lacoEnquanto
+   * declarar         só chama regra
+   * atribuicao       só chama regra
+   * chamarFuncao    NAO É (palavrareservadanomeFuncao), sim: Entrada, Imprima
+   * retornar        matchL("retorna")
+   */
   private boolean comandoInterno(){
     if(seCompleto()||para()||lacoEnquanto()||declarar()||atribuicao()||chamarFuncao()||retornar()){
       return true;
@@ -555,6 +615,10 @@ public class Parser {
   }
 
   //inicializacao -> tipoVariavel identificadores "->" numero|identificadores|chamarFuncao|expressoesMatematicas
+  /*
+   * simbulos         first
+   * tipoVariavel    matchL("inteiro")||matchL("decimal")||matchL("texto")||matchL("verdadeiroFalso")
+   */
   private boolean inicializacao(){ 
     if(tipoVariavel() && identificadores() && matchL("->") && (numero()||identificadores()||chamarFuncao()||expressoesMatematicas())){
       return true;
@@ -564,6 +628,10 @@ public class Parser {
   }
 
   //precedenciaInferior -> precedenciaIntermediaria precedenciaInferior'
+  /*
+   * simbulos                     first
+   * precedenciaIntermediaria    só chama regra
+   */
   private boolean precedenciaInferior(){
     if(precedenciaIntermediaria() && precedenciaInferiorDerivada()){
       return true;
@@ -573,6 +641,10 @@ public class Parser {
   }
 
   //precedenciaIntermediaria -> precedenciaAlta precedenciaIntermediaria'
+    /*
+   * simbulos                     first
+   * precedenciaAlta        só chama regra
+   */
   private boolean precedenciaIntermediaria(){
     if(precedenciaAlta() && precedenciaIntermediariaDerivada()){
       return true;
@@ -594,6 +666,10 @@ public class Parser {
   }
 
   //precedenciaAlta -> precedenciaSuperior precedenciaAlta'
+    /*
+   * simbulos                     first
+    * precedenciaSuperior       regraidentificadores()||numero(), first: (matchL("("))
+   */
   private boolean precedenciaAlta(){
     if(precedenciaSuperior() && precedenciaAltaDerivada()){
       return true;
@@ -615,6 +691,11 @@ public class Parser {
   }
 
   //precedenciaSuperior -> identificadores|numero|'('expressoesMatematicas')'
+    /*
+   * simbulos                     first
+    * identificadores             matchT("IDENTIFIER")
+    * numero                      chama regra decimal()||inteiro()
+   */
   private boolean precedenciaSuperior(){
     if(identificadores()||numero()|| (matchL("(") && expressoesMatematicas() && matchL(")"))){
       return true;
@@ -632,6 +713,10 @@ public class Parser {
   }
 
   //incremento -> identificadores '->' expressoesMatematicas
+  /*
+   * simbulos                     first
+    * identificadores             matchT("IDENTIFIER")
+   */
   private boolean incremento(){ 
     if(identificadores() && matchL("->") && expressoesMatematicas()){
       return true;
@@ -648,7 +733,6 @@ public class Parser {
     erro("tipoVariavel");
     return false;
   }
-
 
   //match t de tokens para expressao regular 
 
