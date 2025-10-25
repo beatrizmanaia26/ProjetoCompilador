@@ -1,18 +1,17 @@
 # 🛠️ minasScript
 
-**minasScript** é um compilador escrito em **Java** que traduz uma linguagem criada por nós, Mineires — inspirada no português com sotaque mineiro — para outra linguagem de programação.
+**minasScript** é um compilador escrito em **Java** que traduz uma linguagem criada por nós, Mineires — inspirada java e no português com sotaque mineiro — para outra linguagem de programação.
 
 ## 👥 Integrantes
-
-- Beatriz Manaia Lourenço Berto — RA: 22.125.060-8  
-- Mariane Souza Carvalho — RA: 22.123.105-3  
-- Rafael Dias Silva Costa — RA: 22.222.039-4  
-- Kayky Pires de Paula — RA: 22.222.040-2  
+<br>- Beatriz Manaia Lourenço Berto — RA: 22.125.060-8  
+<br>- Mariane Souza Carvalho — RA: 22.123.105-3  
+<br>- Rafael Dias Silva Costa — RA: 22.222.039-4  
+<br>- Kayky Pires de Paula — RA: 22.222.040-2  
 
 ## Expressões Regulares
 <br>numeroInteiro = [0-9]+
 <br>numeroDecimal = [0-9]+’.’[0-9]+
-<br>Texto = “[A-Za-z0-9,*&¨@ (tudo)]*”’
+<br>Texto = “[A-Za-z0-9,*&¨@.]*”’ (tudo)
 <br>tipos_dadoInt = ‘inteiro’
 <br>tipo_dadoDecimal = ‘decimal’
 <br>tipo_dadoVerdadeiroFalso = verdadeiroFalso
@@ -42,19 +41,13 @@
 <br>operadorSubtracao = ‘-’
 <br>operadorMultiplicacao = ’*’
 <br>operadorPotencia =  ‘^’
-<br>oparadorDivisao = ‘/’
+<br>operadorDivisao = ‘/’
 <br>comentarioVariasLinhas = #uai... [A-Za-z0-9 , - . : “ (adicionar td)]...so#
 <br>fim_linha = ‘;’
 <br>aberturaChave = ‘{‘
 <br>fecharChave = ‘}’
 <br>abreParenteses = ‘(‘
 <br>fechaParenteses = ‘)’
-<br>operadorIncremento++ = ‘++’
-<br>operadorIncremento-- = ‘--’
-<br>operadorIncremento+= = ‘+=’
-<br>operadorIncremento-= = ‘-=’
-<br>operadorIncremento*= = ‘*=’
-<br>operadorIncremento/= = ‘/=’
 
 # Gramática completa do analisador sintático 
 
@@ -62,124 +55,93 @@ a gramática não pode conter recursividade à esquerda
 
 ## Estruturas do código COLOCAR TODAS AS VARIAVEIS (ESQ) com letra maiuscula
 
-<br> consdierar q td linha termina com ;
-
-AJUSTAR TD Q TEM OPERACOES MATEMATICAS P COLOCAR A GLC EXPRESSOESMATEMATICAS (AJUSTAR CONDICAO (CABECALHOPARA (INICIALIZACAO...)))
-
 VER SE TEM DERIVACAO OU FATORACAO P ARRUMAR 
 
 fazer so comparacoes mais simples
 
-condciao so n faz chamada de metodo ex: exto.startsWith("A")
+**condiciao so n faz chamada de metodo ex: exto.startsWith("A")
 
-<br> comando -> se|ouSe|senao|para|lacoEnquanto|comando|atribuicao|declaraEAtribui|chamarFuncao
-<br> se -> 'se'(condicao){comando}
-<br> ouSe -> 'ouSe'(condicao){comando}
-<br> senao -> 'senao'{comando}
-<br> para -> 'para'(cabecalhoPara){comando}
-<br> lacoEnquanto - > 'lacoEnquanto'(condicao){comando} FAZER CONDICAO O LACOENQUANTO = JAVA!!!!!!!!!!!
+RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
+
+<br> listaComandos -> comando listaComandos | ε 
+<br> comando -> seCompleto|para|lacoEnquanto|declarar|atribuicao|
+<br> criarFuncao|chamarFuncao
+<br> seCompleto ->se listaOuSe senaoOpcional
+<br> listaOuSe > ouSe listaOuSe | e
+<br> senaoOpcional -> senão | e
+<br> se -> 'se''('condicao')''{'listaComandosInternos'}'
+<br> ouSe -> 'ouSe''('condicao')''{'listaComandosInternos'}'
+<br> senao -> 'senao''{'listaComandosInternos'}'
+<br> para -> 'para''('cabecalhoPara')''{'listaComandosInternos'}'
+<br> lacoEnquanto -> 'lacoEnquanto''('condicao')''{'listaComandosInternos'}' 
+<br> listaComandosInternos -> comandoInterno listaComandosInternos | ε
+<br> comandoInterno -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|chamarFuncao|retornar
+<br> retornar -> palavra_reservadaRetornoFuncao identificadores|expressoesMatematicas|numero';'
 <br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
 <br> inicializacao -> tipoVariavel identificadores "->" numero|identificadores|chamarFuncao|expressoesMatematicas
-<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificador | identficiador operacaoIncremento expressoesMatematicas
-<br> operacaoIncremento -> operadorIncremento++|operadorIncremento--|operadorIncremento+=|operadorIncremento-=|operadorIncremento*=|operadorIncremento/=
+<br> incremento -> identificadores '->' expressoesMatematicas
 
-<br> inicio correcao "condicao" (ver se da certo e se n tem recursao ou fatoracao a esquerda):
-<br> condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas 
+<br>CONDICAO MAIS BÁSICA PARA DEPOIS APRIMORAR (ver se precisa do '('condicao')', tirei e arrumei )!!!!! condicao ->(condicao)| identificadores|negacaoCondicao|condicaoComparacoesBasicas 
 
-DERIVACAO:
-
-condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas 
-
-e = alpha1 ?????????????????????????????????
-identificadores = beta1
-negacaoCondicao = beta2
-condicaoComparacoesBasica = beta3
-
-condicao -> identificadores condicao' | negacaoCondicao condicao' | condicaoComparacoesBasica condicao'
-condicao' -> e condicao' | e
-
-<br> condicaoComparacoesBasicas -> expressoesMatematicas | identificadores|numero operacao identificadores|numero|boolean  |  condicao operacao condicao
-(esses 2 de cima nao sao problema né?? condicao chama condicaocomparacoesbasicas e condicaocomparaoesbasicas chamar condicoes???????????????????????? TDBM RECURSAO INDIRETA?????)
+<br>condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
+<br> condicao’ -> operacao condição condicao’| ε
+<br> condicaoComparacõesBasicas ->  identificadores|numero operacao valoresOperacao
+<br> valoresOperacao -> identificadores|numero|boolean
 <br> negacaoCondicao -> '!'condicao
 <br> operacao -> operacaoRelacional|operacaoLogica
 <br> operacaoRelacional -> operadorDiferente|operadorIgualdade|operadorMenorIgual|operadorMaiorigual
 <br> operacaoLogica -> operador_logicoE|operador_logicoOu|operador_logicoNot
 <br> expressoesMatematicas -> precedenciaInferior 
-<br> precedenciaInferior -> precedenciaInferior'+'precedenciaIntermediaria | precedenciaInferior'-'precedenciaIntermediaria | precedenciaIntermediaria  
-<br> precedenciaIntermediaria -> precedenciaIntermediaria * precedenciaAlta | precedenciaIntermediaria/precedenciaAlta | precedenciaAlta
-<br> precedenciaAlta -> precedenciaAlta^precedenciaSuperior|precedenciaSuperior
-<br> precedenciaSuperior -> identificadores|numero|(expressoesMatematicas)
-
-<br>-A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
-<br> Parênteses → potencia -> Multiplicação/Divisão → Adição/Subtração
-<br>DERIVACAO:
-
-1-
-precedenciaInferior -> precedenciaInferior'+'precedenciaIntermediaria | precedenciaInferior'-'precedenciaIntermediaria | precedenciaIntermediaria  
-
-'+'precedenciaIntermediaria = alpha1
-'-'precedenciaIntermediaria = alpha2
-precedenciaIntermediaria = beta
-
-precedenciaInferior -> precedenciaIntermediaria precedenciaInferior'
-precedenciaInferior' -> '+'precedenciaIntermediaria precedenciaInferior' | '-'precedenciaIntermediaria precedenciaInferior' | e
-
-2-
-precedenciaIntermediaria -> precedenciaIntermediaria * precedenciaAlta | precedenciaIntermediaria/precedenciaAlta | precedenciaAlta
-
-* precedenciaAlta = alpha1
-/precedenciaAlta = alpha2
-precedenciaAlta = beta
-
-precedenciaIntermediaria -> precedenciaAlta precedenciaIntermediaria' 
-precedenciaIntermediaria' -> * precedenciaAlta precedenciaIntermediaria' | /precedenciaAlta precedenciaIntermediaria' | e
-
-3-  precedenciaAlta -> precedenciaAlta^precedenciaSuperior|precedenciaSuperior
-
-^precedenciaSuperior = alpha1
-precedenciaSuperior = beta1
-
-precedenciaAlta -> precedenciaSuperior precedenciaAlta'
-precedenciaAlta' -> ^precedenciaSuperior precedenciaAlta' | e
-
+<br> precedenciaInferior -> precedenciaIntermediaria precedenciaInferior'
+<br> precedenciaInferior' -> '+'precedenciaIntermediaria precedenciaInferior' | '-'precedenciaIntermediaria precedenciaInferior' | ε
+<br> precedenciaIntermediaria -> precedenciaAlta precedenciaIntermediaria' 
+<br> precedenciaIntermediaria' -> '*' precedenciaAlta precedenciaIntermediaria' | '/'precedenciaAlta precedenciaIntermediaria' | ε
+<br> precedenciaAlta -> precedenciaSuperior precedenciaAlta'
+<br> precedenciaAlta' -> '^'precedenciaSuperior precedenciaAlta' | ε
+<br> precedenciaSuperior -> identificadores|numero|'('expressoesMatematicas')'
 <br> atribuicao -> declaraEAtribui|atribui 
-<br> atribui -> identificadores operadorAtribuicao numeroInteiro|numeroDecimal|texto|boolean ';'
+<br> atribui -> identificadores '->' valor ';'
 <br> declaraEAtribui -> declaraEAtribuiInteiro|declaraEAtribuiDecimal|declaraEAtribuiTexto|declaraEAtribuiVerdadeiroFalso
 <br> declarar -> declararInteiro|declararDecimal|declararTexto|declararVerdadeiroFalso 
 <br> declararInteiro -> 'inteiro' identificadores ';'
-<br> declaraEAtribuiInteiro -> 'inteiro' identificadores operadorAtribuicao numeroInteiro ';'
+<br> declaraEAtribuiInteiro -> 'inteiro' identificadores '->' numeroInteiro ';'
 <br> declararDecimal ->  'decimal' identificadores ';' 
-<br> declaraEAtribuiDecimal -> 'decimal' identificadores operadorAtribuicao numeroDecimal ';'
+<br> declaraEAtribuiDecimal -> 'decimal' identificadores '->' numeroDecimal ';'
 <br> declararTexto ->  'texto' identificadores ';'
-<br> declaraEAtribuiTexto -> 'texto' identificadores operadorAtribuicao texto ';'
+<br> declaraEAtribuiTexto -> 'texto' identificadores '->' texto ';'
 <br> declararVerdadeiroFalso -> 'verdadeiroFalso' identificadores ';' 
-<br> declaraEAtrivuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
+<br> declaraEAtribuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores '->' boolean ';'
 <br> numero -> numeroDecimal|numeroInteiro 
 <br> boolean -> true|false 
-<br> identificadores -> !identificadores|identificadores
-<br> operadorRelacional -> operadorIgualdade|operadorMenorIgual|operadorMaiorigual
-<br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao(argumentosFuncao){comando}
-<br> argumentosFuncao -> e|parametrosFuncao
-<br> parametroFuncao -> parametro restoParametrosFuncao
-<br> restoParametrosFuncao -> e|, parametroFuncao 
-<br> parametro -> tipoVariavel identificador
-<br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto identificadores 
-<br> chamarFuncao -> palavra_reservadaNomeFuncao(Texto, identificadores) ';'|palavra_reservadaNomeFuncao(argumentosFuncao)';'
+<br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'
+<br> argumentosFuncao -> ε|parametrosFuncao
+<br> parâmetroFuncao -> parâmetro emComumParametro
+<br> emComumParametro -> ε | ‘,’ parametroFuncao emComumParametro
+<br> parametro -> tipoVariavel identificadores
+<br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto
+<br> chamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' ';'
+<br> argumentosChamada -> ε | valor restoArgumentosChamada
+<br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas
+<br> restoArgumentosChamada -> ε | ',' valor restoArgumentosChamada
 
+<br> INFORMAÇÕES GERAIS:
 
-<br> comentario nao precisa pq na linguagem so vai gera o executzvel de outrs ling nao um codigo p ler q precise de comentario, entao nao passa comentario pro token.
-
+<br> comentario nao precisa pq na linguagem so vai gera o executável de outra linguagem não um código para ler que precise de comentário, então não passa comentário para o token que gera gramática.
 <br> permitir ifs encadeados e lacos encadeados (com "comando" permite)
+<br> A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
 
 # Analisador semantico
 
--como comparo string
--coloquei valor = ao tipo que declarei...
+<br>-como comparo string
+<br>-coloquei valor = ao tipo que declarei...
 
 # Como executar o compilador
 
+DESCREVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 # Características da linguagem criada
- 
+
 ## tipos de variáveis:<br>
 - inteiro<br>
 - decimal<br>
@@ -195,7 +157,7 @@ retorna<br>
 -senao{}<br>
 
 ## funcoes<br>
-criar Nomequalquer(qualquer coisa){}<br>
+criar NomeFuncao(qualquer coisa){}<br>
 
 ## estruturas de repetição<br>
 - para{}<br>
@@ -203,11 +165,12 @@ criar Nomequalquer(qualquer coisa){}<br>
  
 ## atribuicao<br>
   ->  <br>
+
 ## operador relacional<br>
   <>  diferente<br>
   <->  igualdade<br>
-  <=  menor ou igual
-  >=  maior ou igual
+  <=  menor ou igual<br>
+  >=  maior ou igual<br>
 
 ## operador matemático<br>
 soma +<br>
@@ -221,8 +184,8 @@ divisao /<br>
 ...so# (várias linhas)<br>
 
 ## leituras teclado<br>
-entrada <br>
-imprima<br>
+Entrada <br>
+Imprima<br>
 
 # operador logico <br>
 e<br>
@@ -231,6 +194,7 @@ ou<br>
 
 # Exemplos de código na sua linguagem criada e a tradução equivalente.
 
+## Exemplo 1:
 inteiro Trem_inteiro;<br>
 decimal Trem_decimal -> 1.1;<br>
 texto Trem_texto -> “oi”;<br>
@@ -238,11 +202,10 @@ verdadeiroFalso Trem_vf -> false;<br>
 
 Entrada(“digita um numero”, Trem_inteiro);<br>
 
-
 criar Imprimir(inteiro Trem_num){<br>
 Imprima(“numero digitado”, Trem_num);<br>
 }<br>
-Se(Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
+se(Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
 Imprimir(Trem_inteiro);<br>
 #uai<br>
  código basico<br>
@@ -251,4 +214,97 @@ so#<br>
 
 <br>}<br>
 
+## Exemplo 2:
 
+
+inteiro Trem_num -> 77;<br>
+inteiro Trem_inteiro;<br>
+decimal Trem_decimal -> 1.1;<br>
+texto Trem_texto -> "oi";<br>
+verdadeiroFalso Trem_vf -> true;<br>
+
+Entrada("digite um numero", Trem_inteiro);<br>
+
+criar Imprimir(inteiro Trem_num){<br>
+    Imprima("número digitado", Trem_num);<br>
+}<br>
+se (Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
+    para (inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){<br>
+        Imprima(Trem_x)<br>
+    }<br>
+    Imprimir(Trem_inteiro);<br>
+}<br>
+senao{<br>
+    retorna false;<br>
+}<br>
+lacoEnquanto<br>
+} <br>
+
+decimal Trem_limiteSaque -> 2000.00;<br>
+decimal Trem_transferencia -> 2.5;<br>
+inteiro Trem_maxTentativasSenha -> 3;<br>
+
+criar Main(){<br>
+    texto Trem_nome -> "Beatriz";<br>
+    texto Trem_numeroConta -> "12345-6";<br>
+    decimal Trem_saldo -> 16000.00;<br>
+    texto Trem_senhaCorreta -> "1234"<br>
+    verdadeiroFalso Trem_userLogado -> false;<br>
+    inteiro Trem_tentativasSenha -> 0;<br>
+    Imprima("bem vindo");<br>
+
+    lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){<br>
+        texto Trem_senha;<br>
+        Imprima("Digite a senha", Trem_senhaDigitada);<br>
+
+        se(Trem_senhaDigitada <-> Trem_senhaCorreta){<br>
+        Trem_userLogado -> true;<br>
+           Imprima("login realizado");<br>
+        }<br>
+    
+        senao{<br>
+            Trem_tentativasSenha -> Trem_tentativasSenha + 1;<br>
+            Imprima("senha incorreta, tentativas restantes" Trem_maxTentativasSenha -  Trem_tentativasSenha);<br>
+            se(Trem_tentativasSenha >= Trem_maxTentativasSenha){<br>
+                Imprima("conta bloqueada por excesso de tentativas");<br>
+            }<br>
+        }<br>
+    } <br>
+   verdadeiroFalso Trem_sistemaAtivo -> true;<br>
+   lacoEnquanto(Trem_sistemaAtivo e Trem_userLogado){<br>
+        Imprima(" MENU PRINCIPAL");<br>
+        Imprima("Cliente: ", Trem_nome);<br>
+        Imprima("Conta: ", Trem_numeroConta);<br>
+        Imprima("Saldo: R$ ",Trem_saldo);<br>
+        Imprima("1 - Saque");<br>
+        Imprima("2 - Depósito");<br>
+        Imprima("3 - Transferência");<br>
+        Imprima("4 - Extrato");<br>
+        Imprima("5 - Alterar Senha");<br>
+        Imprima("0 - Sair");<br>
+        Imprima("Escolha uma opção: ");<br>
+        inteiro Trem_opcao;<br>
+        Entrada("Digite a opcao ", Trem_opcao);<br>
+        se(Trem_opcao <-> 1){<br>
+        Imprima("Digite o valor do saque");<br>
+        decimal Trem_valorSaque;<br>
+        se(Trem_valorSaque > 0 e Trem_valorSaque <= Trem_saldo){<br>
+            se(Trem_valorSaque <= Trem_limiteSaque){<br>
+                Trem_saldo -> Trem_valorSaque - Trem_saldo;<br>
+                Imprima("Saque  realizado com sucesso no valor de R$ ", Trem_valorSaque);<br>
+                Imprima("Novo saldo: R$ " Trem_saldo);<br>
+            }<br>
+            senao{<br>
+                Imprima("Valor excede o limite de saque de R$", Trem_limiteSaque);<br>
+            }<br>
+        }<br>
+    }<br>
+}<br>
+
+#uai...<br>
+1hello"<br>
+...so#<br>
+"helloO" <br>
+
+
+    

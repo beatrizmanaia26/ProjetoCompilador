@@ -1,22 +1,10 @@
-inteiro 123;
-"comentario??"
-texto palavra;
-#comentario de linha
-#uai... comentario bloco...sô#
-inteiro Trem_incorreto -> 1
-inteiro Trem_incorreto -> 1
-decimal Trem_incorreto -> 1.1
-decimal -> .2
-decimal -> 1.
-"exemplo de string com ponto final."
-"string fechada corretamente"
-inteiro
-inteiro Trem_ -> 77;
+
+inteiro Trem_num -> 77;
 inteiro Trem_inteiro;
-decimal Trem_decimal -> 1.2;
-texto Trem_texto ->> "oi";
+decimal Trem_decimal -> 1.1;
+texto Trem_texto -> "oi";
 verdadeiroFalso Trem_vf -> true;
-inteiro 
+
 Entrada("digite um numero", Trem_inteiro);
 
 criar Imprimir(inteiro Trem_num){
@@ -95,6 +83,10 @@ criar Main(){
     }
 }
 
+#uai...
+1hello"
+...so#
+"helloO"
 
-"hello"
-"hello"
+
+    
