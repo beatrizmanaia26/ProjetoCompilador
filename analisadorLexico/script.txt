@@ -1,4 +1,6 @@
-inteiro @
+inteiro 123;
+"comentario??"
+texto palavra;
 #comentario de linha
 #uai... comentario bloco...sô#
 inteiro Trem_incorreto -> 1
@@ -12,7 +14,7 @@ inteiro
 inteiro Trem_ -> 77;
 inteiro Trem_inteiro;
 decimal Trem_decimal -> 1.2;
-texto Trem_texto -> "oi";
+texto Trem_texto ->> "oi";
 verdadeiroFalso Trem_vf -> true;
 inteiro 
 Entrada("digite um numero", Trem_inteiro);

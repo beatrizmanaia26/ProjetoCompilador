@@ -70,7 +70,16 @@ public class Lexer {
             skipWhiteSpace();
             t = searchNextToken();
             if (t == null) {
-                handleUnrecognizedToken();
+                int startIndex = code.getIndex();
+                int endIndex = startIndex - 1;
+                
+                while (t == null && !afds.get(0).isTokenSeparator(code)) {
+                    t = searchNextToken();
+                    code.next();
+                    endIndex++;
+                }
+                
+                handleUnrecognizedToken(startIndex, endIndex);
             } else {
                 tokens.add(t);
             }
@@ -78,19 +87,18 @@ public class Lexer {
         return tokens;
     }
 
-    private void handleUnrecognizedToken() {
-        char invalidChar = code.current();
-        if (invalidChar == CharacterIterator.DONE) return;
+    private void handleUnrecognizedToken(int startIndex, int endIndex) {
+        invalidTokens = getInvalidString(startIndex, endIndex);
+        if (invalidTokens == null) return;
 
-        int idx = code.getIndex();
-        int[] lc = computeLineColumn(idx);
+        int[] lc = computeLineColumn(startIndex);
         String lineText = extractLineText(lc[0]);
 
         code.next();
         column++;
 
         throw new LexicalException(
-            String.format("Token não reconhecido \"%c\"", invalidChar),
+            String.format("Token não reconhecido \"%s\"", invalidTokens),
             lc[0], lc[1], lineText
         );
     }
@@ -136,6 +144,13 @@ public class Lexer {
             return lines[targetLine - 1];
         }
         return "";
+    }
+
+    private String getInvalidString(int startIndex, int endIndex) {
+        if (startIndex < 0 || endIndex >= source.length() || startIndex > endIndex) {
+            return "";
+        }
+        return source.substring(startIndex, endIndex + 1);
     }
 
     public int getLine() {
