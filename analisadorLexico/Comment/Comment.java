@@ -61,5 +61,4 @@ public class Comment extends AFD {
         }
         return true;
     }
-
 }
