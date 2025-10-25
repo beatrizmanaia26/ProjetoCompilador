@@ -15,7 +15,7 @@ public class LexicalException extends RuntimeException {
     @Override
     public String getMessage() {
         StringBuilder msg = new StringBuilder();
-        msg.append(String.format("Erro léxico na linha %d, coluna %d:%n", line, column));
+        msg.append(String.format("Erro léxico na linha %d, coluna %d:%n\n", line, column));
         msg.append(sourceLine).append(System.lineSeparator());
         msg.append(" ".repeat(Math.max(0, column - 1))).append("^").append(System.lineSeparator());
         msg.append(super.getMessage());
