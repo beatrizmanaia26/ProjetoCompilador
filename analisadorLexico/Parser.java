@@ -1,12 +1,17 @@
 package analisadorLexico;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Parser {
   List<Token> tokens;
   Token token;
+  Map<String, Set<String>> firsts = new HashMap<>();
 
   public Parser(List<Token> tokens) {
     this.tokens = tokens;
+    inicializarFirsts();
   }
 
    public void main() {
@@ -63,14 +68,13 @@ public class Parser {
   //VE SE DA P OTIMIZA ALGUM CODIGO (ex: estoArgumentosChamada())
 
 
-  //site que calcula first e follow: !!!!!!!!!!!!!!!
+  //site que calcula first e follow: REFAZER FIST CONSIDERANDO EPSULON !!!!!!!!!!!!!!!
 
 
   // listaComandos -> comando listaComandos | ε
   /*
    * simbulos           first
-   * comando            só tem regra, sem terminal
-   * listaComandos      só tem regra, sem terminal
+   * listaComandos      comando (regra,ent first é firsts dessa regra), ε
    */
   private boolean listaComandos(){
     if(token == null || token.tipo.equals("EOF")){
@@ -83,21 +87,19 @@ public class Parser {
     return false;
   }
 
-  //IMPLEMENTAR FIRST SÓ AQUI E VE SE JA RESOLVE PROBLEMA!!!!!!!!!!!!!!!!!!!
+  //IMPLEMENTAR FIRST SÓ AQUI: E VE SE JA RESOLVE PROBLEMA!!!!!!!!!!!!!!!!!!!
 
-  //comando -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao
+  //comando -> seCompleto|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao // da erro pq first de declarar é = a first de atribuicao
+  //comando -> seCompleto|para|lacoEnquanto|criarFuncao|chamarFuncao|isDeclararOuAtribuicao
   /*
    * simbulos     first
-   * declarar      só tem regra, sem terminal
-   * seCompleto    só tem regra, sem terminal
-   * para          para
-   * lacoEnquanto  lacoEnquanto
-   * atribuicao    só tem regra, sem terminal
-   * criarFuncao   criar
-   * chamarFuncao  NAO É (palavrareservadanomeFuncao), sim: Entrada, Imprima
+   * comando     so regra, ent first é firsts dessas regras: (seCompleto,para,lacoEnquanto,declarar,atribuicao,criarFuncao,chamarFuncao)
    */
   private boolean comando(){
-    if(declarar()||seCompleto()||para()||lacoEnquanto()||atribuicao()||criarFuncao()||chamarFuncao()){
+    if(first("declarar") && declarar()||first("seCompleto") && seCompleto()||
+    first("para") && para()||first("lacoEnquanto") && lacoEnquanto()||
+    first("atribuicao") && atribuicao()||first("criarFuncao") && criarFuncao()||
+    first("chamarFuncao") && chamarFuncao()){
       return true;
     }
     erro("comando"); 
@@ -107,9 +109,8 @@ public class Parser {
   //seCompleto ->se listaOuSe senaoOpcional
   /*
    * simbulos     first
-   * se           se
-   * listaOuSe    só tem regra, sem terminal (ouSe listaOuSe)
-   * senaoOpcional só tem regra, sem terminal (senao)
+   * seCompleto    só regra ent first é firsts dessa regra: (se)
+   *               "se"
    */
   private boolean seCompleto(){
     if(se() && listaOuSe() && senaoOpcional()){
@@ -118,11 +119,10 @@ public class Parser {
     return false; // n tem erro especifico pq a regra especifcia (se, ouse e senao) darao o erro
   }
 
-  //listaOuSe > ouSe listaOuSe | e
+  //listaOuSe > ouSe listaOuSe | ε
    /*
    * simbulos     first
-   * ouSe          ouSe
-   * listaOuSe   só tem regra, sem terminal (ouSe listaOuSe)
+   * listaOuSe    ε, first é firsts dessa regra: ouSe
    */
   private boolean listaOuSe(){
     if(ouSe() && listaOuSe()){
@@ -132,9 +132,10 @@ public class Parser {
       return true;//ε
     }
   }
+  //senaoOpcional -> senão |  ε
    /*
-   * simbulos     first
-   * senao        senao
+   * simbulos            first
+   * senaoOpcional       ε, first é firsts dessa regra: senao
    */
   private boolean senaoOpcional(){
     if(senao()){
@@ -144,6 +145,10 @@ public class Parser {
   }
 
   //se -> 'se''('condicao')''{'listaComandosInternos'}'
+  /*
+   * simbulos         first
+   * se                se
+   */
   private boolean se(){ 
      if (matchL("se") && matchL("(") && condicao() && matchL(")") && matchL("{") && listaComandosInternos() && matchL("}")){
         return true;
@@ -151,8 +156,12 @@ public class Parser {
     erro("se");
     return false;
   }
-
-  //ouSes -> 'ouSe''('condicao')''{'listaComandosInternos'}' ouSes | ε 
+ 
+  //ouSe -> 'ouSe''('condicao')''{'listaComandosInternos'}'
+  /*
+   * simbulos         first
+   * ouSe             ouSe
+   */
   private boolean ouSe(){
     if(matchL("ouSe") && matchL("(") && condicao() && matchL(")") && matchL("{") && listaComandosInternos() && matchL("}")){
         return true;
@@ -162,6 +171,10 @@ public class Parser {
   }
 
   //senao -> 'senao''{'listaComandosInternos'}'
+   /*
+   * simbulos       first
+   * senao          senao
+   */
   private boolean senao(){ 
     if(matchL("senao") && matchL("{") && listaComandosInternos() && matchL("}")){
         return true;
@@ -171,6 +184,10 @@ public class Parser {
   }
 
   //para -> 'para''('cabecalhoPara')''{'listaComandosInternos'}'
+   /*
+   * simbulos     first
+   * para          para
+   */
   private boolean para(){
     if(matchL("para") && matchL("(") && cabecalhoPara() && matchL(")") && matchL("{") && listaComandosInternos() && matchL("}")){
         return true;
@@ -180,6 +197,10 @@ public class Parser {
   }
 
   //lacoEnquanto -> 'lacoEnquanto''('condicao')''{'listaComandosInternos'}'
+  /*
+   * simbulos         first
+   * lacoenquanto     lacoenquanto
+   */
   private boolean lacoEnquanto(){ 
     if(matchL("lacoEnquanto") && matchL("(") && condicao() && matchL(")") && matchL("{") && listaComandosInternos() && matchL("}")){
         return true;
@@ -191,8 +212,8 @@ public class Parser {
   //atribuicao -> declaraEAtribui|atribui
    /*
    * simbulos            first
-   * declaraEAtribui     só tem regra, sem terminal
-   * atribui             primeiro é regra: identificadores
+   * atribuicao         first é firsts dessas regras: declaraEAtribui, atribui
+   *                    
    */
   private boolean atribuicao(){ 
     if(declaraEAtribui()||atribui()){
@@ -218,7 +239,7 @@ public class Parser {
   //chamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' ';'
   /*
    * simbulos            first
-   * chamarFuncao        palavraReservadaNomeFuncao
+   * chamarFuncao          "entrada","imprima", first é firsts dessa regra palavraReservadaNomeFuncao
    */
   private boolean chamarFuncao(){ 
     if ((palavraReservadaNomeFuncao()|| matchL("Entrada")||matchL("Imprima")) && matchL("(") && argumentosChamada() && matchL(")") &&  matchL(";")  ){
@@ -231,7 +252,7 @@ public class Parser {
   //argumentosChamada -> ε | valor restoArgumentosChamada
    /*
    * simbulos            first
-   * argumentosChamada   chama regra: valor
+   * argumentosChamada   ε, first é first dessa regra: valor
    */
   private boolean argumentosChamada(){
     if (token != null && token.lexema.equals(")")) {
@@ -245,6 +266,10 @@ public class Parser {
   }
 
   //restoArgumentosChamada -> ε | ',' valor restoArgumentosChamada
+   /*
+   * simbulos                   first
+   * restoArgumentosChamada    ε,','
+   */
   private boolean restoArgumentosChamada(){
     if(matchL(",") && valor() && restoArgumentosChamada()){
       return true;
@@ -254,8 +279,8 @@ public class Parser {
 
   //argumentosFuncao -> ε|parametrosFuncao
    /*
-   * simbulos            first
-   * parametroFuncao     só chama regra: parametro
+   * simbulos               first
+   * argumentosFuncao      ε, first é first dessa regra: parametrosFuncao
    */
   private boolean argumentosFuncao(){
       if(parametroFuncao()){
@@ -264,12 +289,10 @@ public class Parser {
     return true;
   }
 
-  //COLOCAR PARAMETROFUNCAO E RESTOPARAMETROFUNCAO!!!!!!!!!!!!!!!!!!!!!!!
-  
   //parametroFuncao -> parâmetro emComumParametro
   /*
    * simbulos            first
-   * parametro           só chama regra: tipoVariavel
+   * parametroFuncao    first é first dessa regra: parametro
    */
   private boolean parametroFuncao(){
     if(parametro() && emComumParametro()){
@@ -280,6 +303,10 @@ public class Parser {
   }
 
   //emComumParametro -> ε | ‘,’ parametroFuncao emComumParametro
+   /*
+   * simbulos            first
+   * emComumParametro    ε , ‘,’ 
+   */
   private boolean emComumParametro(){
     if(matchL(",") && parametroFuncao() && emComumParametro()){
       return true;
@@ -290,7 +317,7 @@ public class Parser {
   //parametro -> tipoVariavel identificadores
   /*
    * simbulos            first
-   * tipoVariavel        matchL("inteiro")||matchL("decimal")||matchL("texto")||matchL("verdadeiroFalso"
+   * parametro         first é first dessa regra: tipoVariavel
    */
   private boolean parametro(){
     if(tipoVariavel() && identificadores()){
@@ -302,11 +329,8 @@ public class Parser {
 
   //condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
    /*
-   * simbulos                            first
-   * identificadores                    matchT
-   * negacaoCondicao                        !
-   * expressoesMatematicas                 chama regra precedenciaInferior()
-   * condicaoComparacoesBasicas            chama regra  identificadores
+   * simbulos     first
+   * condicao  first é first dessas regras: identfificadores, negacaocondicao, expressoesMatematicas, condicaoComparacoesBasicas
    */
   private boolean condicao(){ 
     if(identificadores() && condicaoDerivada()||negacaoCondicao() && condicaoDerivada()||
@@ -320,7 +344,7 @@ public class Parser {
   //condicao’ -> operacao condição condicao’| ε
   /*
    * simbulos     first
-   * operacao    só chama regra operacaoRelacional() || operacaoLogica()
+   * condicao’   first é first dessa regra: operacao
    */
   private boolean condicaoDerivada(){
     if(operacao() && condicao() && condicaoDerivada()){
@@ -331,9 +355,8 @@ public class Parser {
 
   //condicaoComparacoesBasicas ->  identificadores|numero operacao valoresOperacao
   /*
-   * simbulos          first
-   * identificadores   matchT("IDENTIFIER")
-   * numero            chama regras decimal()||inteiro()
+   * simbulos                       first
+   * condicaoComparacoesBasicas    first é first dessas regras: identificadores, numero
    */
   private boolean condicaoComparacoesBasicas(){
     if(identificadores() ||(numero() && operacao() && valoresOperacao())){
@@ -346,8 +369,7 @@ public class Parser {
   //valoresOperacao -> identificadores|numero|boolean
    /*
    * simbulos          first
-   * identificadores   matchT("IDENTIFIER")
-   * numero            chama regras decimal()||inteiro()
+   * valoresOperacao   first é first dessas regras: identificadores, numero, isBoolean
    */
   private boolean valoresOperacao(){
     if(identificadores()|| numero()|| isBoolean()){
@@ -358,6 +380,10 @@ public class Parser {
   }
 
   //negacaoCondicao -> '!'condicao
+   /*
+   * simbulos          first
+   * negacaoCondicao    !
+   */
   private boolean negacaoCondicao(){
     if(matchL("!") && condicao()){
       return true;
@@ -369,8 +395,7 @@ public class Parser {
   //operacao -> operacaoRelacional|operacaoLogica
    /*
    * simbulos              first
-   * operacaoRelacional    <>, <=, >=
-   * operacaoLogica        e, ou, !
+   * operacao            first é first dessas regras: operacaoRelacional, operacaoLogica
    */
   private boolean operacao(){
     if(operacaoRelacional() || operacaoLogica()){
@@ -381,8 +406,12 @@ public class Parser {
   }
 
   //operacaoRelacional -> operadorDiferente|operadorIgualdade|operadorMenorIgual|operadorMaiorigual
+    /*
+   * simbulos              first
+   * operacaoRelacional    <>,<->,<=,>=
+   */
   private boolean operacaoRelacional(){
-    if(matchL("<>")&& matchL("<->")|| matchL("<=")|| matchL(">=")){
+    if(matchL("<>") || matchL("<->")|| matchL("<=")|| matchL(">=")){
       return true;
     }
     erro("operadorRelacional");
@@ -390,6 +419,10 @@ public class Parser {
   }
 
   //operacaoLogica -> operador_logicoE|operador_logicoOu|operador_logicoNot
+    /*
+   * simbulos              first
+   * operacaoLogica       e,ou,!
+   */
   private boolean operacaoLogica(){
     if(matchL("e")||matchL("ou")||matchL("!")){
       return true;
@@ -400,8 +433,8 @@ public class Parser {
 
   //listaComandosInternos -> comandoInterno listaComandosInternos | ε
   /*
-   * simbulos              first
-   * comandoInterno        só chama regra
+   * simbulos                 first
+   * listaComandosInternos     ε, first é first dessa regra: comandointerno
    */
   private boolean listaComandosInternos(){ 
     if(comandoInterno() && listaComandosInternos()){
@@ -413,7 +446,7 @@ public class Parser {
   //cabecalhoPara -> inicializacao ";" condicao ";" incremento
    /*
    * simbulos              first
-   * inicializacao         so chama regra tipoVariavel()
+   * cabecalhoPara        first é first dessa regra: inicializacao
    */
   private boolean cabecalhoPara(){ 
     if(inicializacao() && matchL(";") && condicao() && matchL(";") && incremento()){
@@ -425,11 +458,9 @@ public class Parser {
   
   //declaraEAtribui -> declaraEAtribuiInteiro|declaraEAtribuiDecimal|declaraEAtribuiTexto|declaraEAtribuiVerdadeiroFalso
   /*
-   * simbulos                        first
-   * declaraEAtribuiInteiro          inteiro
-   * declaraEAtribuiDecimal           decimal
-   * declaraEAtribuiTexto              texto
-   * declaraEAtribuiVerdadeiroFalso   verdadeiroFalso
+   * simbulos                first
+   * declaraEAtribui      first é first dessas regras: declaraEAtribuiInteiro,declaraEAtribuiDecimal,declaraEAtribuiTexto,declaraEAtribuiVerdadeiroFalso
+   *                      "inteiro","decimal","texto","verdadeiroFalso"
    */
   private boolean declaraEAtribui(){ 
     if(declaraEAtribuiInteiro()||declaraEAtribuiDecimal()||declaraEAtribuiTexto()||declaraEAtribuiVerdadeiroFalso()){
@@ -442,7 +473,8 @@ public class Parser {
   //atribui -> identificadores operadorAtribuicao valor ';'
    /*
    * simbulos          first
-   * identificadores   matchT("IDENTIFIER"
+   * atribui           first é first dessa regra: identificadores
+   *                   
    */
   private boolean atribui(){ 
     if(identificadores() && matchL("->") && valor()){
@@ -453,6 +485,10 @@ public class Parser {
   }
 
   //declaraEAtribuiInteiro -> 'inteiro' identificadores operadorAtribuicao numeroInteiro ';'
+    /*
+   * simbulos                   first
+   * declaraEAtribuiInteiro     inteiro
+   */
   private boolean declaraEAtribuiInteiro(){ 
     //matchL "inteiro" poderia ser uma funcao inteiro() que casa o token inteiro(palavra reservada na expressao regular tipos_dadoIntmas ja que escrevi ele com '' na glc faz sentido ficar assim
     if(matchL("inteiro") && identificadores() && matchL("->") && inteiro() && matchL(";")){
@@ -463,6 +499,10 @@ public class Parser {
   }
 
   //declaraEAtribuiDecimal -> 'decimal' identificadores operadorAtribuicao numeroDecimal ';'
+  /*
+   * simbulos                   first
+   * declaraEAtribuiDecimal     decimal
+   */
   private boolean declaraEAtribuiDecimal(){ 
     if(matchL("decimal") && identificadores() && matchL("->") && decimal() && matchL(";")){
       return true;
@@ -472,6 +512,10 @@ public class Parser {
   }
 
   //declaraEAtribuiTexto -> 'texto' identificadores operadorAtribuicao texto ';'
+  /*
+   * simbulos                  first
+   * declaraEAtribuiTexto     texto
+   */
   private boolean declaraEAtribuiTexto(){ 
     if(matchL("texto") && identificadores() && matchL("->") && texto() && matchL(";")){
       return true;
@@ -481,6 +525,10 @@ public class Parser {
   }
 
   //declaraEAtribuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
+   /*
+   * simbulos                           first
+   * declaraEAtribuiVerdadeiroFalso    verdadeiroFalso
+   */
   private boolean declaraEAtribuiVerdadeiroFalso(){
     if(matchL("verdadeiroFalso") && identificadores() && matchL("->") && isBoolean() && matchL(";")){
       return true;
@@ -491,8 +539,8 @@ public class Parser {
 
   //expressoesMatematicas -> precedenciaInferior
     /*
-   * simbulos              first
-   * precedenciaInferior   chama regra
+   * simbulos                first
+   * expressoesMatematicas   first é first dessa regra:precedenciaInferior
    */
   private boolean expressoesMatematicas(){
     if(precedenciaInferior()){
@@ -505,11 +553,9 @@ public class Parser {
   
   //declarar -> declararInteiro|declararDecimal|declararTexto|declararVerdadeiroFalso
     /*
-   * simbulos                     first
-   * declararInteiro             inteiro
-   * declararDecimal              decimal
-   * declararTexto                 texto
-   * declararVerdadeiroFalso  verdadeiroFalso
+   * simbulos       first
+   * declarar      first é first dessas regras: declararInteiro,declararDecimal(),declararTexto(),declararVerdadeiroFalso
+   *               "inteiro","decimal","texto","verdadeiroFalso"
    */
   private boolean declarar(){
     if(declararInteiro()||declararDecimal()||declararTexto()||declararVerdadeiroFalso()){
@@ -520,6 +566,10 @@ public class Parser {
   }
 
   //declararInteiro -> 'inteiro' identificadores ';'
+    /*
+   * simbulos          first
+   * declararInteiro    inteiro
+   */
   private boolean declararInteiro(){ 
     if(matchL("inteiro") && identificadores() && matchL(";")){
       return true;
@@ -529,6 +579,10 @@ public class Parser {
   }
 
   //declararDecimal -> 'decimal' identificadores ';'
+    /*
+   * simbulos          first
+   * declararDecimal    decimal
+   */
   private boolean declararDecimal(){ 
     if(matchL("decimal") && identificadores() && matchL(";")){
       return true;
@@ -538,6 +592,10 @@ public class Parser {
   }
 
   //declararTexto -> 'texto' identificadores ';'
+   /*
+   * simbulos          first
+   * declararTexto      texto
+   */
   private boolean declararTexto(){ 
     if(matchL("texto") && identificadores() && matchL(";")){
       return true;
@@ -547,6 +605,10 @@ public class Parser {
   }
 
   //declararVerdadeiroFalso -> 'verdadeiroFalso' identificadores ';'
+  /*
+   * simbulos                   first
+   * declararVerdadeiroFalso    verdadeiroFalso
+   */
   private boolean declararVerdadeiroFalso(){ 
     if(matchL("verdadeiroFalso") && identificadores() && matchL(";")){
       return true;
@@ -557,12 +619,8 @@ public class Parser {
   
  //valor -> numero|texto|boolean|identificadores|expressoesMatematicas
     /*
-   * simbulos                     first
-   * numero                     so chama regras
-   * texto                       matchT("TEXT")
-   * isBoolean                   matchL("true")||matchL("false")
-   * identificadores             matchT("IDENTIFIER")
-   * expressoesMatematicas       so chama regra precedenciaInferior
+   * simbulos       first
+   * valor          first é first dessas regras: numero,texto,isBoolean, identificadores,expressoesMatematicas
    */
   private boolean valor(){ 
     if(numero()||texto()||isBoolean()||identificadores()||expressoesMatematicas()){
@@ -575,8 +633,7 @@ public class Parser {
   //numero -> numeroDecimal|numeroInteiro
    /*
    * simbulos         first
-   * decimal         matchT("DECIMAL")
-   * inteiro         matchT("INTEGER")
+   * numero           first é first dessas regras: decimal, inteiro
    */
   private boolean numero(){ 
     if(decimal()||inteiro()){
@@ -589,13 +646,7 @@ public class Parser {
   //comandoInterno -> se|ouSe|senao|para|lacoEnquanto|atribuicao|chamarFuncao|retornar
   /*
    * simbulos         first
-   * seCompleto        só chama regras
-   * para              para
-   * lacoEnquanto      lacoEnquanto
-   * declarar         só chama regra
-   * atribuicao       só chama regra
-   * chamarFuncao    NAO É (palavrareservadanomeFuncao), sim: Entrada, Imprima
-   * retornar        matchL("retorna")
+   * comandoInterno    first é first dessas regras:seCompleto,para,lacoEnquanto,declarar,atribuicao,chamarFuncao,retornar
    */
   private boolean comandoInterno(){
     if(seCompleto()||para()||lacoEnquanto()||declarar()||atribuicao()||chamarFuncao()||retornar()){
@@ -605,22 +656,38 @@ public class Parser {
     return false;
   }
   
-  //retornar -> palavra_reservadaRetornoFuncao 
+  //retornar -> 'retorna' tiposRetorno';'
+    /*
+   * simbulos     first
+   * retornar    retorna
+   */
   private boolean retornar(){ 
-    if(matchL("retorna") && (identificadores()||expressoesMatematicas()||numero()) && matchL(";")){
+    if(matchL("retorna") && conteudos() && matchL(";")){
       return true;
     }
     erro("retornar");
     return false;
   }
 
-  //inicializacao -> tipoVariavel identificadores "->" numero|identificadores|chamarFuncao|expressoesMatematicas
+  //conteudos -> identificadores|expressoesMatematicas|numero
+  /*
+   * simbulos          first
+   * conteudos      first é first dessas regras: identificadores, expressoesMatematicas,numero
+   */
+  private boolean conteudos(){ 
+    if(identificadores() || expressoesMatematicas()|| numero()){
+      return true;
+    }
+    erro("conteudos");
+    return false;
+    }
+  //inicializacao -> tipoVariavel identificadores "->" conteudos
   /*
    * simbulos         first
-   * tipoVariavel    matchL("inteiro")||matchL("decimal")||matchL("texto")||matchL("verdadeiroFalso")
+   * inicializacao    first é first dessa regra: tipoVariavel
    */
   private boolean inicializacao(){ 
-    if(tipoVariavel() && identificadores() && matchL("->") && (numero()||identificadores()||chamarFuncao()||expressoesMatematicas())){
+    if(tipoVariavel() && identificadores() && matchL("->") && conteudos()){
       return true;
     }
     erro("inicializacao");
@@ -629,8 +696,8 @@ public class Parser {
 
   //precedenciaInferior -> precedenciaIntermediaria precedenciaInferior'
   /*
-   * simbulos                     first
-   * precedenciaIntermediaria    só chama regra
+   * simbulos               first
+   * precedenciaInferior    first é first dessa regra:precedenciaIntermediaria
    */
   private boolean precedenciaInferior(){
     if(precedenciaIntermediaria() && precedenciaInferiorDerivada()){
@@ -643,7 +710,7 @@ public class Parser {
   //precedenciaIntermediaria -> precedenciaAlta precedenciaIntermediaria'
     /*
    * simbulos                     first
-   * precedenciaAlta        só chama regra
+   * precedenciaIntermediaria     first é first dessa regra:precedenciaAlta
    */
   private boolean precedenciaIntermediaria(){
     if(precedenciaAlta() && precedenciaIntermediariaDerivada()){
@@ -654,6 +721,10 @@ public class Parser {
   }
 
   //precedenciaInferior' -> '+'precedenciaIntermediaria precedenciaInferior' | '-'precedenciaIntermediaria precedenciaInferior' | ε
+  /*
+   * simbulos               first
+   * precedenciaInferior'    "+", "-", ε
+   */
   private boolean precedenciaInferiorDerivada(){ 
     if(matchL("+") && precedenciaIntermediaria() && precedenciaInferiorDerivada()){
       return true;
@@ -666,10 +737,10 @@ public class Parser {
   }
 
   //precedenciaAlta -> precedenciaSuperior precedenciaAlta'
-    /*
-   * simbulos                     first
-    * precedenciaSuperior       regraidentificadores()||numero(), first: (matchL("("))
-   */
+  /*
+  * simbulos            first
+  * precedenciaAlta     first é first dessa regra: precedenciaSuperior
+  */
   private boolean precedenciaAlta(){
     if(precedenciaSuperior() && precedenciaAltaDerivada()){
       return true;
@@ -679,6 +750,10 @@ public class Parser {
   }
 
   //precedenciaIntermediaria' -> '*' precedenciaAlta precedenciaIntermediaria' | /precedenciaAlta precedenciaIntermediaria' | ε
+    /*
+   * simbulos                    first
+   * precedenciaIntermediaria'    "*", "/", ε
+   */
   private boolean precedenciaIntermediariaDerivada(){
     if(matchL("*") && precedenciaAlta() && precedenciaIntermediariaDerivada()){
       return true;
@@ -693,8 +768,7 @@ public class Parser {
   //precedenciaSuperior -> identificadores|numero|'('expressoesMatematicas')'
     /*
    * simbulos                     first
-    * identificadores             matchT("IDENTIFIER")
-    * numero                      chama regra decimal()||inteiro()
+    * precedenciaSuperior       "(", first é first dessa regra: identificadores,numero
    */
   private boolean precedenciaSuperior(){
     if(identificadores()||numero()|| (matchL("(") && expressoesMatematicas() && matchL(")"))){
@@ -705,6 +779,10 @@ public class Parser {
   }
 
   //precedenciaAlta' -> '^'precedenciaSuperior precedenciaAlta' | ε
+     /*
+   * simbulos             first
+   * precedenciaAlta'    "^",ε
+   */
   private boolean precedenciaAltaDerivada(){
     if(matchL("^") && precedenciaAltaDerivada()){
       return true;
@@ -714,8 +792,8 @@ public class Parser {
 
   //incremento -> identificadores '->' expressoesMatematicas
   /*
-   * simbulos                     first
-    * identificadores             matchT("IDENTIFIER")
+   * simbulos        first
+    * incremento     first é first dessa regra: identificadores
    */
   private boolean incremento(){ 
     if(identificadores() && matchL("->") && expressoesMatematicas()){
@@ -726,6 +804,10 @@ public class Parser {
   }
 
   //tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto 
+  /*
+   * simbulos        first
+  * tipoVariavel    inteiro,decimal, texto, verdadeiroFalso
+   */
   private boolean tipoVariavel(){ 
     if(matchL("inteiro")||matchL("decimal")||matchL("texto")||matchL("verdadeiroFalso")){
       return true;
@@ -737,6 +819,10 @@ public class Parser {
   //match t de tokens para expressao regular 
 
   //usa matcht quando o lexema nao é sempre igual, ai valida pelo tipo
+  /*
+   * simbulos     first
+   * decimal       DECIMAL
+   */
   private boolean decimal(){ 
     if(matchT("DECIMAL")){
       return true;
@@ -745,6 +831,10 @@ public class Parser {
     return false;
   }
 
+   /*
+   * simbulos     first
+   * inteiro       INTEIRO
+   */
   private boolean inteiro(){ 
     if(matchT("INTEGER")){
       return true;
@@ -753,6 +843,10 @@ public class Parser {
     return false;
   }
 
+    /*
+   * simbulos            first
+   * identificadores     IDENTIFIER
+   */
   private boolean identificadores(){ 
     if(matchT("IDENTIFIER")){
       return true;
@@ -761,6 +855,10 @@ public class Parser {
     return false;
   }
   
+  /*
+   * simbulos     first
+   * texto        TEXT
+   */
   private boolean texto(){ 
     if(matchT("TEXT")){
       return true;
@@ -770,6 +868,10 @@ public class Parser {
   }
   
   //boolean -> true|false
+    /*
+   * simbulos     first
+   * boolean      true, false
+   */
   private boolean isBoolean(){
     if(matchL("true")||matchL("false")){
       return true;
@@ -778,6 +880,10 @@ public class Parser {
     return false;
   }
 
+  /*
+   * simbulos                      first
+   * palavraReservadaNomeFuncao    FUNCTION_NAME
+   */
   private boolean palavraReservadaNomeFuncao(){
     if(matchT("FUNCTION_NAME")){
       return true;
@@ -785,5 +891,28 @@ public class Parser {
     erro("palavraReservadaNomeFuncao");
     return false;
   }
+
+  private void inicializarFirsts() {
+    // FIRST dos comandos
+    //key = nome funcao, e1 = first
+    //firsts para comando:
+    firsts.put("comando", Set.of("inteiro","decimal","texto","verdadeiroFalso"));
+    firsts.put("seCompleto", Set.of("se"));
+    firsts.put("para", Set.of("para"));
+    firsts.put("lacoEnquanto", Set.of("lacoEnquanto"));
+    firsts.put("atribuicao", Set.of("inteiro","decimal","texto","verdadeiroFalso","IDENTIFIERS"));
+    firsts.put("criarFuncao", Set.of("criar"));
+    firsts.put("chamarFuncao", Set.of("FUNCTION_NAME","Entrada","Imprima"));
+    firsts.put("ouSe", Set.of("ouSe"));
+    firsts.put("senao", Set.of("senao"));
+
+  }
+
+  private boolean first(String regra) {
+    if (token == null) return false;
+    Set<String> firstSet = firsts.get(regra);
+    if (firstSet == null) return true; // Se não tem first definido, sempre tenta
+    return firstSet.contains(token.lexema) || firstSet.contains(token.tipo);
+}
 
 }

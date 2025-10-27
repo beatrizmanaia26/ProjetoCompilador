@@ -76,9 +76,10 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> lacoEnquanto -> 'lacoEnquanto''('condicao')''{'listaComandosInternos'}' 
 <br> listaComandosInternos -> comandoInterno listaComandosInternos | ε
 <br> comandoInterno -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|chamarFuncao|retornar
-<br> retornar -> palavra_reservadaRetornoFuncao identificadores|expressoesMatematicas|numero';'
+<br> retornar -> 'retorna' conteudos';'
+<br> conteudos -> identificadores|expressoesMatematicas|numero
 <br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
-<br> inicializacao -> tipoVariavel identificadores "->" numero|identificadores|chamarFuncao|expressoesMatematicas
+<br> inicializacao -> tipoVariavel identificadores "->" conteudos
 <br> incremento -> identificadores '->' expressoesMatematicas
 
 <br>CONDICAO MAIS BÁSICA PARA DEPOIS APRIMORAR (ver se precisa do '('condicao')', tirei e arrumei )!!!!! condicao ->(condicao)| identificadores|negacaoCondicao|condicaoComparacoesBasicas 
