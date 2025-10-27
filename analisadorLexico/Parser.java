@@ -89,16 +89,31 @@ public class Parser {
 
   //IMPLEMENTAR FIRST SÓ AQUI: E VE SE JA RESOLVE PROBLEMA!!!!!!!!!!!!!!!!!!!
 
-  //comando -> seCompleto|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao // da erro pq first de declarar é = a first de atribuicao
-  //comando -> seCompleto|para|lacoEnquanto|criarFuncao|chamarFuncao|isDeclararOuAtribuicao
+  //comando -> seCompleto|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao
+
+  //PROBLEMA PQ DECLARAR E DECLARAREATRIBUIR (opcao dentro e atribuicao) tem os mesmos firsts ent melhor solucao é juntar os 2 em um codigo só
+
+  // Juntar declarar e declaraEAtribui em uma única regra
+  private boolean declaracao(){
+      if(first("tipoVariavel") && tipoVariavel() && identificadores()) {
+          // Pode ser: tipo var; OU tipo var -> valor;
+          if(matchL(";")) {
+              return true; // declaracao simples
+          } else if(matchL("->") && valor() && matchL(";")) {
+              return true; // declaracao com atribuicao
+          }
+      }
+      return false;
+  }
+
   /*
    * simbulos     first
    * comando     so regra, ent first é firsts dessas regras: (seCompleto,para,lacoEnquanto,declarar,atribuicao,criarFuncao,chamarFuncao)
    */
   private boolean comando(){
-    if(first("declarar") && declarar()||first("seCompleto") && seCompleto()||
+    if(first("declaracao") && declaracao()||first("seCompleto") && seCompleto()||
     first("para") && para()||first("lacoEnquanto") && lacoEnquanto()||
-    first("atribuicao") && atribuicao()||first("criarFuncao") && criarFuncao()||
+    first("atribui") && atribui()||first("criarFuncao") && criarFuncao()||
     first("chamarFuncao") && chamarFuncao()){
       return true;
     }
@@ -209,19 +224,6 @@ public class Parser {
     return false;
   }
 
-  //atribuicao -> declaraEAtribui|atribui
-   /*
-   * simbulos            first
-   * atribuicao         first é firsts dessas regras: declaraEAtribui, atribui
-   *                    
-   */
-  private boolean atribuicao(){ 
-    if(declaraEAtribui()||atribui()){
-      return true;
-    }
-    erro("atribuicao");
-    return false;
-  }
 
   //criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'
   /*
@@ -455,20 +457,6 @@ public class Parser {
     erro("listaComandosInternos");
     return false;
   }
-  
-  //declaraEAtribui -> declaraEAtribuiInteiro|declaraEAtribuiDecimal|declaraEAtribuiTexto|declaraEAtribuiVerdadeiroFalso
-  /*
-   * simbulos                first
-   * declaraEAtribui      first é first dessas regras: declaraEAtribuiInteiro,declaraEAtribuiDecimal,declaraEAtribuiTexto,declaraEAtribuiVerdadeiroFalso
-   *                      "inteiro","decimal","texto","verdadeiroFalso"
-   */
-  private boolean declaraEAtribui(){ 
-    if(declaraEAtribuiInteiro()||declaraEAtribuiDecimal()||declaraEAtribuiTexto()||declaraEAtribuiVerdadeiroFalso()){
-      return true;
-    }
-    erro("declaraEAtribui");
-    return false;
-  }
 
   //atribui -> identificadores operadorAtribuicao valor ';'
    /*
@@ -483,60 +471,6 @@ public class Parser {
     erro("atribui");
     return false;
   }
-
-  //declaraEAtribuiInteiro -> 'inteiro' identificadores operadorAtribuicao numeroInteiro ';'
-    /*
-   * simbulos                   first
-   * declaraEAtribuiInteiro     inteiro
-   */
-  private boolean declaraEAtribuiInteiro(){ 
-    //matchL "inteiro" poderia ser uma funcao inteiro() que casa o token inteiro(palavra reservada na expressao regular tipos_dadoIntmas ja que escrevi ele com '' na glc faz sentido ficar assim
-    if(matchL("inteiro") && identificadores() && matchL("->") && inteiro() && matchL(";")){
-      return true;
-    }
-    erro("declaraEAtribuiInteiro");
-    return false;
-  }
-
-  //declaraEAtribuiDecimal -> 'decimal' identificadores operadorAtribuicao numeroDecimal ';'
-  /*
-   * simbulos                   first
-   * declaraEAtribuiDecimal     decimal
-   */
-  private boolean declaraEAtribuiDecimal(){ 
-    if(matchL("decimal") && identificadores() && matchL("->") && decimal() && matchL(";")){
-      return true;
-    }
-    erro("declaraEAtribuiDecimal");
-    return false;
-  }
-
-  //declaraEAtribuiTexto -> 'texto' identificadores operadorAtribuicao texto ';'
-  /*
-   * simbulos                  first
-   * declaraEAtribuiTexto     texto
-   */
-  private boolean declaraEAtribuiTexto(){ 
-    if(matchL("texto") && identificadores() && matchL("->") && texto() && matchL(";")){
-      return true;
-    }
-    erro("declaraEAtribuiTexto");
-    return false;
-  }
-
-  //declaraEAtribuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores operadorAtribuicao boolean ';'
-   /*
-   * simbulos                           first
-   * declaraEAtribuiVerdadeiroFalso    verdadeiroFalso
-   */
-  private boolean declaraEAtribuiVerdadeiroFalso(){
-    if(matchL("verdadeiroFalso") && identificadores() && matchL("->") && isBoolean() && matchL(";")){
-      return true;
-    }
-    erro("declaraEAtribuiVerdadeiroFalso");
-    return false;
-  }
-
   //expressoesMatematicas -> precedenciaInferior
     /*
    * simbulos                first
@@ -550,73 +484,6 @@ public class Parser {
     return false;
   }
 
-  
-  //declarar -> declararInteiro|declararDecimal|declararTexto|declararVerdadeiroFalso
-    /*
-   * simbulos       first
-   * declarar      first é first dessas regras: declararInteiro,declararDecimal(),declararTexto(),declararVerdadeiroFalso
-   *               "inteiro","decimal","texto","verdadeiroFalso"
-   */
-  private boolean declarar(){
-    if(declararInteiro()||declararDecimal()||declararTexto()||declararVerdadeiroFalso()){
-      return true;
-    }
-    erro("declarar");
-    return false;
-  }
-
-  //declararInteiro -> 'inteiro' identificadores ';'
-    /*
-   * simbulos          first
-   * declararInteiro    inteiro
-   */
-  private boolean declararInteiro(){ 
-    if(matchL("inteiro") && identificadores() && matchL(";")){
-      return true;
-    }
-    erro("declararInteiro");
-    return false;
-  }
-
-  //declararDecimal -> 'decimal' identificadores ';'
-    /*
-   * simbulos          first
-   * declararDecimal    decimal
-   */
-  private boolean declararDecimal(){ 
-    if(matchL("decimal") && identificadores() && matchL(";")){
-      return true;
-    }
-    erro("declararDecimal");
-    return false;
-  }
-
-  //declararTexto -> 'texto' identificadores ';'
-   /*
-   * simbulos          first
-   * declararTexto      texto
-   */
-  private boolean declararTexto(){ 
-    if(matchL("texto") && identificadores() && matchL(";")){
-      return true;
-    }
-    erro("declararTexto");
-    return false;
-  }
-
-  //declararVerdadeiroFalso -> 'verdadeiroFalso' identificadores ';'
-  /*
-   * simbulos                   first
-   * declararVerdadeiroFalso    verdadeiroFalso
-   */
-  private boolean declararVerdadeiroFalso(){ 
-    if(matchL("verdadeiroFalso") && identificadores() && matchL(";")){
-      return true;
-    }
-    erro("declararVerdadeiroFalso");
-    return false;
-  }
-  
  //valor -> numero|texto|boolean|identificadores|expressoesMatematicas
     /*
    * simbulos       first
@@ -649,7 +516,7 @@ public class Parser {
    * comandoInterno    first é first dessas regras:seCompleto,para,lacoEnquanto,declarar,atribuicao,chamarFuncao,retornar
    */
   private boolean comandoInterno(){
-    if(seCompleto()||para()||lacoEnquanto()||declarar()||atribuicao()||chamarFuncao()||retornar()){
+    if(seCompleto()||para()||lacoEnquanto()||declaracao()||atribui()||chamarFuncao()||retornar()){
       return true;
     }
     erro("comandoInterno"); 
@@ -896,11 +763,11 @@ public class Parser {
     // FIRST dos comandos
     //key = nome funcao, e1 = first
     //firsts para comando:
-    firsts.put("comando", Set.of("inteiro","decimal","texto","verdadeiroFalso"));
+    firsts.put("declaracao", Set.of("inteiro","decimal","texto","verdadeiroFalso"));
     firsts.put("seCompleto", Set.of("se"));
     firsts.put("para", Set.of("para"));
     firsts.put("lacoEnquanto", Set.of("lacoEnquanto"));
-    firsts.put("atribuicao", Set.of("inteiro","decimal","texto","verdadeiroFalso","IDENTIFIERS"));
+    firsts.put("atribui", Set.of("IDENTIFIERS"));
     firsts.put("criarFuncao", Set.of("criar"));
     firsts.put("chamarFuncao", Set.of("FUNCTION_NAME","Entrada","Imprima"));
     firsts.put("ouSe", Set.of("ouSe"));

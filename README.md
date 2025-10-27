@@ -100,8 +100,10 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> precedenciaAlta -> precedenciaSuperior precedenciaAlta'
 <br> precedenciaAlta' -> '^'precedenciaSuperior precedenciaAlta' | ε
 <br> precedenciaSuperior -> identificadores|numero|'('expressoesMatematicas')'
-<br> atribuicao -> declaraEAtribui|atribui 
+<br> atribuicao -> declaraEAtribui|atribui //declararEAtrbui fica junto com declarar no declaracao e atribuicao seria so atribui ent deixa so atribui
 <br> atribui -> identificadores '->' valor ';'
+
+<br> ---------------------------------
 <br> declaraEAtribui -> declaraEAtribuiInteiro|declaraEAtribuiDecimal|declaraEAtribuiTexto|declaraEAtribuiVerdadeiroFalso
 <br> declarar -> declararInteiro|declararDecimal|declararTexto|declararVerdadeiroFalso 
 <br> declararInteiro -> 'inteiro' identificadores ';'
@@ -112,6 +114,9 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> declaraEAtribuiTexto -> 'texto' identificadores '->' texto ';'
 <br> declararVerdadeiroFalso -> 'verdadeiroFalso' identificadores ';' 
 <br> declaraEAtribuiVerdadeiroFalso -> 'verdadeiroFalso' identificadores '->' boolean ';'
+<br> ---------------da problema na hr de ver firsts pq sao mt parecidos, trocar td isso por isso:
+<br> declaracao-> tipoVariavel identificadores (';' | '->' valor ';')
+
 <br> numero -> numeroDecimal|numeroInteiro 
 <br> boolean -> true|false 
 <br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'
