@@ -90,22 +90,6 @@ public class Parser {
   //IMPLEMENTAR FIRST SÓ AQUI: E VE SE JA RESOLVE PROBLEMA!!!!!!!!!!!!!!!!!!!
 
   //comando -> seCompleto|para|lacoEnquanto|declarar|atribuicao|criarFuncao|chamarFuncao
-
-  //PROBLEMA PQ DECLARAR E DECLARAREATRIBUIR (opcao dentro e atribuicao) tem os mesmos firsts ent melhor solucao é juntar os 2 em um codigo só
-
-  // Juntar declarar e declaraEAtribui em uma única regra
-  private boolean declaracao(){
-      if(first("tipoVariavel") && tipoVariavel() && identificadores()) {
-          // Pode ser: tipo var; OU tipo var -> valor;
-          if(matchL(";")) {
-              return true; // declaracao simples
-          } else if(matchL("->") && valor() && matchL(";")) {
-              return true; // declaracao com atribuicao
-          }
-      }
-      return false;
-  }
-
   /*
    * simbulos     first
    * comando     so regra, ent first é firsts dessas regras: (seCompleto,para,lacoEnquanto,declarar,atribuicao,criarFuncao,chamarFuncao)
@@ -121,6 +105,28 @@ public class Parser {
     return false;
   }
   
+  
+  //PROBLEMA PQ DECLARAR E DECLARAREATRIBUIR (opcao dentro e atribuicao) tem os mesmos firsts ent melhor solucao é juntar os 2 em um codigo só
+  // Juntar declarar e declaraEAtribui em uma única regra
+
+  // declaração -> tipoVariavel identificadores (';' | '->' valor ';')
+  /*
+   * simbulos     first
+   * declaracao   so regra, ent first é firsts dessa regra: tipoVariavel
+   *               inteiro,decimal, texto, verdadeiroFalso
+   */
+  private boolean declaracao(){
+      if(tipoVariavel() && identificadores()) {
+          // Pode ser: tipo var; OU tipo var -> valor;
+          if(matchL(";")) {
+              return true; // declaracao simples
+          } else if(matchL("->") && valor() && matchL(";")) {
+              return true; // declaracao com atribuicao
+          }
+      }
+      return false;
+  }
+
   //seCompleto ->se listaOuSe senaoOpcional
   /*
    * simbulos     first
@@ -147,6 +153,7 @@ public class Parser {
       return true;//ε
     }
   }
+ 
   //senaoOpcional -> senão |  ε
    /*
    * simbulos            first
@@ -770,16 +777,25 @@ public class Parser {
     firsts.put("atribui", Set.of("IDENTIFIERS"));
     firsts.put("criarFuncao", Set.of("criar"));
     firsts.put("chamarFuncao", Set.of("FUNCTION_NAME","Entrada","Imprima"));
+
+    // firsts basicos
     firsts.put("ouSe", Set.of("ouSe"));
     firsts.put("senao", Set.of("senao"));
-
   }
 
   private boolean first(String regra) {
-    if (token == null) return false;
+    if (token == null) return false; //evita null pointer exception
+    
     Set<String> firstSet = firsts.get(regra);
-    if (firstSet == null) return true; // Se não tem first definido, sempre tenta
-    return firstSet.contains(token.lexema) || firstSet.contains(token.tipo);
-}
+    if (firstSet == null) {
+        // Regra sem FIRST definido - não tenta
+        System.out.println("FIRST não definido para: " + regra);
+        return false;
+    }
+    // Verifica se token atual está no FIRST
+    boolean matches = firstSet.contains(token.lexema) || firstSet.contains(token.tipo);
+    
+    return matches;
+  }
 
 }
