@@ -67,8 +67,8 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> comando -> seCompleto|para|lacoEnquanto|declarar|atribuicao|
 <br> criarFuncao|chamarFuncao
 <br> seCompleto ->se listaOuSe senaoOpcional
-<br> listaOuSe > ouSe listaOuSe | e
-<br> senaoOpcional -> senão | e
+<br> listaOuSe > ouSe listaOuSe | ε
+<br> senaoOpcional -> senão | ε
 <br> se -> 'se''('condicao')''{'listaComandosInternos'}'
 <br> ouSe -> 'ouSe''('condicao')''{'listaComandosInternos'}'
 <br> senao -> 'senao''{'listaComandosInternos'}'
@@ -297,5 +297,9 @@ criar Main(){<br>
 ...so#<br>
 "helloO" <br>
 
+
+## Exemplo 3
+
+<br> elaborar um codigo facil (exs basicos introducao a computacao)
 
     
