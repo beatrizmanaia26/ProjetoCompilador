@@ -118,17 +118,28 @@ public class Parser {
    */
   private boolean declaracao(){
     System.out.println("entrou no declaracao");
-    if(first("declaracao")&& tipoVariavel() && identificadores()) { //uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
+    if(first("declaracao") && tipoVariavel() && identificadores()) {//uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
       // Pode ser: tipo var; OU tipo var -> valor;
       if(matchL(";")) {
-         return true; // declaracao simples
-      } else if(matchL("->") && valor() && matchL(";")) {
-        return true; // declaracao com atribuicao
+        return true; // declaracao simples
+      }
+      //first de valor() e de condicaoComparacoesBasicas() tem coisas em comum (identifficadores) ent pode entrar em um quando é para entrar em outro--> fazer lookAhead
+      //declaração com atribuição:
+      else if(matchL("->")) {
+        // lookahead
+        if (!tokens.isEmpty()) {
+          Token nextToken = tokens.get(0);    
+          // Se próximo token é operador RELACIONAL, usa condicaoComparacoesBasicas
+          if (firsts.get("operacaoRelacional").contains(nextToken.lexema)) {
+            return condicaoComparacoesBasicas() && matchL(";");
+          }
+        }
+        // Caso contrário, tenta valor() 
+        return valor() && matchL(";");
       }
     }
     return false;
   }
-
   //seCompleto ->se listaOuSe senaoOpcional
   /*
    * simbulos     first                                              
@@ -362,8 +373,43 @@ public class Parser {
    * simbulos     first
    * condicao  first é first dessas regras: identfificadores, negacaocondicao, expressoesMatematicas, condicaoComparacoesBasicas
    */
+
+  //implementação do lookahead para pegar o prox token e distinguir se é identificadores, expressoesMatematicas ou condicoesComparacoesBasicas
   private boolean condicao(){ 
-    System.out.println("entrou na condicao");
+  // Negação
+    if (token != null && "!".equals(token.lexema)) {
+      return negacaoCondicao() && condicaoDerivada();
+    }
+    // Token IDENTIFIER --> faz lookahead direto aqui (em comum para varias situações)
+    if (token != null && "IDENTIFIER".equals(token.tipo)) { 
+      // LOOKAHEAD DIRETO: ver próximo token sem consumir
+      if (!tokens.isEmpty()) {
+        Token nextToken = tokens.get(0);
+        // se próximo token é operador RELACIONAL, é comparação
+        if (firsts.get("operacaoRelacional").contains(nextToken.lexema)) {
+          return condicaoComparacoesBasicas() && condicaoDerivada();
+        }
+        // se próximo token é operador MATEMÁTICO, é expressão
+        if (Set.of("+", "-", "*", "/", "^").contains(nextToken.lexema)) {
+          return expressoesMatematicas() && condicaoDerivada();
+        }
+      }
+      // se não é nenhum dos casos acima, é identificador sozinho
+      return identificadores() && condicaoDerivada();
+    }
+    // expressões matemáticas que começam com (
+    if (token != null && "(".equals(token.lexema)) {
+        return expressoesMatematicas() && condicaoDerivada();
+    }
+    // numeros (também podem iniciar comparações)
+    if (token != null && (token.tipo.equals("INTEIRO") || token.tipo.equals("DECIMAL"))) {
+      System.out.println("-> Detectou número para comparação");
+      return condicaoComparacoesBasicas() && condicaoDerivada();
+    }
+    
+    erro("condicao");
+    return false;
+   /*
     if((first("condicaoComparacoesBasicas") && condicaoComparacoesBasicas() && condicaoDerivada())||
     (first("identificadores") && identificadores() && condicaoDerivada())||
     (first("negacaoCondicao") && negacaoCondicao() && condicaoDerivada())||
@@ -373,6 +419,7 @@ public class Parser {
     }
     erro("condicao");
     return false;
+    */
   }
 
   //condicao’ -> operacao condição condicao’| ε ????????????????? ACHO Q N FAZ SENTIDO
@@ -510,18 +557,20 @@ public class Parser {
    */
   private boolean atribui(){ 
     System.out.println("entrou em atribui");
-    if(first("identificadores") && identificadores() && matchL("->") && valor() && matchL(";")){
+     if(first("identificadores") && identificadores() && matchL("->") && (valor()||condicaoComparacoesBasicas()) && matchL(";")){
         return true;
     }
     erro("atribui");
     return false;
   }
+
   //expressoesMatematicas -> precedenciaInferior
     /*
    * simbulos                first
    * expressoesMatematicas   first é first dessa regra:precedenciaInferior
    */
   private boolean expressoesMatematicas(){
+    System.out.println("entrei em expressoesMatematicas");
     if(first("precedenciaSuperior") && precedenciaInferior()){
       return true;
     }
@@ -535,6 +584,7 @@ public class Parser {
    * valor          first é first dessas regras: numero,texto,isBoolean, identificadores,expressoesMatematicas
    */
   private boolean valor(){ 
+    System.out.println("entrei em valor");
     if((first("numero") && numero())||(first("texto") && texto())||(first("isBoolean") && isBoolean())||
     (first("identificadores") && identificadores())||( first("expressoesMatematicas") && expressoesMatematicas())){
       System.out.println("deu match em valor");
