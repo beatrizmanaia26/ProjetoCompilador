@@ -67,7 +67,7 @@ public class Lexer {
             skipWhiteSpace();
 
             if (code.current() == CharacterIterator.DONE) {
-                tokens.add(new Token("EOF", "EOF"));
+                tokens.add(new Token("EOF", "$"));
                 break;
             }
 

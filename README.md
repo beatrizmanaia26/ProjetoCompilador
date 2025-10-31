@@ -48,6 +48,12 @@
 <br>fecharChave = ‘}’
 <br>abreParenteses = ‘(‘
 <br>fechaParenteses = ‘)’
+<br>operadorIncremento++ = ‘++’
+<br>operadorIncremento-- = ‘--’
+<br>operadorIncremento+= = ‘+=’
+<br>operadorIncremento-= = ‘-=’
+<br>operadorIncremento= = ‘*=’
+<br>operadorIncremento/= = ‘/=’
 
 # Gramática completa do analisador sintático 
 
@@ -64,10 +70,10 @@ fazer so comparacoes mais simples
 RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 
 <br> listaComandos -> comando listaComandos | ε 
-<br> comando -> seCompleto|para|lacoEnquanto|declarar|atribuicao|
+<br> comando -> seCompleto|para|lacoEnquanto|declarar|atribui|
 <br> criarFuncao|chamarFuncao
 <br> seCompleto ->se listaOuSe senaoOpcional
-<br> listaOuSe > ouSe listaOuSe | ε
+<br> listaOuSe -> ouSe listaOuSe | ε
 <br> senaoOpcional -> senão | ε
 <br> se -> 'se''('condicao')''{'listaComandosInternos'}'
 <br> ouSe -> 'ouSe''('condicao')''{'listaComandosInternos'}'
@@ -75,18 +81,19 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> para -> 'para''('cabecalhoPara')''{'listaComandosInternos'}'
 <br> lacoEnquanto -> 'lacoEnquanto''('condicao')''{'listaComandosInternos'}' 
 <br> listaComandosInternos -> comandoInterno listaComandosInternos | ε
-<br> comandoInterno -> se|ouSe|senao|para|lacoEnquanto|declarar|atribuicao|chamarFuncao|retornar
+<br> comandoInterno -> se|ouSe|senao|para|lacoEnquanto|declarar|atribui|chamarFuncao|retornar
 <br> retornar -> 'retorna' conteudos';'
-<br> conteudos -> identificadores|expressoesMatematicas|numero
+<br> conteudos -> identificadores|expressoesMatematicas|numero|isBoolean
 <br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
 <br> inicializacao -> tipoVariavel identificadores "->" conteudos
-<br> incremento -> identificadores '->' expressoesMatematicas
+<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificador | identficiador operacaoIncremento expressoesMatematicas
+<br> operacaoIncremento -> operadorIncremento++|operadorIncremento--|operadorIncremento+=|operadorIncremento-=|operadorIncremento*=|operadorIncremento/=
 
 <br>CONDICAO MAIS BÁSICA PARA DEPOIS APRIMORAR (ver se precisa do '('condicao')', tirei e arrumei )!!!!! condicao ->(condicao)| identificadores|negacaoCondicao|condicaoComparacoesBasicas 
 
-<br>condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
+<br> condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
 <br> condicao’ -> operacao condição condicao’| ε
-<br> condicaoComparacõesBasicas ->  identificadores|numero operacao valoresOperacao
+<br> condicaoComparacoesBasicas ->  identificadores|numero operacao valoresOperacao
 <br> valoresOperacao -> identificadores|numero|boolean
 <br> negacaoCondicao -> '!'condicao
 <br> operacao -> operacaoRelacional|operacaoLogica
@@ -111,6 +118,7 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> parametro -> tipoVariavel identificadores
 <br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto
 <br> chamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' ';'
+<br> inicioChamarFuncao -> inicioChamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima
 <br> argumentosChamada -> ε | valor restoArgumentosChamada
 <br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas
 <br> restoArgumentosChamada -> ε | ',' valor restoArgumentosChamada
@@ -228,7 +236,6 @@ se (Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
 senao{<br>
     retorna false;<br>
 }<br>
-lacoEnquanto<br>
 } <br>
 
 decimal Trem_limiteSaque -> 2000.00;<br>

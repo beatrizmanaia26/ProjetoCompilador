@@ -1,2 +1,29 @@
-inteiro Trem_num -> 77;
 
+lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha ){
+
+ #uai...
+    texto Trem_senha;
+    Imprima("Digite a senha", Trem_senhaDigitada);
+
+    se(Trem_senhaDigitada <-> Trem_senhaCorreta){
+    Trem_userLogado -> true;
+        Imprima("login realizado");
+    }
+    ...so#
+}
+
+#uai...
+
+Trem_comp -> Trem_tentativasSenha < Trem_maxTentativasSenha;
+
+lacoEnquanto(!Trem_userLogado e Trem_comp){
+
+    texto Trem_senha;
+    Imprima("Digite a senha", Trem_senhaDigitada);
+
+    se(Trem_senhaDigitada <-> Trem_senhaCorreta){
+    Trem_userLogado -> true;
+        Imprima("login realizado");
+    }
+}
+...so#
