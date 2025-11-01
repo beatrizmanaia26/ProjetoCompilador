@@ -587,11 +587,11 @@ public class Parser {
    */
   private boolean valor(){ 
     System.out.println("entrei em valor");
-   // System.out.println("TOKENSSSSS"+tokens);
-   // System.out.println("TOKEN"+token);
+    System.out.println("TOKENSSSSS"+tokens);
+    System.out.println("TOKEN"+token);
 
     //tokens é a lista com os proximos tokens
-    if(tokens.get(0).lexema.equals(";")){//se proximo token da lista for ; é declaracao simples e pode ser numero/texto/isboolean/identificadores
+    if(tokens.get(0).lexema.equals(";") || token.tipo.equals("TEXT")){//se proximo token da lista for ; é declaracao simples e pode ser numero/texto/isboolean/identificadores
        System.out.println("entrou na opcao basica em valor()");
       if((first("numero") && numero())||(first("texto") && texto())||(first("isBoolean") && isBoolean())||(first("identificadores") && identificadores())){
         return true;
