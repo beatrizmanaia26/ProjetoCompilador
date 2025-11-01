@@ -287,8 +287,6 @@ public class Parser {
    */
   private boolean argumentosChamada(){
      System.out.println("entrei em argumentosChamada");
-    System.out.println("TOKENSSS ARG CHAMADA"+tokens);
-    System.out.println("TOKEN ARGCHAMADA"+token);
     if(first("valor") && valor() && restoArgumentosChamada()){
       return true;
     }
