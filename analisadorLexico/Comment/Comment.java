@@ -30,7 +30,7 @@ public class Comment extends AFD {
                 curIndex += 5; // avançar o índice para após "uai..."
                 
                 // comentário de bloco
-                while (!readPrefixSufix(code, "...sô#")) {
+                while (!readPrefixSufix(code, "...so#")) {
                     comment.append(code.current());
                     code.next();
                     curIndex++;

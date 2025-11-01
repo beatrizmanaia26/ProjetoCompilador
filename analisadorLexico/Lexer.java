@@ -36,11 +36,11 @@ public class Lexer {
         // Inicializa os AFDs
         afds.add(new AssignmentOperator());
         afds.add(new RelationalOperators());
-        afds.add(new LogicOperator());
         afds.add(new Identifiers());
         afds.add(new Comment());
         afds.add(new MathOperator());
         afds.add(new ReservedWords());
+        afds.add(new LogicOperator());
         afds.add(new FunctionName());
         afds.add(new IntegerNumber());
         afds.add(new DecimalNumber());
