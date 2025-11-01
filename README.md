@@ -51,10 +51,6 @@
 <br>fecharChave = ‘}’
 <br>abreParenteses = ‘(‘
 <br>fechaParenteses = ‘)’
-<br>operadorIncremento++ = ‘++’
-<br>operadorIncremento-- = ‘--’
-<br>operadorIncremento+= = ‘+=’
-<br>operadorIncremento-= = ‘-=’
 
 # Gramática completa do analisador sintático 
 
@@ -91,8 +87,8 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> conteudos -> identificadores|expressoesMatematicas|numero|isBoolean
 <br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
 <br> inicializacao -> tipoVariavel identificadores "->" conteudos
-<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificador | identficiador operacaoIncremento expressoesMatematicas
-<br> operacaoIncremento -> operadorIncremento++|operadorIncremento--|operadorIncremento+=|operadorIncremento-=|operadorIncremento*=|operadorIncremento/=
+<br> incremento -> identificadores operacaoIncremento 
+<br> operacaoIncremento -> operadorSoma operadorSoma|operadorSubtracao operadorSubtracao 
 
 <br> inicio correcao "condicao" (ver se da certo e se n tem recursao ou fatoracao a esquerda):
 <br> condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas 
@@ -157,6 +153,10 @@ DESCREVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Em condicao()
 
 - da para escrever varias comparacoes (ex: se(Trem_a < 2 ou Trem_b <> Trem_c e Trem_d <-> 5){}), porem o resultado estara errado se fizer dessa forma pois nao tem parenteses para determinar a ordem de comparacoes
+
+# Em cabeçalho para
+
+- incremento só pode ser: 
 
 
 ## tipos de variáveis:<br>

@@ -822,15 +822,15 @@ public class Parser {
   }
 
   //incremento -> identificadores '->' expressoesMatematicas
-  //incrmeento -> identificadores operacaoIncremento | identificadores '->' expressoesMatematicas
+  //incremento -> identificadores operacaoIncremento 
   /*
    * simbulos        first
     * incremento     first é first dessa regra: identificadores
    */
   private boolean incremento(){ 
     System.out.println("entrei em incremento");
-    if((first("identificadores") && identificadores() && operacaoIncremento()) ||
-     (first("identificadores") && identificadores() && matchL("->") && first("precedenciaSuperior") && expressoesMatematicas())){
+    if((first("identificadores") && identificadores() && operacaoIncremento()
+    )){
       System.out.println("dei match em incrmeento");
       return true;
     }
@@ -838,13 +838,17 @@ public class Parser {
     return false;
   }
 
-  //é melhor reutilizar os token que já existem de +,-,*, / porem é mais facil fazer assim:
+  //operacaoIncremento -> operadorSoma operadorSoma|operadorSubtracao operadorSubtracao
+  //é melhor reutilizar os token que já existem de +,-
   private boolean operacaoIncremento(){ 
     System.out.println("entrei em operacaoIncremento");
-    if((tokens.get(0).lexema.equals("+") || ) && firsts.get("validaExpressao").contains(token.lexema)){
-
-    }
-    if(matchT("INCREMENT") || matchT("DECREMENT") || matchT("PLUS_ASSIGN") || matchT("MINUS_ASSIGN")){
+    if((tokens.get(0).lexema.equals("+") || (tokens.get(0).lexema.equals("-"))) &&
+    (firsts.get("validaIncremento").contains(token.lexema))){
+       System.out.println("dei match em operacaoIncremento");
+      // Consome o primeiro operador
+      matchL(token.lexema);
+      // Consome o segundo operador  
+      matchL(token.lexema);
       return true;
     }
     erro("operacaoIncremento");
@@ -994,6 +998,9 @@ public class Parser {
 
     //proximos tokens de expressoes matematicas para verificar se lista de tokens possue algum deles (nao é first, porem vou colocar aqui pra facilitar e n ter q criar outra hash)
     firsts.put("validaExpressao", Set.of("(","+","-","*","/","^"));
+
+    //apenas para validar operacaoIncremento (nao é first, porem vou colocar aqui pra facilitar e n ter q criar outra hash)
+    firsts.put("validaIncremento", Set.of("+","-"));
   }
 
   private boolean first(String regra) {
