@@ -1,34 +1,21 @@
 package analisadorLexico;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class Main{
     public static void main(String[] args){
         String code = "";
-       // String nomeArquivo = "/workspaces/ProjetoCompilador/analisadorLexico/script.txt"; 
-        String nomeArquivo = "C:\\ProjetoCompilador\\analisadorLexico\\script.txt"; 
-        File arquivo = new File(nomeArquivo);
-        Scanner scanner = null;
+
+        String nomeArquivo = "./analisadorLexico/script.txt";
+
         try {
-            scanner = new Scanner(arquivo); 
-
-            while (scanner.hasNextLine()) { 
-                String linha = scanner.nextLine(); 
-                code += linha  + "\n"; //quebrar em linhas pra mostrar corretamente a linha do erro
-                //System.out.println("Linha lida: " + linha);
-            }
-
-        } catch (FileNotFoundException e) {
-            System.err.println("Erro: O arquivo não foi encontrado.");
-            e.printStackTrace();
-        } finally {
-            if (scanner != null) {
-                scanner.close(); 
-            }
+            code = lerArquivo(nomeArquivo);
+        } catch (IOException e) {
+            System.err.println("Erro ao ler o arquivo: " + e.getMessage());
         }
 
         try {
@@ -46,7 +33,12 @@ public class Main{
             parser.main();
         } catch (LexicalException e) {
         System.err.println(e.getMessage());
+        }
+
     }
 
+    public static String lerArquivo(String caminhoArquivo) throws IOException {
+        byte[] bytes = Files.readAllBytes(Paths.get(caminhoArquivo));
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }
