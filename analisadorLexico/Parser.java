@@ -259,6 +259,7 @@ public class Parser {
     System.out.println("entrou chamarFuncao");
   if (first("chamarFuncao") && inicioChamarFuncao() && matchL("(") && argumentosChamada() && matchL(")") && matchL(";")
   ) {
+    System.out.println("deu match em chamar funcao");
     return true;
   }
   erro("chamarFuncao");
@@ -285,6 +286,9 @@ public class Parser {
    * argumentosChamada   ε, first é first dessa regra: valor
    */
   private boolean argumentosChamada(){
+     System.out.println("entrei em argumentosChamada");
+    System.out.println("TOKENSSS ARG CHAMADA"+tokens);
+    System.out.println("TOKEN ARGCHAMADA"+token);
     if(first("valor") && valor() && restoArgumentosChamada()){
       return true;
     }
@@ -586,14 +590,15 @@ public class Parser {
    * valor          first é first dessas regras: numero,texto,isBoolean, identificadores,expressoesMatematicas
    */
   private boolean valor(){ 
-    System.out.println("entrei em valor");
-   // System.out.println("TOKENSSSSS"+tokens);
-   // System.out.println("TOKEN"+token);
+  //  System.out.println("entrei em valor");
+  //  System.out.println("TOKENSSSSS"+tokens);
+  //  System.out.println("TOKEN"+token);
 
-    //tokens é a lista com os proximos tokens
-    if(tokens.get(0).lexema.equals(";") || token.tipo.equals("TEXT")){//se proximo token da lista for ; é declaracao simples e pode ser numero/texto/isboolean/identificadores
+    //tokens é a lista com os proximos tokens             //quando quero chamar funcao e tem texto no comeco // argumento da chamada (ultimo argumento)// quando tem mais argumentos
+    if(tokens.get(0).lexema.equals(";") || token.tipo.equals("TEXT") || tokens.get(0).lexema.equals(")") ||  tokens.get(0).lexema.equals(",") ){//se proximo token da lista for ; é declaracao simples e pode ser numero/texto/isboolean/identificadores
        System.out.println("entrou na opcao basica em valor()");
       if((first("numero") && numero())||(first("texto") && texto())||(first("isBoolean") && isBoolean())||(first("identificadores") && identificadores())){
+        System.out.println("deu match nas opcoes basicas de valor");
         return true;
       }
     }
@@ -836,6 +841,9 @@ public class Parser {
   //é melhor reutilizar os token que já existem de +,-,*, / porem é mais facil fazer assim:
   private boolean operacaoIncremento(){ 
     System.out.println("entrei em operacaoIncremento");
+    if((tokens.get(0).lexema.equals("+") || ) && firsts.get("validaExpressao").contains(token.lexema)){
+
+    }
     if(matchT("INCREMENT") || matchT("DECREMENT") || matchT("PLUS_ASSIGN") || matchT("MINUS_ASSIGN")){
       return true;
     }
@@ -904,7 +912,9 @@ public class Parser {
    * texto        TEXT
    */
   private boolean texto(){ 
+    System.out.println("entrou em texto");
     if(matchT("TEXT")){
+      System.out.println("deu match em texto");
       return true;
     }
     erro("texto");
