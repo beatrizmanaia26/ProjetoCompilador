@@ -22,12 +22,6 @@ public class Parser {
     }else{
       erro("main");
     }
-    /* extra: token = getNextToken();
-    if (lacoEnquanto() && matchT("EOF")){
-      System.out.println("Sintaticamente correto");
-    }else{
-      erro("main");
-    }*/ 
   }
 
    public Token getNextToken() {
@@ -117,17 +111,33 @@ public class Parser {
    *               inteiro,decimal, texto, verdadeiroFalso
    */
   private boolean declaracao(){
+    /*
+    System.out.println("entrou no declaracao");
+    if(first("declaracao")&& tipoVariavel() && identificadores()) { //uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
+      // Pode ser: tipo var; OU tipo var -> valor;
+      if(matchL(";")) {
+         return true; // declaracao simples
+      } else if(matchL("->") && valor() && matchL(";")) {
+        return true; // declaracao com atribuicao
+      }
+    }
+    return false;
+  }
+     */
     System.out.println("entrou no declaracao");
     if(first("declaracao") && tipoVariavel() && identificadores()) {//uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
       // Pode ser: tipo var; OU tipo var -> valor;
       if(matchL(";")) {
+        System.out.println("identifiquei ;");
         return true; // declaracao simples
       }
       //first de valor() e de condicaoComparacoesBasicas() tem coisas em comum (identifficadores) ent pode entrar em um quando é para entrar em outro--> fazer lookAhead
       //declaração com atribuição:
       else if(matchL("->")) {
+        System.out.println("identififquei ->");
         // lookahead
         if (!tokens.isEmpty()) {
+          System.out.println("token nao é vazio");
           Token nextToken = tokens.get(0);    
           // Se próximo token é operador RELACIONAL, usa condicaoComparacoesBasicas
           if (firsts.get("operacaoRelacional").contains(nextToken.lexema)) {
@@ -403,7 +413,6 @@ public class Parser {
     }
     // numeros (também podem iniciar comparações)
     if (token != null && (token.tipo.equals("INTEIRO") || token.tipo.equals("DECIMAL"))) {
-      System.out.println("-> Detectou número para comparação");
       return condicaoComparacoesBasicas() && condicaoDerivada();
     }
     
@@ -557,11 +566,43 @@ public class Parser {
    */
   private boolean atribui(){ 
     System.out.println("entrou em atribui");
-     if(first("identificadores") && identificadores() && matchL("->") && (valor()||condicaoComparacoesBasicas()) && matchL(";")){
+    /*
+    if (first("identificadores") && identificadores() && matchL("->")) {
+
+        // Garantir que temos pelo menos 2 tokens à frente
+        if (tokens.size() >= 2) {
+            Token proximo = tokens.get(0);     // primeiro após ->
+            Token depoisProximo = tokens.get(1); // segundo após ->
+
+            // Se o segundo token for um operador relacional (<, >, <=, >=, <>, <->)
+            if (firsts.get("operacaoRelacional").contains(depoisProximo.lexema)) {
+                return condicaoComparacoesBasicas() && matchL(";");
+            }
+
+            // Se o segundo token for um operador matemático (+, -, *, /, ^)
+            else if (firsts.get("operadoresMatematicos").contains(depoisProximo.lexema)) {
+                return expressoesMatematicas() && matchL(";");
+            }
+
+            // Se o segundo token for ponto e vírgula, é apenas um valor simples
+            else if (depoisProximo.lexema.equals(";")) {
+                return valor() && matchL(";");
+            }
+        }
+
+        // Caso não tenha 2 tokens (ex: fim de arquivo ou erro), tenta valor() por padrão
+        return valor() && matchL(";");
+    }
+
+    erro("atribui");
+    return false;
+    */
+    if(first("identificadores") && identificadores() && matchL("->") && (expressoesMatematicas()||condicaoComparacoesBasicas()||valor()) && matchL(";")){
         return true;
     }
     erro("atribui");
     return false;
+    
   }
 
   //expressoesMatematicas -> precedenciaInferior

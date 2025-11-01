@@ -52,8 +52,6 @@
 <br>operadorIncremento-- = ‘--’
 <br>operadorIncremento+= = ‘+=’
 <br>operadorIncremento-= = ‘-=’
-<br>operadorIncremento= = ‘*=’
-<br>operadorIncremento/= = ‘/=’
 
 # Gramática completa do analisador sintático 
 
