@@ -111,49 +111,24 @@ public class Parser {
    *               inteiro,decimal, texto, verdadeiroFalso
    */
   private boolean declaracao(){
-    /*
     System.out.println("entrou no declaracao");
-    if(first("declaracao")&& tipoVariavel() && identificadores()) { //uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
+    if(first("declaracao") && tipoVariavel() && identificadores()) { //uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
       // Pode ser: tipo var; OU tipo var -> valor;
       if(matchL(";")) {
          return true; // declaracao simples
-      } else if(matchL("->") && valor() && matchL(";")) {
+      } 
+      else if(matchL("->") && valor() && matchL(";")) {
         return true; // declaracao com atribuicao
       }
     }
+    erro("declaracao");
     return false;
   }
-     */
-    System.out.println("entrou no declaracao");
-    if(first("declaracao") && tipoVariavel() && identificadores()) {//uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
-      // Pode ser: tipo var; OU tipo var -> valor;
-      if(matchL(";")) {
-        System.out.println("identifiquei ;");
-        return true; // declaracao simples
-      }
-      //first de valor() e de condicaoComparacoesBasicas() tem coisas em comum (identifficadores) ent pode entrar em um quando é para entrar em outro--> fazer lookAhead
-      //declaração com atribuição:
-      else if(matchL("->")) {
-        System.out.println("identififquei ->");
-        // lookahead
-        if (!tokens.isEmpty()) {
-          System.out.println("token nao é vazio");
-          Token nextToken = tokens.get(0);    
-          // Se próximo token é operador RELACIONAL, usa condicaoComparacoesBasicas
-          if (firsts.get("operacaoRelacional").contains(nextToken.lexema)) {
-            return condicaoComparacoesBasicas() && matchL(";");
-          }
-        }
-        // Caso contrário, tenta valor() 
-        return valor() && matchL(";");
-      }
-    }
-    return false;
-  }
+
   //seCompleto ->se listaOuSe senaoOpcional
   /*
-   * simbulos     first                                              
-   *               "se"
+   * simbulos            first                                              
+   *  seCompleto          "se"
    */
   private boolean seCompleto(){
     System.out.println("entrou no seCompleto");
@@ -412,7 +387,7 @@ public class Parser {
         return expressoesMatematicas() && condicaoDerivada();
     }
     // numeros (também podem iniciar comparações)
-    if (token != null && (token.tipo.equals("INTEIRO") || token.tipo.equals("DECIMAL"))) {
+    if (token != null && (token.tipo.equals("INTEGER") || token.tipo.equals("DECIMAL"))) {
       return condicaoComparacoesBasicas() && condicaoDerivada();
     }
     
@@ -445,17 +420,32 @@ public class Parser {
     return true; //ε
   }
 
-  //condicaoComparacoesBasicas ->  identificadores|numero operacao valoresOperacao
+
+  //condicaoComparacoesBasicas ->  comparacoesBasicas || !identificadores
   /*
    * simbulos                       first
-   * condicaoComparacoesBasicas    first é first dessas regras: identificadores, numero
+   * condicaoComparacoesBasicas    first é ! e first dessa regra: comparacoesBasicas
    */
   private boolean condicaoComparacoesBasicas(){
     System.out.println("entrou em condicaoComparacoesBasicas");
-    if(((first("identificadores") && identificadores())||(first("numero") && numero())) && operacao() && valoresOperacao()){
+    if((first("condicaoComparacoesBasicas") && comparacoesBasicas())|| (matchL("!") && identificadores()) ){
       return true;
     }
     erro("condicaoComparacoesBasicas");
+    return false;
+  }
+
+  //comparacoesBasicas -> identificadores|numero operacao valoresOperacao 
+  /*
+   * simbulos                       first
+   * comparacoesBasicas    first é first dessas regras: identificadores, numero
+   */
+  private boolean comparacoesBasicas(){
+    System.out.println("entrou em comparacoesBasicas");
+    if(((first("identificadores") && identificadores())||(first("numero") && numero())) && operacao() && valoresOperacao()){
+      return true;
+    }
+    erro("comparacoesBasicas");
     return false;
   }
 
@@ -532,7 +522,7 @@ public class Parser {
 
   //listaComandosInternos -> comandoInterno listaComandosInternos | ε
   /*
-   * simbulos                 first
+   * simbulos                 first                                              
    * listaComandosInternos     ε, first é first dessa regra: comandointerno
    */
   private boolean listaComandosInternos(){ 
@@ -564,76 +554,74 @@ public class Parser {
    * atribui           first é first dessa regra: identificadores
    *                   
    */
-  private boolean atribui(){ 
+  private boolean atribui(){  // AJUSTAR PRA DEFINIR QUAL DAS REGRAS VAI ENTRAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     System.out.println("entrou em atribui");
-    /*
-    if (first("identificadores") && identificadores() && matchL("->")) {
-
-        // Garantir que temos pelo menos 2 tokens à frente
-        if (tokens.size() >= 2) {
-            Token proximo = tokens.get(0);     // primeiro após ->
-            Token depoisProximo = tokens.get(1); // segundo após ->
-
-            // Se o segundo token for um operador relacional (<, >, <=, >=, <>, <->)
-            if (firsts.get("operacaoRelacional").contains(depoisProximo.lexema)) {
-                return condicaoComparacoesBasicas() && matchL(";");
-            }
-
-            // Se o segundo token for um operador matemático (+, -, *, /, ^)
-            else if (firsts.get("operadoresMatematicos").contains(depoisProximo.lexema)) {
-                return expressoesMatematicas() && matchL(";");
-            }
-
-            // Se o segundo token for ponto e vírgula, é apenas um valor simples
-            else if (depoisProximo.lexema.equals(";")) {
-                return valor() && matchL(";");
-            }
-        }
-
-        // Caso não tenha 2 tokens (ex: fim de arquivo ou erro), tenta valor() por padrão
-        return valor() && matchL(";");
-    }
-
-    erro("atribui");
-    return false;
-    */
-    if(first("identificadores") && identificadores() && matchL("->") && (expressoesMatematicas()||condicaoComparacoesBasicas()||valor()) && matchL(";")){
+    if(first("identificadores") && identificadores() && matchL("->") && valor() && matchL(";")){
         return true;
     }
     erro("atribui");
     return false;
-    
   }
 
   //expressoesMatematicas -> precedenciaInferior
     /*
-   * simbulos                first
+   * simbulos                first                                           
    * expressoesMatematicas   first é first dessa regra:precedenciaInferior
    */
   private boolean expressoesMatematicas(){
     System.out.println("entrei em expressoesMatematicas");
+   // System.out.println("TOKEN atual expMat"+token);
+   // System.out.println("TOKENS atual expMat"+tokens);
     if(first("precedenciaSuperior") && precedenciaInferior()){
+      System.out.println("dei match em expressoesMatematicas");
       return true;
     }
     erro("expressoesMatematicas");
     return false;
   }
 
- //valor -> numero|texto|boolean|identificadores|expressoesMatematicas
+ //valor -> numero|texto|boolean|identificadores|expressoesMatematicas|condicaoComparacoesBasicas
     /*
    * simbulos       first
    * valor          first é first dessas regras: numero,texto,isBoolean, identificadores,expressoesMatematicas
    */
   private boolean valor(){ 
     System.out.println("entrei em valor");
-    if((first("numero") && numero())||(first("texto") && texto())||(first("isBoolean") && isBoolean())||
-    (first("identificadores") && identificadores())||( first("expressoesMatematicas") && expressoesMatematicas())){
+   // System.out.println("TOKENSSSSS"+tokens);
+   // System.out.println("TOKEN"+token);
+
+    //tokens é a lista com os proximos tokens
+    if(tokens.get(0).lexema.equals(";")){//se proximo token da lista for ; é declaracao simples e pode ser numero/texto/isboolean/identificadores
+       System.out.println("entrou na opcao basica em valor()");
+      if((first("numero") && numero())||(first("texto") && texto())||(first("isBoolean") && isBoolean())||(first("identificadores") && identificadores())){
+        return true;
+      }
+    }
+    else if (firsts.get("operacao").contains(token.lexema) || firsts.get("operacao").contains(tokens.get(0).lexema)){//se token atual for algum dos tokens do first operacao ou prox token for algum dos tokens do first de operacao
+      System.out.println("entrou na opcao condicaoComparacoesBaiscas em valor()");
+      return condicaoComparacoesBasicas();
+    }
+    else if(firsts.get("validaExpressao").contains(token.lexema) || firsts.get("validaExpressao").contains(tokens.get(0).lexema)){//se token atual for algum dos tokens do first precedenciasuperior (representa expressoesmatematicas) ou prox token for algum dos tokens do first de precedenciasuperior
+      System.out.println("entrou na opcao expressoesMatematicas em valor()");
+      return expressoesMatematicas();
+    }
+    else{
+      return false;
+    }
+    erro("valor");
+    return false;
+  }
+    /* 
+     if((first("numero") && numero())||(first("texto") && texto())||(first("isBoolean") && isBoolean())||
+    (first("identificadores") && identificadores())||( first("precedenciaSuperior") && expressoesMatematicas())||
+    (first("condicaoComparacoesBasicas") && condicaoComparacoesBasicas())){
       System.out.println("deu match em valor");
       return true;
     }
     erro("valor");
     return false;
   }
+  */
 
   //numero -> numeroDecimal|numeroInteiro
    /*
@@ -703,7 +691,7 @@ public class Parser {
   private boolean inicializacao(){
     System.out.println("entrou na inicializacao"); 
     if(first("declaracao") && tipoVariavel() && identificadores() && matchL("->") && conteudos()){
-      System.out.println("dei match em inicializacao");
+    //  System.out.println("dei match em inicializacao");
       return true;
     }
     erro("inicializacao");
@@ -716,7 +704,11 @@ public class Parser {
    * precedenciaInferior    first é first dessa regra:precedenciaIntermediaria = first("precedenciaSuperior")
    */
   private boolean precedenciaInferior(){
+    System.out.println("entrei em precedenciaInferior");
+  //  System.out.println("TOKEN em precedenciaInferior"+token);
+   // System.out.println("TOKENS em precedenciaInferior"+tokens);
     if(first("precedenciaSuperior") && precedenciaIntermediaria() && precedenciaInferiorDerivada()){
+      System.out.println("dei match em precedenciaInferior");
       return true;
     }
     erro("precedenciaInferior");
@@ -729,7 +721,11 @@ public class Parser {
    * precedenciaIntermediaria     first é first dessa regra:precedenciaAlta = first("precedenciaSuperior")
    */
   private boolean precedenciaIntermediaria(){
+    System.out.println("entrei em precedenciaIntermediaria");
+   // System.out.println("TOKEN em precedenciaIntermediaria"+token);
+   // System.out.println("TOKENS em precedenciaIntermediaria"+tokens);
     if(first("precedenciaSuperior") && precedenciaAlta() && precedenciaIntermediariaDerivada()){
+      System.out.println("dei match em precedenciaIntermediaria");
       return true;
     }
     erro("precedenciaIntermediaria");
@@ -741,7 +737,9 @@ public class Parser {
    * simbulos               first
    * precedenciaInferior'    "+", "-", ε
    */
-  private boolean precedenciaInferiorDerivada(){ 
+  private boolean precedenciaInferiorDerivada(){
+    System.out.println("entrei em precedenciaInferiorDerivada");
+   // System.out.println("TOKEN em precedenciaInferiorDerivada"+token);
     if(matchL("+") && precedenciaIntermediaria() && precedenciaInferiorDerivada()){
       return true;
     }
@@ -758,7 +756,11 @@ public class Parser {
   * precedenciaAlta     first é first dessa regra: precedenciaSuperior
   */
   private boolean precedenciaAlta(){
+    System.out.println("entrei em precedenciaAlta");
+ //   System.out.println("TOKEN em precedenciaAlta"+token);
+ //   System.out.println("TOKENS em precedenciaAlta"+tokens);
     if(first("precedenciaSuperior") && precedenciaSuperior() && precedenciaAltaDerivada()){
+    System.out.println("dei match em precedenciaAlta");
       return true;
     }
     erro("precedenciaAlta");
@@ -771,6 +773,8 @@ public class Parser {
    * precedenciaIntermediaria'    "*", "/", ε
    */
   private boolean precedenciaIntermediariaDerivada(){
+    System.out.println("entrei em precedenciaIntermediariaDerivada");
+   // System.out.println("TOKEN em precedenciaIntermediariaDerivada"+token);
     if(matchL("*") && precedenciaAlta() && precedenciaIntermediariaDerivada()){
       return true;
     }
@@ -787,7 +791,11 @@ public class Parser {
     * precedenciaSuperior       "(", first é first dessa regra: identificadores,numero
    */
   private boolean precedenciaSuperior(){
+    System.out.println("entrei em precedenciaSuperior");
+  //  System.out.println("TOKEN em precedenciaSuperior"+token);
+  //  System.out.println("TOKENS em precedenciaSuperior"+tokens);
     if(first("identificadores") && identificadores()||first("numero") && numero()|| (matchL("(") && expressoesMatematicas() && matchL(")"))){
+      System.out.println("dei match em precedenciaSuperior");
       return true;
     }
     erro("precedenciaSuperior");
@@ -800,7 +808,9 @@ public class Parser {
    * precedenciaAlta'    "^",ε
    */
   private boolean precedenciaAltaDerivada(){
-    if(matchL("^") && precedenciaAltaDerivada()){
+    System.out.println("entrei em precedenciaAltaDerivada");
+  //  System.out.println("TOKEN em precedenciaAltaDerivada"+token);
+    if(matchL("^") && precedenciaSuperior() && precedenciaAltaDerivada()){
       return true;
     }
     return true;//ε
@@ -944,14 +954,15 @@ public class Parser {
     firsts.put("criarFuncao", Set.of("criar"));
     firsts.put("chamarFuncao", Set.of("FUNCTION_NAME","Entrada","Imprima"));
     //firsts valor
-    firsts.put("valor", Set.of("DECIMAL","INTEIRO","TEXT","true","false","IDENTIFIER","("));
-    firsts.put("numero", Set.of("DECIMAL","INTEIRO"));
+    firsts.put("valor", Set.of("DECIMAL","INTEGER","TEXT","true","false","IDENTIFIER","("));
+    //firsts de cada rgra dentro da regra valor()
     firsts.put("texto", Set.of("TEXT"));
     firsts.put("isBoolean", Set.of("true","false"));
+    //PROBLEMA, ESSES FIRSTS EM COISAS EM COMUM:
+    firsts.put("numero", Set.of("DECIMAL","INTEGER"));
     firsts.put("identificadores", Set.of("IDENTIFIER"));
-    firsts.put("expressoesMatematicas", Set.of("(","IDENTIFIER", "DECIMAL","INTEIRO"));
-    //firsts condicao:
-    firsts.put("condicaoComparacoesBasicas", Set.of("IDENTIFIER", "DECIMAL","INTEIRO"));  //PROBLEMA SER MTO PARECIDO COMEXPRESSOESMATEMATICAS???????????
+    firsts.put("condicaoComparacoesBasicas", Set.of("IDENTIFIER", "DECIMAL","INTEGER")); 
+    firsts.put("precedenciaSuperior", Set.of("(", "IDENTIFIER","DECIMAL","INTEGER"));
      //firsts operacao:
     firsts.put("operacao", Set.of("<",">","<>","<->","<=",">=","e","ou","!"));
     //firsts operacaoRelacional:
@@ -960,8 +971,6 @@ public class Parser {
     firsts.put("operacaoLogica", Set.of("e","ou","!"));
     //firsts comandoInterno:
     firsts.put("comandoInterno", Set.of("se","para","lacoEnquanto","inteiro","decimal","texto","verdadeiroFalso","IDENTIFIER","FUNCTION_NAME","Entrada","Imprima","retorna"));
-    //precedenciaSuperior:
-    firsts.put("precedenciaSuperior", Set.of("IDENTIFIER","DECIMAL","INTEIRO"));
 
     // firsts basicos:
     firsts.put("se", Set.of("se"));
@@ -971,7 +980,10 @@ public class Parser {
     firsts.put("retornar", Set.of("retorna"));
     firsts.put("negacaoCondicao", Set.of("!"));
     firsts.put("decimal", Set.of("DECIMAL"));
-    firsts.put("inteiro", Set.of("INTEIRO"));
+    firsts.put("inteiro", Set.of("INTEGER"));
+
+    //proximos tokens de expressoes matematicas para verificar se lista de tokens possue algum deles (nao é first, porem vou colocar aqui pra facilitar e n ter q criar outra hash)
+    firsts.put("validaExpressao", Set.of("(","+","-","*","/","^"));
   }
 
   private boolean first(String regra) {
@@ -989,4 +1001,5 @@ public class Parser {
     return matches;
   }
 
+  
 }

@@ -35,6 +35,8 @@
 <br>operadorAtribuicao = ‘->’  
 <br>operadorDiferente = ‘<>’
 <br>operadorIgualdade = ‘<->’
+<br>operadorMenor = ‘<’
+<br>operadorMaior = ‘>’
 <br>operadorMenorIgual = ‘<=’
 <br>operadorMaiorigual = ‘>=’
 <br>operadorSoma = ‘+’
@@ -91,7 +93,8 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 
 <br> condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
 <br> condicao’ -> operacao condição condicao’| ε
-<br> condicaoComparacoesBasicas ->  identificadores|numero operacao valoresOperacao
+<br> comparacoesBasicas -> identificadores|numero operacao valoresOperacao 
+<br> condicaoComparacoesBasicas ->  comparacoesBasicas || !identificadores
 <br> valoresOperacao -> identificadores|numero|boolean
 <br> negacaoCondicao -> '!'condicao
 <br> operacao -> operacaoRelacional|operacaoLogica
@@ -118,7 +121,7 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> chamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' ';'
 <br> inicioChamarFuncao -> inicioChamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima
 <br> argumentosChamada -> ε | valor restoArgumentosChamada
-<br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas
+<br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas|condicaoComparacoesBasicas
 <br> restoArgumentosChamada -> ε | ',' valor restoArgumentosChamada
 
 <br> INFORMAÇÕES GERAIS:
@@ -136,8 +139,20 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 
 DESCREVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
 # Características da linguagem criada
+
+# Sobre declarar e atribuir (declaracao())
+
+- quando declaramos e atribuimos (ao mesmo tempo) uma variavel, podemos: <br>
+- atribuir numeros (inteiro,decima), booleano (true, false), identificadores <br>
+- expressoesMatematicas de qualquer tamanho<br>
+- comparacoesbasicas (comparar 2 coisas apenas, com quaquer operador, ex !Trem_a, 2 < 3, Trem_a ou Trem_b...), nao da para comparar muitas coisas ao mesmo tempo
+- nao da para misturar eles (ex: quando declarar, atribuir expressoes matematicas e comparacoes basicas (ex: verdadeiroFalso Trem_a -> (2.3 +4) > 2; verdadeiroFalso Trem_a -> (2.3 +4) <= Trem_b;))<br>
+
+# Em condicao()
+
+- da para escrever varias comparacoes (ex: se(Trem_a < 2 ou Trem_b <> Trem_c e Trem_d <-> 5){}), porem o resultado estara errado se fizer dessa forma pois nao tem parenteses para determinar a ordem de comparacoes
+
 
 ## tipos de variáveis:<br>
 - inteiro<br>
@@ -168,6 +183,8 @@ criar NomeFuncao(qualquer coisa){}<br>
   <->  igualdade<br>
   <=  menor ou igual<br>
   >=  maior ou igual<br>
+  <  menor<br>
+  >  maior<br>
 
 ## operador matemático<br>
 soma +<br>
