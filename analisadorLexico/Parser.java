@@ -9,10 +9,12 @@ public class Parser {
   List<Token> tokens;
   Token token;
   Map<String, Set<String>> firsts = new HashMap<>();
+  Map<String, Set<String>> follows = new HashMap<>();
 
   public Parser(List<Token> tokens) {
     this.tokens = tokens;
     inicializarFirsts();
+    inicializarFollows();
   }
 
    public void main() {
@@ -55,12 +57,8 @@ public class Parser {
   //REGRAS DA GRAMÁTICA
 
   //verificar como tava declararetribuir, decarar e atribuicao (commit antes) deu trocar declaracao p ver se da p declarar qqr coisa!!!!!!!!!!
-  //verificar se coisas que terminam com ; ta certo ex inicializacao (conv deep)
-
-  //fazer que qnd passa lista de tokens pro sintatico nao passa nenhum token de comentario
 
   //VER SE FIZ CERTO EPSULON:Palavra vazia é sair de uma regra sem casar token = return true (follow)
-  //VERIFICAR SE FIZ TD GLC CORRETA (ex: terminar com ;) //
   //ONDE NAO TEM RETURN FALSE (E SIM RETURN TRUE)  //testar passar coisa incorreta para ver se aceita (EX: Aargumentoschamada, senaoopcional, listaouse...)
   //VE SE DA P OTIMIZA ALGUM CODIGO (ex: estoArgumentosChamada())
 
@@ -75,11 +73,19 @@ public class Parser {
    */
   private boolean listaComandos(){
     System.out.println("entrou no listacomandos");
+    System.out.println("TOKEN"+token);
+    System.out.println("TOKENS"+tokens);
     if(first("comando") && comando() && listaComandos()){
       System.out.println("deu match listacomandos");
       return true;
     }
-    return true; //ε
+    //follow
+    if(follow("listaComandos")){
+      return true; //ε
+    }
+    else{
+      return false;
+    }
   }
 
   //comando -> seCompleto|para|lacoEnquanto|declaracao|atribui|criarFuncao|chamarFuncao
@@ -89,6 +95,8 @@ public class Parser {
    */
   private boolean comando(){
     System.out.println("entrou no comando");
+    System.out.println("TOKEN"+token);
+    System.out.println("TOKENS"+tokens);
     if((first("declaracao") && declaracao())||(first("seCompleto") && seCompleto())||
     (first("para") && para())||(first("lacoEnquanto") && lacoEnquanto())||
     (first("atribui") && atribui())||(first("criarFuncao") && criarFuncao())||
@@ -132,6 +140,8 @@ public class Parser {
    */
   private boolean seCompleto(){
     System.out.println("entrou no seCompleto");
+    System.out.println("TOKEN"+token);
+    System.out.println("TOKENS"+tokens);
     if(first("se")&& se() && listaOuSe() && senaoOpcional()){
       return true;
     }
@@ -172,6 +182,8 @@ public class Parser {
    */
   private boolean se(){ 
     System.out.println("entrou no se");
+    System.out.println("TOKEN"+token);
+    System.out.println("TOKENS"+tokens);
      if (matchL("se") && matchL("(") && condicao() && matchL(")") && matchL("{") && listaComandosInternos() && matchL("}")){
         return true;
      }
@@ -363,6 +375,7 @@ public class Parser {
 
   //implementação do lookahead para pegar o prox token e distinguir se é identificadores, expressoesMatematicas ou condicoesComparacoesBasicas
   private boolean condicao(){ 
+    System.err.println("entrou em condicao");
   // Negação
     if (token != null && "!".equals(token.lexema)) {
       return negacaoCondicao() && condicaoDerivada();
@@ -415,6 +428,8 @@ public class Parser {
    */
   private boolean condicaoDerivada(){
     System.out.println("entrou em condicaoDerivada");
+    System.out.println("TOKEN"+token);
+    System.out.println("TOKENS"+tokens);
     if(first("operacao") && operacao() && condicao() && condicaoDerivada()){
       System.out.println("deu match em condicao derivada");
       return true;
@@ -1001,6 +1016,10 @@ public class Parser {
     firsts.put("validaIncremento", Set.of("+","-"));
   }
 
+  private void inicializarFollows() {
+    firsts.put("listaComandos", Set.of("$"));
+  }
+
   private boolean first(String regra) {
     if (token == null) return false; //evita null pointer exception
     
@@ -1012,6 +1031,21 @@ public class Parser {
     }
     // Verifica se token atual está no FIRST
     boolean matches = firstSet.contains(token.lexema) || firstSet.contains(token.tipo);
+    
+    return matches;
+  }
+
+  private boolean follow(String regra) {
+    if (token == null) return false; //evita null pointer exception
+    
+    Set<String> followSet = follows.get(regra);
+    if (followSet == null) {
+        // Regra sem FIRST definido - não tenta
+        System.out.println("FOLLOW não definido para: " + regra);
+        return false;
+    }
+    // Verifica se token atual está no FIRST
+    boolean matches = followSet.contains(token.lexema) || followSet.contains(token.tipo);
     
     return matches;
   }

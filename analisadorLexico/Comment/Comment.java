@@ -8,6 +8,10 @@ public class Comment extends AFD {
 
     @Override
     public Token evaluate(CharacterIterator code) {
+        if (code.current() != '#') {
+            return null; // Não é nosso token
+        }
+
         StringBuilder comment = new StringBuilder();
         int start = code.getIndex();
         int curIndex = start;

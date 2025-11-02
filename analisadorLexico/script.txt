@@ -1,577 +1,99 @@
+#uai...
+
+ CAPTA ERROS: 
+
+---LEXICO:---
+
+inteiros Trem_a -> 13;
+inteiro trem_a -> 13;
+inteiro Trem_a = 13;
+se(Trem_a && Trem_b){}
+
+---SINTATICO:---
+
+inteiro Trem_a -> 10
+Imprima(Trem_mensagem Trem_soma);
+inteiro Trem_a -> 10,3;
+inteiro Trem_a -> 10 > 3 ou Trem_a < 5;
+se(){}
 
 
-inteiro Trem_num -> 77;
-inteiro Trem_inteiro;
-decimal Trem_decimal -> 1.1;
-texto Trem_texto -> "oi";
 
-verdadeiroFalso Trem_vf -> true;
-Entrada("digite um numero", Trem_inteiro);
+TER ERRO DE COMENTARIO NO LEXER!!!!!!!!!!
 
-criar Imprimir(inteiro Trem_num){
-    Imprima("número digitado", Trem_num);
-}
+era pra dar erro e nao deu
+
+inteiro Trem_a  
+
+se(Trem_a){
+
+
 se (Trem_inteiro <> 10 e Trem_inteiro <= 20){
     para (inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){
         Imprima(Trem_x);
-    }
-    Imprimir(Trem_inteiro);
-}
-senao{
-    retorna false;
-} 
-
-decimal Trem_limiteSaque -> 2000.00;
-decimal Trem_transferencia -> 2.5;
-inteiro Trem_maxTentativasSenha -> 3;
-
-criar Main(){
-    texto Trem_nome -> "Beatriz";
-    texto Trem_numeroConta -> "12345-6";
-    decimal Trem_saldo -> 16000.00;
-    texto Trem_senhaCorreta -> "1234";
-    verdadeiroFalso Trem_userLogado -> false;
-    inteiro Trem_tentativasSenha -> 0;
-    Imprima("bem vindo");
-
-    lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){
-        texto Trem_senha;
-        Imprima("Digite a senha", Trem_senhaDigitada);
-
-        se(Trem_senhaDigitada <-> Trem_senhaCorreta){
-        Trem_userLogado -> true;
-           Imprima("login realizado");
-        }
     
-        senao{
-            Trem_tentativasSenha -> Trem_tentativasSenha + 1;
-            Trem_result ->Trem_maxTentativasSenha -  Trem_tentativasSenha;
-            Imprima("senha incorreta, tentativas restantes",Trem_result);
-            se(Trem_tentativasSenha >= Trem_maxTentativasSenha){
-                Imprima("conta bloqueada por excesso de tentativas");
-            }
-        }
-    }
-   verdadeiroFalso Trem_sistemaAtivo -> true;
-   lacoEnquanto(Trem_sistemaAtivo e Trem_userLogado){
-        Imprima(" MENU PRINCIPAL");
-        Imprima("Cliente: ", Trem_nome);
-        Imprima("Conta: ", Trem_numeroConta);
-        Imprima("Saldo: R$ ",Trem_saldo);
-        Imprima("1 - Saque");
-        Imprima("2 - Depósito");
-        Imprima("3 - Transferência");
-        Imprima("4 - Extrato");
-        Imprima("5 - Alterar Senha");
-        Imprima("0 - Sair");
-        Imprima("Escolha uma opção: ");
-        inteiro Trem_opcao;
-        Entrada("Digite a opcao ", Trem_opcao);
-        se(Trem_opcao <-> 1){
-        Imprima("Digite o valor do saque");
-        decimal Trem_valorSaque;
-        se(Trem_valorSaque > 0 e Trem_valorSaque <= Trem_saldo){
-            se(Trem_valorSaque <= Trem_limiteSaque){
-                Trem_saldo -> Trem_valorSaque - Trem_saldo;
-                Imprima("Saque  realizado com sucesso no valor de R$ ", Trem_valorSaque);
-                Imprima("Novo saldo: R$ ", Trem_saldo);
-            }
-            senao{
-                Imprima("Valor excede o limite de saque de R$", Trem_limiteSaque);
-            }
-        }
-    }
 }
+
+se (Trem_inteiro <> 10 e Trem_inteiro <= 20){
+    para (inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){
+        Imprima(Trem_x);
+
+
+criar Imprimir(inteiro Trem_num){
+    Imprima("número digitado", Trem_num);
+
+se (Trem_inteiro <> 10 e Trem_inteiro <= 20){
+
+
+Imprima(Trem_x)
+
+  para (inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){
+        Imprima(Trem_x)
+    }
+
+lacoEnquanto(!Trem_userLogado  Trem_tentativasSenha < Trem_maxTentativasSenha ){}
+
+lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha ){*
+
+
+lacoEnquanto(!Trem_userLogado  Trem_tentativasSenha < Trem_maxTentativasSenha ){
+
 }
-#uai... Teste básico de variáveis e operações matemáticas ...so#
 
-#uai... DECLARACAO ...so#
+lacoEnquanto(Trem_tentativasSenha < Trem_maxTentativasSenha ){
+    texto Trem_senha;
+    Imprima("Digite a senha", Trem_senhaDigitada);
 
-inteiro Trem_a;
-inteiro Trem_b;
-decimal Trem_c;
-texto Trem_mensagem;
-verdadeiroFalso Trem_vf;
+    se(Trem_senhaDigitada <-> Trem_senhaCorreta){
+    Trem_userLogado -> true;
+        Imprima("login realizado");
 
+}
 
-#uai...  DECLARACAO E ATRIBUICAO SIMPLES ...so#
+verdadeiroFalso Trem_comp -> Trem_tentativasSenha <
 
-inteiro Trem_a -> 10;
-inteiro Trem_b -> 5;
-decimal Trem_c -> 2.5;
-decimal Trem_d -> 10.52;
-texto Trem_mensagem -> "Resultado: ";
-verdadeiroFalso Trem_ativo -> true;
-verdadeiroFalso Trem_ativoF -> false;
-verdadeiroFalso Trem_ativoF -> !Trem_a;
+lacoEnquanto(!Trem_userLogado ou e Trem_tentativasSenha < Trem_maxTentativasSenha ){
 
+    texto Trem_senha;
+    Imprima("Digite a senha", Trem_senhaDigitada);
 
-#uai...  DECLARACAO E ATRIBUICAO COMPLEXA ...so#
-
-#uai...  EXPRESSOES MATEMATICAS BASICAS INTEIRO E DECIMAL ...so# 
-
-inteiro Trem_somaI -> Trem_a + Trem_b; 
-inteiro Trem_somaI2 -> Trem_a + 2; 
-inteiro Trem_somaI3 -> 3 + Trem_b; 
-inteiro Trem_somaI4 -> 3 + 2; 
-
-inteiro Trem_mulI -> Trem_a - Trem_b; 
-inteiro Trem_mulI2 -> Trem_a - 2; 
-inteiro Trem_mulI3 -> 3 - Trem_b; 
-inteiro Trem_mulI4 -> 3 - 2; 
-
-inteiro Trem_mulI -> Trem_a * Trem_b; 
-inteiro Trem_mulI2 -> Trem_a * 2; 
-inteiro Trem_mulI3 -> 3 * Trem_b; 
-inteiro Trem_mulI4 -> 3 * 2; 
-
-inteiro Trem_divI -> Trem_a / Trem_b; 
-inteiro Trem_divI2 -> Trem_a / 2; 
-inteiro Trem_divI3 -> 3 / Trem_b; 
-inteiro Trem_divI4 -> 3 / 2; 
-
-inteiro Trem_potI -> Trem_a ^ Trem_b; 
-inteiro Trem_potI2 -> Trem_a ^ 2; 
-inteiro Trem_potI3 -> 3 ^ Trem_b; 
-inteiro Trem_potI4 -> 3 ^ 2; 
-
-decimal Trem_somaD -> Trem_c + Trem_d; 
-decimal Trem_somaD2 -> Trem_c + 2; 
-decimal Trem_somaD3 -> 3.5 + Trem_d; 
-decimal Trem_somaD4 -> 3.4 + 2; 
-
-decimal Trem_subD -> Trem_c - Trem_d; 
-decimal Trem_subD2 -> Trem_c - 2; 
-decimal Trem_subD3 -> 3.5 - Trem_d; 
-decimal Trem_subD4 -> 3.4 - 2; 
-
-decimal Trem_mulD -> Trem_c * Trem_d; 
-decimal Trem_mulD2 -> Trem_c * 2; 
-decimal Trem_mulD3 -> 3.5 * Trem_d; 
-decimal Trem_mulD4 -> 3.4 * 2; 
-
-decimal Trem_divD -> Trem_c / Trem_d; 
-decimal Trem_divD2 -> Trem_c / 2; 
-decimal Trem_divD3 -> 3.5 / Trem_d; 
-decimal Trem_divD4 -> 3.4 / 2; 
-
-decimal Trem_potD -> Trem_c ^ Trem_d; 
-decimal Trem_potD2 -> Trem_c ^ 2; 
-decimal Trem_potD3 -> 3.5 ^ Trem_d; 
-decimal Trem_potD4 -> 3.4 ^ 2; 
-
-#uai... EXPRESSOES MATEMATICAS COM MAIS ITENS ...so#
-
-inteiro Trem_num -> 10;
-inteiro Trem_x -> (3.253 + 2);
-decimal Trem_expressao -> (((Trem_10 / 2) + (2 * 8)) -1) ^ 3 ; 
-
-#uai... OPERAÇÕES LOGICAS BASICAS ...so#
-
-verdadeiroFalso Trem_comparcao1 -> Trem_a > Trem_b; 
-verdadeiroFalso Trem_comparcao2 -> Trem_a < Trem_b; 
-verdadeiroFalso Trem_comparcao3 -> Trem_a <-> Trem_b; 
-verdadeiroFalso Trem_comparcao4 -> Trem_a <> Trem_b; 
-verdadeiroFalso Trem_comparcao5 -> Trem_a <= Trem_b; 
-verdadeiroFalso Trem_comparcao6 -> Trem_a >= Trem_b; 
-
-verdadeiroFalso Trem_comparcao7 -> 2 > Trem_b; 
-verdadeiroFalso Trem_comparcao8 -> 3.4 < Trem_b; 
-verdadeiroFalso Trem_comparcao9 -> 5 <-> Trem_b; 
-verdadeiroFalso Trem_comparcao10 -> 2.134 <> Trem_b; 
-verdadeiroFalso Trem_comparcao11 -> 190.9 <= Trem_b; 
-verdadeiroFalso Trem_comparcao12 -> 3 >= Trem_b; 
-
-verdadeiroFalso Trem_comparcao13 -> Trem_a > 2.4; 
-verdadeiroFalso Trem_comparcao14 -> Trem_a < 67; 
-verdadeiroFalso Trem_comparcao15 -> Trem_a <-> 245.2; 
-verdadeiroFalso Trem_comparcao16 -> Trem_a <> 12; 
-verdadeiroFalso Trem_comparcao17 -> Trem_a <= 352; 
-verdadeiroFalso Trem_comparcao18 -> Trem_a >= 54.6; 
-
-verdadeiroFalso Trem_comparcao19 -> 12 > 7; 
-verdadeiroFalso Trem_comparcao20 -> 23 < 14; 
-verdadeiroFalso Trem_comparcao21 -> 9 <-> 9; 
-verdadeiroFalso Trem_comparcao22 -> 78 <> 2; 
-verdadeiroFalso Trem_comparcao23 -> 87.3 <= 32; 
-verdadeiroFalso Trem_comparcao24 -> 12.2 >= 12; 
-
-verdadeiroFalso Trem_comparcao25 -> Trem_a e Trem_b; 
-verdadeiroFalso Trem_comparcao26 -> Trem_a ou Trem_b; 
+    se(Trem_senhaDigitada <-> Trem_senhaCorreta){
+    Trem_userLogado -> true;
+        Imprima("login realizado");
+    } (pode testar com isso dentro ou com nada dentro do {}, tanto faz
+}
 
 
-#uai... ATRIBUICAO ...so#
-
-Trem_a -> 10;
-Trem_b -> 5;
-Trem_c -> 2.5;
-Trem_d -> 10.52;
-Trem_mensagem -> "Resultado: ";
-Trem_ativo -> true;
-Trem_ativoF -> false;
-Trem_ativoF -> !Trem_a;
-
-
-#uai...  ATRIBUICAO COMPLEXA...so#
-
-#uai...  EXPRESSOES MATEMATICAS BASICAS INTEIRO E DECIMAL...so# 
-
-Trem_somaI -> Trem_a + Trem_b; 
-Trem_somaI2 -> Trem_a + 2; 
-Trem_somaI3 -> 3 + Trem_b; 
-Trem_somaI4 -> 3 + 2; 
-
-Trem_mulI -> Trem_a - Trem_b; 
-Trem_mulI2 -> Trem_a - 2; 
-Trem_mulI3 -> 3 - Trem_b; 
-Trem_mulI4 -> 3 - 2; 
-
-Trem_mulI -> Trem_a * Trem_b; 
-Trem_mulI2 -> Trem_a * 2; 
-Trem_mulI3 -> 3 * Trem_b; 
-Trem_mulI4 -> 3 * 2; 
-
-Trem_divI -> Trem_a / Trem_b; 
-Trem_divI2 -> Trem_a / 2; 
-Trem_divI3 -> 3 / Trem_b; 
-Trem_divI4 -> 3 / 2; 
-
-Trem_potI -> Trem_a ^ Trem_b; 
-Trem_potI2 -> Trem_a ^ 2; 
-Trem_potI3 -> 3 ^ Trem_b; 
-Trem_potI4 -> 3 ^ 2; 
-
-Trem_somaD -> Trem_c + Trem_d; 
-Trem_somaD2 -> Trem_c + 2; 
-Trem_somaD3 -> 3.5 + Trem_d; 
-Trem_somaD4 -> 3.4 + 2; 
-
-Trem_subD -> Trem_c - Trem_d; 
-Trem_subD2 -> Trem_c - 2; 
-Trem_subD3 -> 3.5 - Trem_d; 
-Trem_subD4 -> 3.4 - 2; 
-
-Trem_mulD -> Trem_c * Trem_d; 
-Trem_mulD2 -> Trem_c * 2; 
-Trem_mulD3 -> 3.5 * Trem_d; 
-Trem_mulD4 -> 3.4 * 2; 
-
-Trem_divD -> Trem_c / Trem_d; 
-Trem_divD2 -> Trem_c / 2; 
-Trem_divD3 -> 3.5 / Trem_d; 
-Trem_divD4 -> 3.4 / 2; 
-
-Trem_potD -> Trem_c ^ Trem_d; 
-Trem_potD2 -> Trem_c ^ 2; 
-Trem_potD3 -> 3.5 ^ Trem_d; 
-Trem_potD4 -> 3.4 ^ 2; 
-
-#uai... EXPRESSOES MATEMATICAS COM MAIS ITENS ...so#
-
-Trem_num -> 10;
-Trem_x -> (3.253 + 2);
-Trem_expressao -> (((Trem_10 / 2) + (2 * 8)) -1) ^ 3 ; 
-
-#uai... OPERAÇÕES LOGICAS BASICAS ...so#
-
-Trem_comparcao1 -> Trem_a > Trem_b; 
-Trem_comparcao2 -> Trem_a < Trem_b; 
-Trem_comparcao3 -> Trem_a <-> Trem_b; 
-Trem_comparcao4 -> Trem_a <> Trem_b; 
-Trem_comparcao5 -> Trem_a <= Trem_b; 
-Trem_comparcao6 -> Trem_a >= Trem_b; 
-
-Trem_comparcao7 -> 2 > Trem_b; 
-Trem_comparcao8 -> 3.4 < Trem_b; 
-Trem_comparcao9 -> 5 <-> Trem_b; 
-Trem_comparcao10 -> 2.134 <> Trem_b; 
-Trem_comparcao11 -> 190.9 <= Trem_b; 
-Trem_comparcao12 -> 3 >= Trem_b; 
-
-Trem_comparcao13 -> Trem_a > 2.4; 
-Trem_comparcao14 -> Trem_a < 67; 
-Trem_comparcao15 -> Trem_a <-> 245.2; 
-Trem_comparcao16 -> Trem_a <> 12; 
-Trem_comparcao17 -> Trem_a <= 352; 
-Trem_comparcao18 -> Trem_a >= 54.6; 
-
-Trem_comparcao19 -> 12 > 7; 
-Trem_comparcao20 -> 23 < 14; 
-Trem_comparcao21 -> 9 <-> 9; 
-Trem_comparcao22 -> 78 <> 2; 
-Trem_comparcao23 -> 87.3 <= 32; 
-Trem_comparcao24 -> 12.2 >= 12; 
-
-Trem_comparcao25 -> Trem_a e Trem_b; 
-Trem_comparcao26 -> Trem_a ou Trem_b; 
-
-#uai...
-TESTAR: ver se no declara, declara e atribui, tribui, pode coisa mais siples de td, id, numeros, expressoes matematicas, e, ou -, comparacoes relacionais...
 ...so#
 
-#uai... CONDICIONAIS ...so#
 
-inteiro Trem_idade -> 18;
-inteiro Trem_pontuacao -> 85;
+lacoEnquanto(!Trem_userLogado ou e Trem_tentativasSenha < Trem_maxTentativasSenha ){
 
-se(Trem_idade >= 18){
-    Imprima("Maior de idade");
+    texto Trem_senha;
+    Imprima("Digite a senha", Trem_senhaDigitada);
+
+    se(Trem_senhaDigitada <-> Trem_senhaCorreta){
+    Trem_userLogado -> true;
+        Imprima("login realizado");
+    } 
 }
-senao{
-    Imprima("Menor de idade");
-}
-
-se(Trem_pontuacao >= 90){
-    Imprima("Nota A");
-}
-ouSe(Trem_pontuacao >= 80 e Trem_pontuacao < 90){
-    Imprima("Nota B");
-}
-ouSe(Trem_pontuacao >= 70 e Trem_pontuacao < 80){
-    Imprima("Nota C");
-}
-senao{
-    Imprima("Nota D");
-}
-
-
-#uai... LAÇO PARA ...so#
-
-Imprima("Contagem crescente:");
-para(inteiro Trem_i -> 1; Trem_i <= 5; Trem_i++){
-    Imprima("Número: ", Trem_i);
-}
-
-Imprima("Contagem regressiva:");
-para(inteiro Trem_j -> 5; Trem_j >= 1; Trem_j--){
-    Imprima("Número: ", Trem_j);
-}
-
-# Tabuada do 5
-Imprima("Tabuada do 5:");
-para(inteiro Trem_k -> 1; Trem_k <= 10; Trem_k++){
-    inteiro Trem_resultado -> 5 * Trem_k;
-    Imprima("5 x ", Trem_k, " = ", Trem_resultado);
-}
-
-#uai... LAÇO ENQUANTO ...so#
-
-inteiro Trem_contador -> 1;
-inteiro Trem_soma -> 0;
-
-# Soma dos primeiros 10 números
-lacoEnquanto(Trem_contador <= 10){
-    Trem_soma -> Trem_soma + Trem_contador;
-    Trem_contador -> Trem_contador + 1;
-}
-Imprima("Soma dos primeiros 10 números: ", Trem_soma);
-
-# Adivinhação simples
-inteiro Trem_numeroSecreto -> 7;
-inteiro Trem_tentativa -> 0;
-verdadeiroFalso Trem_acertou -> false;
-
-lacoEnquanto(!Trem_acertou e Trem_tentativa < 3){
-    Imprima("Tentativa ", Trem_tentativa + 1, ": Adivinhe o número (1-10)");
-    inteiro Trem_palpite;
-    Entrada("Digite seu palpite: ", Trem_palpite);
-    
-    se(Trem_palpite <-> Trem_numeroSecreto){
-        Trem_acertou -> true;
-        Imprima("Parabéns! Você acertou!");
-    }
-    senao{
-        Imprima("Tente novamente!");
-        Trem_tentativa -> Trem_tentativa + 1;
-    }
-}
-
-#uai... CRIAR E CHAMAR FUNCOES ...so#
-
-criar Saudacao(texto Trem_nome){
-    Imprima("Olá, ", Trem_nome, "! Bem-vindo ao minasScript!");
-}
-
-criar SomarDoisNumeros(inteiro Trem_x, inteiro Trem_y){
-    inteiro Trem_resultado -> Trem_x + Trem_y;
-    retorna Trem_resultado;
-}
-
-criar VerificarPar(inteiro Trem_numero){
-    se(Trem_numero / 2 <-> 0){
-        retorna true;
-    }
-    senao{
-        retorna false;
-    }
-}
-
-# Chamando as funções
-Saudacao("João");
-Saudacao("Maria");
-
-inteiro Trem_resultadoSoma -> SomarDoisNumeros(15, 25);
-Imprima("15 + 25 = ", Trem_resultadoSoma);
-
-verdadeiroFalso Trem_ehPar -> VerificarPar(10);
-se(Trem_ehPar){
-    Imprima("10 é par");
-}
-senao{
-    Imprima("10 é ímpar");
-}
-
-Entrada("digite um numero", Trem_inteiro);
-Entrada("digite um numero");
-Entrada(Trem_C);
-Entrada(Trem_B, Trem_A);
-
-#uai... ENTRADA E SAIDA DE DADOS ...so#
-
-texto Trem_nome;
-inteiro Trem_idade;
-decimal Trem_altura;
-
-Imprima("=== Cadastro de Usuário ===");
-Entrada("Digite seu nome: ", Trem_nome);
-Entrada("Digite sua idade: ", Trem_idade);
-Entrada("Digite sua altura (metros): ", Trem_altura);
-
-Imprima("=== Dados Cadastrados ===");
-Imprima("Nome: ", Trem_nome);
-Imprima("Idade: ", Trem_idade);
-Imprima("Altura: ", Trem_altura, "m");
-
-se(Trem_idade >= 18){
-    Imprima(Trem_nome, " é maior de idade");
-}
-senao{
-    Imprima(Trem_nome, " é menor de idade");
-}
-
-#uai...
- Teste de operações lógicas e comparações
-...so#
-
-inteiro Trem_x -> 10;
-inteiro Trem_y -> 20;
-verdadeiroFalso Trem_condicao1 -> true;
-verdadeiroFalso Trem_condicao2 -> false;
-
-# Testes de igualdade e diferença
-se(Trem_x <-> Trem_y){
-    Imprima("x é igual a y");
-}
-senao se(Trem_x <> Trem_y){
-    Imprima("x é diferente de y");
-}
-
-# Testes de maior/menor
-se(Trem_x > Trem_y){
-    Imprima("x é maior que y");
-}
-senao se(Trem_x < Trem_y){
-    Imprima("x é menor que y");
-}
-
-# Operações lógicas
-se(Trem_condicao1 e Trem_condicao2){
-    Imprima("Ambas condições são verdadeiras");
-}
-senao se(Trem_condicao1 ou Trem_condicao2){
-    Imprima("Pelo menos uma condição é verdadeira");
-}
-senao{
-    Imprima("Nenhuma condição é verdadeira");
-}
-
-# Operador NOT
-se(!Trem_condicao2){
-    Imprima("condicao2 é falsa");
-}
-
-#uai...
- Calculadora simples usando minasScript
-...so#
-
-criar Calculadora(){
-    Imprima("=== Calculadora minasScript ===");
-    Imprima("1 - Soma");
-    Imprima("2 - Subtração");
-    Imprima("3 - Multiplicação");
-    Imprima("4 - Divisão");
-    Imprima("0 - Sair");
-    
-    inteiro Trem_opcao;
-    Entrada("Escolha uma operação: ", Trem_opcao);
-    
-    se(Trem_opcao >= 1 e Trem_opcao <= 4){
-        decimal Trem_num1;
-        decimal Trem_num2;
-        Entrada("Digite o primeiro número: ", Trem_num1);
-        Entrada("Digite o segundo número: ", Trem_num2);
-        
-        se(Trem_opcao <-> 1){
-            decimal Trem_resultado -> Trem_num1 + Trem_num2;
-            Imprima("Resultado: ", Trem_resultado);
-        }
-        ouSe(Trem_opcao <-> 2){
-            decimal Trem_resultado -> Trem_num1 - Trem_num2;
-            Imprima("Resultado: ", Trem_resultado);
-        }
-        ouSe(Trem_opcao <-> 3){
-            decimal Trem_resultado -> Trem_num1 * Trem_num2;
-            Imprima("Resultado: ", Trem_resultado);
-        }
-        ouSe(Trem_opcao <-> 4){
-            se(Trem_num2 <> 0){
-                decimal Trem_resultado -> Trem_num1 / Trem_num2;
-                Imprima("Resultado: ", Trem_resultado);
-            }
-            senao{
-                Imprima("Erro: Divisão por zero!");
-            }
-        }
-    }
-    ouSe(Trem_opcao <-> 0){
-        Imprima("Saindo da calculadora...");
-    }
-    senao{
-        Imprima("Opção inválida!");
-    }
-}
-
-# Chamando a calculadora
-Calculadora();
-
-
-#uai...
- Teste de escopo de variáveis
-...so#
-
-inteiro Trem_varGlobal -> 100;
-
-criar TesteEscopo(){
-    inteiro Trem_varLocal -> 50;
-    Imprima("Variável local: ", Trem_varLocal);
-    Imprima("Variável global: ", Trem_varGlobal);
-    
-    # Modificando variável local
-    Trem_varLocal -> Trem_varLocal * 2;
-    Imprima("Variável local modificada: ", Trem_varLocal);
-}
-
-criar OutraFuncao(){
-    inteiro Trem_outraVar -> 25;
-    Imprima("Outra variável: ", Trem_outraVar);
-    Imprima("Ainda posso acessar a global: ", Trem_varGlobal);
-    
-    # Esta função não pode acessar Trem_varLocal da outra função
-}
-
-# Chamando as funções
-TesteEscopo();
-OutraFuncao();
-
-# Variável global ainda acessível
-Imprima("Global no escopo principal: ", Trem_varGlobal);

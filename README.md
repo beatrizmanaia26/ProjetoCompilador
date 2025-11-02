@@ -154,6 +154,10 @@ DESCREVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 - da para escrever varias comparacoes (ex: se(Trem_a < 2 ou Trem_b <> Trem_c e Trem_d <-> 5){}), porem o resultado estara errado se fizer dessa forma pois nao tem parenteses para determinar a ordem de comparacoes
 
+# Para atribuir valor
+
+- precisa ter espaço entre os tokens (ex: Trem_potI2 -> Trem_a ^ 2; )
+
 
 ## tipos de variáveis:<br>
 - inteiro<br>
