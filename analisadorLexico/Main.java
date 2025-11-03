@@ -1,4 +1,5 @@
 package analisadorLexico;
+import analisadorSintatico.Parser;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;

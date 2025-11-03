@@ -1,4 +1,6 @@
-package analisadorLexico;
+package analisadorSintatico;  
+
+import analisadorLexico.Token;  
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,13 +20,22 @@ public class Parser {
     inicializarFollows();
   }
 
+  /*
+  -verificar apos tradução se: 
+  A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
+  -verificar se da para ler da tela com Entrada e imprimir no console com Imprima() 
+
+   */
    public void main() {
     token = getNextToken();
+    Node root = new Node("main");
+   //tree.setRoot(root);
+   //listaComandos(root) && listaComandos() && matchT("EOF",root)
     if (listaComandos() && matchT("EOF") &&  contadorErro == 0){
       System.out.println("Sintaticamente correto");
     }else{
       erro("main");
-       System.out.println("Programa contém " + contadorErro + " erro(s) sintático(s)");
+      System.out.println("Sintaticamente Incorreto! Programa contém " + contadorErro + " erro(s) sintático(s)");
     }
   }
 
@@ -62,7 +73,7 @@ public class Parser {
 
   //VER SE FIZ CERTO EPSULON:Palavra vazia é sair de uma regra sem casar token = return true (follow)
   //ONDE NAO TEM RETURN FALSE (E SIM RETURN TRUE)  //testar passar coisa incorreta para ver se aceita (EX: Aargumentoschamada, senaoopcional, listaouse...)
-  //VE SE DA P OTIMIZA ALGUM CODIGO (ex: estoArgumentosChamada())
+  //VE SE DA P OTIMIZA ALGUM CODIGO (ex: restoArgumentosChamada())
 
 
   //site que calcula first e follow: REFAZER FIST CONSIDERANDO EPSULON !!!!!!!!!!!!!!!
@@ -75,7 +86,9 @@ public class Parser {
    */
   private boolean listaComandos(){
     System.out.println("entrou no listacomandos");
-  //  System.out.println("TOKEN"+token);
+    //se tiver Entrada no codigo adiciona isso: traduz("import java.util.Scanner;");
+    //traduz("public class CodigoExemplo{");
+   // System.out.println("TOKEN"+token);
    // System.out.println("TOKENS"+tokens);
     if(first("comando") && comando() && listaComandos()){
       System.out.println("deu match listacomandos");
@@ -128,9 +141,11 @@ public class Parser {
     if(first("declaracao") && tipoVariavel() && identificadores()) { //uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
       // Pode ser: tipo var; OU tipo var -> valor;
       if(matchL(";")) {
-         return true; // declaracao simples
+        System.out.println("deu match declaracao (simples)");
+        return true; // declaracao simples
       } 
       else if(matchL("->") && valor() && matchL(";")) {
+        System.out.println("deu match declaracao com atribuição");
         return true; // declaracao com atribuicao
       }
     }
@@ -145,10 +160,11 @@ public class Parser {
    *  seCompleto          "se"
    */
   private boolean seCompleto(){
-    System.out.println("entrou no seCompleto");
+  System.out.println("entrou no seCompleto");
   //  System.out.println("TOKEN"+token);
   //  System.out.println("TOKENS"+tokens);
     if(first("se")&& se() && listaOuSe() && senaoOpcional()){
+      System.out.println("deu match no seCompleto");
       return true;
     }
     return false; // n tem erro especifico pq a regra especifcia (se, ouse e senao) darao o erro
@@ -160,7 +176,9 @@ public class Parser {
    * listaOuSe    ε, first é firsts dessa regra: ouSe
    */
   private boolean listaOuSe(){
+    System.out.println("entrou no listaOuSe");
     if(first("ouSe") && ouSe() && listaOuSe()){
+      System.out.println("deu match no listaOuSe");
       return true;
     }
     return true;//ε
@@ -1142,5 +1160,72 @@ public class Parser {
     return matches;
   }
 
+  //-------------------------------ARVORE DE DERIVACAO----------------------------------
+
+  //sobrecargas
+  private boolean matchT(String tipo, Node node){
+    if(token.tipo.equals(tipo)){
+      node.addNode(token.lexema);
+      token = getNextToken();
+      return true;
+    }
+    return false;
+  }
+
+   private boolean matchT(String tipo, String newcode, Node node){
+    if(token.tipo.equals(tipo)){
+      traduz(newcode);
+      node.addNode(token.lexema);
+      token = getNextToken();
+      return true;
+    }
+    return false;
+  }
+
+    private boolean matchL(String tipo, Node node){
+    if(token.lexema.equals(tipo)){
+      node.addNode(token.lexema);
+      token = getNextToken();
+      return true;
+    }
+    return false;
+  }
+
+   private boolean matchL(String tipo, String newcode, Node node){
+    if(token.lexema.equals(tipo)){
+      traduz(newcode);
+      node.addNode(token.lexema);
+      token = getNextToken();
+      return true;
+    }
+    return false;
+  }
+
+
+  //-------------------------------TRADUÇÃO DO MINEIRES PARA JAVA------------------------
+
+  //sobrecargas 
+  private boolean matchL(String palavra, String newcode){
+    if(token.lexema.equals(palavra)){
+      traduz(newcode);
+      token = getNextToken();
+      return true;
+    }
+    return false;
+  }
+
+   private boolean matchT(String palavra, String newcode){
+    if(token.tipo.equals(palavra)){
+      traduz(newcode);
+      token = getNextToken();
+      return true;
+    }
+    return false;
+  }
+
+  private void traduz(String code){
+    System.out.println("TRADUÇÃO\n");
+    System.out.println(code);
+  }
   
 }

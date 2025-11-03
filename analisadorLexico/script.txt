@@ -655,3 +655,90 @@ OutraFuncao();
 
 # Variável global ainda acessível
 Imprima("Global no escopo principal: ", Trem_varGlobal);
+
+#uai... esse código mostra todos os encadeamentos possíveis: se dentro de se, para dentro de para, lacoDentroDePara e vice-versa ...so#
+
+criar MostrarTabuada(inteiro Trem_n){
+    Imprima("=== Tabuada de ", Trem_n, " ===");
+    para(inteiro Trem_i -> 1; Trem_i <= 10; Trem_i++){
+        Imprima(Trem_n, " x ", Trem_i, " = ", Trem_n * Trem_i);
+    }
+}
+
+criar SomarMatriz(){
+    #uai... exemplo de para dentro de para ...so#
+    inteiro Trem_soma -> 0;
+    para(inteiro Trem_linha -> 1; Trem_linha <= 3; Trem_linha++){
+        para(inteiro Trem_coluna -> 1; Trem_coluna <= 3; Trem_coluna++){
+            Trem_soma -> Trem_soma + (Trem_linha * Trem_coluna);
+            Imprima("Linha ", Trem_linha, " Coluna ", Trem_coluna, " Valor ", Trem_linha * Trem_coluna);
+        }
+    }
+    retorna Trem_soma;
+}
+
+criar ContagemComCondicoes(){
+    #uai... exemplo de lacoEnquanto dentro de para e se encadeado ...so#
+    para(inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){
+        inteiro Trem_y -> Trem_x;
+
+        lacoEnquanto(Trem_y >= 0){
+            se(Trem_y <-> 0){
+                Imprima("x=", Trem_x, " terminou o lacoEnquanto!");
+            }
+            senao{
+                #uai... pra saber se é par sem usar %, divide por 2 e confere se o resultado * 2 é igual ...so#
+                inteiro Trem_metade -> Trem_y / 2;
+                se(Trem_metade * 2 <-> Trem_y){
+                    Imprima("x=", Trem_x, " y=", Trem_y, " (par)");
+                }
+                senao{
+                    Imprima("x=", Trem_x, " y=", Trem_y, " (ímpar)");
+                }
+            }
+            Trem_y -> Trem_y - 1;
+        }
+    }
+}
+
+criar TesteEncadeamentos(){
+    Imprima("=== Teste de se encadeado e funções ===");
+    inteiro Trem_num;
+    Entrada("Digite um número: ", Trem_num);
+
+    se(Trem_num > 0){
+        Imprima("Número positivo!");
+
+        #uai... mesma lógica: checa se (Trem_num / 2) * 2 é igual a Trem_num ...so#
+        se((Trem_num / 2) * 2 <-> Trem_num){
+            Imprima("E também é par!");
+        }
+        senao{
+            Imprima("Mas é ímpar!");
+        }
+    }
+    ouSe(Trem_num < 0){
+        Imprima("Número negativo!");
+    }
+    senao{
+        Imprima("Zero detectado!");
+    }
+}
+
+criar Main(){
+    Imprima("=== Programa MinasScript ===");
+
+    inteiro Trem_somaTotal -> SomarMatriz();   #uai... chama função com para dentro de para ...so#
+    Imprima("Soma total da matriz: ", Trem_somaTotal);
+
+    ContagemComCondicoes();               #uai... usa para + lacoEnquanto + se encadeado ...so#
+    TesteEncadeamentos();                 #uai... usa se dentro de se ...so#
+
+    inteiro Trem_valor;
+    Entrada("Digite um número para ver a tabuada: ", Trem_valor);
+    MostrarTabuada(Trem_valor);           #uai... chama função simples com para ...so#
+
+    Imprima("=== Fim do programa ===");
+}
+
+Main();
