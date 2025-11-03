@@ -91,7 +91,7 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> operacaoIncremento -> operadorSoma operadorSoma|operadorSubtracao operadorSubtracao 
 
 <br> inicio correcao "condicao" (ver se da certo e se n tem recursao ou fatoracao a esquerda):
-<br> condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas 
+<br> condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas (nao usado)
 
 <br> condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
 <br> condicao’ -> operacao condição condicao’| ε
@@ -121,9 +121,10 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> parametro -> tipoVariavel identificadores
 <br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto
 <br> chamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' ';'
+<br> chamarFuncaoSemFim -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')'
 <br> inicioChamarFuncao -> inicioChamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima
 <br> argumentosChamada -> ε | valor restoArgumentosChamada
-<br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas|condicaoComparacoesBasicas
+<br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas|condicaoComparacoesBasicas|chamarFuncao
 <br> restoArgumentosChamada -> ε | ',' valor restoArgumentosChamada
 
 
@@ -157,6 +158,10 @@ DESCREVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # Para atribuir valor
 
 - precisa ter espaço entre os tokens (ex: Trem_potI2 -> Trem_a ^ 2; )
+
+# condicao
+
+- em condicao posso comparar varias coisas (expressoesmatematicas de qqr tamanho com numero/expressoesmatematicas de qqr tamanho, identificadores...)
 
 
 ## tipos de variáveis:<br>

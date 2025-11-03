@@ -10,6 +10,7 @@ public class Parser {
   Token token;
   Map<String, Set<String>> firsts = new HashMap<>();
   Map<String, Set<String>> follows = new HashMap<>();
+  int contadorErro;
 
   public Parser(List<Token> tokens) {
     this.tokens = tokens;
@@ -19,10 +20,11 @@ public class Parser {
 
    public void main() {
     token = getNextToken();
-    if (listaComandos() && matchT("EOF")){
+    if (listaComandos() && matchT("EOF") &&  contadorErro == 0){
       System.out.println("Sintaticamente correto");
     }else{
       erro("main");
+       System.out.println("Programa contém " + contadorErro + " erro(s) sintático(s)");
     }
   }
 
@@ -73,8 +75,8 @@ public class Parser {
    */
   private boolean listaComandos(){
     System.out.println("entrou no listacomandos");
-    System.out.println("TOKEN"+token);
-    System.out.println("TOKENS"+tokens);
+  //  System.out.println("TOKEN"+token);
+   // System.out.println("TOKENS"+tokens);
     if(first("comando") && comando() && listaComandos()){
       System.out.println("deu match listacomandos");
       return true;
@@ -84,6 +86,8 @@ public class Parser {
       return true; //ε
     }
     else{
+      erro("listaComandos");
+      contadorErro++;
       return false;
     }
   }
@@ -95,8 +99,8 @@ public class Parser {
    */
   private boolean comando(){
     System.out.println("entrou no comando");
-    System.out.println("TOKEN"+token);
-    System.out.println("TOKENS"+tokens);
+   // System.out.println("TOKEN"+token);
+  //  System.out.println("TOKENS"+tokens);
     if((first("declaracao") && declaracao())||(first("seCompleto") && seCompleto())||
     (first("para") && para())||(first("lacoEnquanto") && lacoEnquanto())||
     (first("atribui") && atribui())||(first("criarFuncao") && criarFuncao())||
@@ -105,6 +109,7 @@ public class Parser {
       return true;
     }
     erro("comando"); 
+    contadorErro++;
     return false;
   }
   
@@ -130,6 +135,7 @@ public class Parser {
       }
     }
     erro("declaracao");
+     contadorErro++;
     return false;
   }
 
@@ -140,8 +146,8 @@ public class Parser {
    */
   private boolean seCompleto(){
     System.out.println("entrou no seCompleto");
-    System.out.println("TOKEN"+token);
-    System.out.println("TOKENS"+tokens);
+  //  System.out.println("TOKEN"+token);
+  //  System.out.println("TOKENS"+tokens);
     if(first("se")&& se() && listaOuSe() && senaoOpcional()){
       return true;
     }
@@ -182,12 +188,13 @@ public class Parser {
    */
   private boolean se(){ 
     System.out.println("entrou no se");
-    System.out.println("TOKEN"+token);
-    System.out.println("TOKENS"+tokens);
+  //  System.out.println("TOKEN"+token);
+  //  System.out.println("TOKENS"+tokens);
      if (matchL("se") && matchL("(") && condicao() && matchL(")") && matchL("{") && listaComandosInternos() && matchL("}")){
         return true;
      }
     erro("se");
+     contadorErro++;
     return false;
   }
  
@@ -201,6 +208,7 @@ public class Parser {
         return true;
      }
     erro("ouSe");
+     contadorErro++;
     return false;
   }
 
@@ -216,6 +224,7 @@ public class Parser {
         return true;
      }
     erro("senao");
+     contadorErro++;
     return false;
   }
 
@@ -230,6 +239,7 @@ public class Parser {
         return true;
      }
     erro("para");
+     contadorErro++;
     return false;
   }
 
@@ -244,6 +254,7 @@ public class Parser {
         return true;
      }
     erro("lacoEnquanto");
+     contadorErro++;
     return false;
   }
 
@@ -259,6 +270,7 @@ public class Parser {
       return true;
     }
     erro("criarFuncao");
+     contadorErro++;
     return false;
   }
 
@@ -269,13 +281,27 @@ public class Parser {
    */
   private boolean chamarFuncao() {
     System.out.println("entrou chamarFuncao");
-  if (first("chamarFuncao") && inicioChamarFuncao() && matchL("(") && argumentosChamada() && matchL(")") && matchL(";")
-  ) {
-    System.out.println("deu match em chamar funcao");
-    return true;
-  }
-  erro("chamarFuncao");
-  return false;
+    if (first("chamarFuncao") && inicioChamarFuncao() && matchL("(") && argumentosChamada() && matchL(")") && matchL(";")
+    ) {
+      System.out.println("deu match em chamar funcao");
+      return true;
+    }
+    erro("chamarFuncao");
+    contadorErro++;
+    return false;
+}
+
+  //chamarFuncaoSemFim -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')'
+  private boolean chamarFuncaoSemFim() {
+    System.out.println("entrou chamarFuncao");
+    if (first("chamarFuncao") && inicioChamarFuncao() && matchL("(") && argumentosChamada() && matchL(")")
+    ) {
+      System.out.println("deu match em chamar funcao");
+      return true;
+    }
+    erro("chamarFuncao");
+    contadorErro++;
+    return false;
 }
 
   //inicioChamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima
@@ -290,6 +316,7 @@ public class Parser {
     return true;
    }
     erro("inicioChamarFuncao");
+     contadorErro++;
     return false;
   }
   //argumentosChamada -> ε | valor restoArgumentosChamada
@@ -339,6 +366,7 @@ public class Parser {
       return true;
     }
     erro("parametroFuncao");
+     contadorErro++;
     return false;
   }
 
@@ -364,6 +392,7 @@ public class Parser {
       return true;
     }
     erro("parametro");
+     contadorErro++;
     return false;
   }
 
@@ -374,39 +403,68 @@ public class Parser {
    */
 
   //implementação do lookahead para pegar o prox token e distinguir se é identificadores, expressoesMatematicas ou condicoesComparacoesBasicas
-  private boolean condicao(){ 
+  private boolean condicao() {
     System.err.println("entrou em condicao");
-  // Negação
+ //   System.out.println("TOKENS condicao: " + tokens);
+  //  System.out.println("token condicao: " + token);
+    // Negação
     if (token != null && "!".equals(token.lexema)) {
-      return negacaoCondicao() && condicaoDerivada();
+        return negacaoCondicao() && condicaoDerivada();
     }
-    // Token IDENTIFIER --> faz lookahead direto aqui (em comum para varias situações)
-    if (token != null && "IDENTIFIER".equals(token.tipo)) { 
-      // LOOKAHEAD DIRETO: ver próximo token sem consumir
+    // Token IDENTIFIER - lookahead melhorado
+    if (token != null && "IDENTIFIER".equals(token.tipo)) {
+      // Lookahead mais inteligente: verifica se há operadores matemáticos antes de relacionais
       if (!tokens.isEmpty()) {
-        Token nextToken = tokens.get(0);
-        // se próximo token é operador RELACIONAL, é comparação
-        if (firsts.get("operacaoRelacional").contains(nextToken.lexema)) {
-          return condicaoComparacoesBasicas() && condicaoDerivada();
+        // Procura por operadores matemáticos OU relacionais nos próximos tokens
+        boolean encontrouMatematico = false;
+        boolean encontrouRelacional = false;
+      
+        for (int i = 0; i < Math.min(3, tokens.size()); i++) {
+          Token nextToken = tokens.get(i);
+          String lexema = nextToken.lexema;
+          if (Set.of("+", "-", "*", "/", "^").contains(lexema)) {
+            encontrouMatematico = true;
+            break;
+          }
+          if (Set.of("<", ">", "<>", "<->", "<=", ">=").contains(lexema)) {
+            encontrouRelacional = true;
+            break;
+          }
         }
-        // se próximo token é operador MATEMÁTICO, é expressão
-        if (Set.of("+", "-", "*", "/", "^").contains(nextToken.lexema)) {
+        // Se encontrou operador matemático, é expressão matemática
+        if (encontrouMatematico) {
           return expressoesMatematicas() && condicaoDerivada();
         }
+        // Se encontrou operador relacional, é comparação básica
+        else if (encontrouRelacional) {
+          return condicaoComparacoesBasicas() && condicaoDerivada();
+        }
       }
-      // se não é nenhum dos casos acima, é identificador sozinho
+      // Se não encontrou nenhum operador, é identificador sozinho
       return identificadores() && condicaoDerivada();
     }
     // expressões matemáticas que começam com (
     if (token != null && "(".equals(token.lexema)) {
-        return expressoesMatematicas() && condicaoDerivada();
+      return expressoesMatematicas() && condicaoDerivada();
     }
-    // numeros (também podem iniciar comparações)
+    // números - verifica se são parte de comparações
     if (token != null && (token.tipo.equals("INTEGER") || token.tipo.equals("DECIMAL"))) {
-      return condicaoComparacoesBasicas() && condicaoDerivada();
+      // Lookahead para ver se é número sozinho ou parte de comparação
+      if (!tokens.isEmpty()) {
+        Token nextToken = tokens.get(0);
+        if (firsts.get("operacaoRelacional").contains(nextToken.lexema)) {
+          return condicaoComparacoesBasicas() && condicaoDerivada();
+        }
+      }
+      // Se não tem operador relacional, trata como expressão matemática
+      return expressoesMatematicas() && condicaoDerivada();
     }
-    
+    // outros casos de comparações básicas
+    if (first("condicaoComparacoesBasicas") && condicaoComparacoesBasicas() && condicaoDerivada()) {
+      return true;
+    }
     erro("condicao");
+    contadorErro++;
     return false;
    /*
     if((first("condicaoComparacoesBasicas") && condicaoComparacoesBasicas() && condicaoDerivada())||
@@ -428,8 +486,8 @@ public class Parser {
    */
   private boolean condicaoDerivada(){
     System.out.println("entrou em condicaoDerivada");
-    System.out.println("TOKEN"+token);
-    System.out.println("TOKENS"+tokens);
+   // System.out.println("TOKEN"+token);
+   // System.out.println("TOKENS"+tokens);
     if(first("operacao") && operacao() && condicao() && condicaoDerivada()){
       System.out.println("deu match em condicao derivada");
       return true;
@@ -449,6 +507,7 @@ public class Parser {
       return true;
     }
     erro("condicaoComparacoesBasicas");
+     contadorErro++;
     return false;
   }
 
@@ -463,6 +522,7 @@ public class Parser {
       return true;
     }
     erro("comparacoesBasicas");
+     contadorErro++;
     return false;
   }
 
@@ -476,6 +536,7 @@ public class Parser {
       return true;
     }
     erro("valoresOperacao");
+     contadorErro++;
     return false;
   }
 
@@ -491,6 +552,7 @@ public class Parser {
       return true;
     }
     erro("negacaoCondicao");
+     contadorErro++;
     return false;
   }
 
@@ -506,6 +568,7 @@ public class Parser {
       return true;
     }
     erro("operacao");
+     contadorErro++;
     return false;
   }
 
@@ -521,6 +584,7 @@ public class Parser {
       return true;
     }
     erro("operadorRelacional");
+     contadorErro++;
     return false;
   }
 
@@ -534,6 +598,7 @@ public class Parser {
       return true;
     }
     erro("operacaoLogica");
+     contadorErro++;
     return false;
   }
 
@@ -562,6 +627,7 @@ public class Parser {
       return true;
     }
     erro("listaComandosInternos");
+     contadorErro++;
     return false;
   }
 
@@ -577,6 +643,7 @@ public class Parser {
         return true;
     }
     erro("atribui");
+     contadorErro++;
     return false;
   }
 
@@ -594,18 +661,19 @@ public class Parser {
       return true;
     }
     erro("expressoesMatematicas");
+     contadorErro++;
     return false;
   }
 
- //valor -> numero|texto|boolean|identificadores|expressoesMatematicas|condicaoComparacoesBasicas
+ //valor -> numero|texto|boolean|identificadores|expressoesMatematicas|condicaoComparacoesBasicas|chamarFuncao
     /*
    * simbulos       first
    * valor          first é first dessas regras: numero,texto,isBoolean, identificadores,expressoesMatematicas
    */
   private boolean valor(){ 
-  //  System.out.println("entrei em valor");
-  //  System.out.println("TOKENSSSSS"+tokens);
-  //  System.out.println("TOKEN"+token);
+    System.out.println("entrei em valor");
+   // System.out.println("TOKENSSSSS"+tokens);
+   // System.out.println("TOKEN"+token);
 
     //tokens é a lista com os proximos tokens             //quando quero chamar funcao e tem texto no comeco // argumento da chamada (ultimo argumento)// quando tem mais argumentos
     if(tokens.get(0).lexema.equals(";") || token.tipo.equals("TEXT") || tokens.get(0).lexema.equals(")") ||  tokens.get(0).lexema.equals(",") ){//se proximo token da lista for ; é declaracao simples e pode ser numero/texto/isboolean/identificadores
@@ -619,6 +687,10 @@ public class Parser {
       System.out.println("entrou na opcao condicaoComparacoesBaiscas em valor()");
       return condicaoComparacoesBasicas();
     }
+    else if(token.tipo.equals("FUNCTION_NAME")){
+      System.out.println("entrou na opcao chamarFuncao em valor()");
+      return chamarFuncaoSemFim();
+    }
     else if(firsts.get("validaExpressao").contains(token.lexema) || firsts.get("validaExpressao").contains(tokens.get(0).lexema)){//se token atual for algum dos tokens do first precedenciasuperior (representa expressoesmatematicas) ou prox token for algum dos tokens do first de precedenciasuperior
       System.out.println("entrou na opcao expressoesMatematicas em valor()");
       return expressoesMatematicas();
@@ -627,6 +699,7 @@ public class Parser {
       return false;
     }
     erro("valor");
+     contadorErro++;
     return false;
   }
     /* 
@@ -651,6 +724,7 @@ public class Parser {
       return true;
     }
     erro("numero");
+     contadorErro++;
     return false;
   }
 
@@ -667,6 +741,7 @@ public class Parser {
       return true;
     }
     erro("comandoInterno"); 
+     contadorErro++;
     return false;
   }
   
@@ -682,6 +757,7 @@ public class Parser {
       return true;
     }
     erro("retornar");
+     contadorErro++;
     return false;
   }
 
@@ -698,6 +774,7 @@ public class Parser {
       return true;
     }
     erro("conteudos");
+     contadorErro++;
     return false;
     }
 
@@ -713,6 +790,8 @@ public class Parser {
       return true;
     }
     erro("inicializacao");
+     contadorErro++;
+     contadorErro++;
     return false;
   }
 
@@ -730,6 +809,7 @@ public class Parser {
       return true;
     }
     erro("precedenciaInferior");
+     contadorErro++;
     return false;
   }
 
@@ -747,6 +827,7 @@ public class Parser {
       return true;
     }
     erro("precedenciaIntermediaria");
+     contadorErro++;
     return false;
   }
 
@@ -782,6 +863,7 @@ public class Parser {
       return true;
     }
     erro("precedenciaAlta");
+     contadorErro++;
     return false;
   }
 
@@ -817,6 +899,7 @@ public class Parser {
       return true;
     }
     erro("precedenciaSuperior");
+     contadorErro++;
     return false;
   }
 
@@ -848,6 +931,7 @@ public class Parser {
       return true;
     }
     erro("incremento");
+     contadorErro++;
     return false;
   }
 
@@ -865,6 +949,7 @@ public class Parser {
       return true;
     }
     erro("operacaoIncremento");
+     contadorErro++;
     return false;
   }
 
@@ -880,6 +965,7 @@ public class Parser {
       return true;
     }
     erro("tipoVariavel");
+     contadorErro++;
     return false;
   }
 
@@ -895,6 +981,7 @@ public class Parser {
       return true;
     }
     erro("decimal");
+     contadorErro++;
     return false;
   }
 
@@ -907,6 +994,7 @@ public class Parser {
       return true;
     }
     erro("inteiro");
+     contadorErro++;
     return false;
   }
 
@@ -921,6 +1009,7 @@ public class Parser {
       return true;
     }
     erro("identificadores");
+     contadorErro++;
     return false;
   }
   
@@ -935,6 +1024,7 @@ public class Parser {
       return true;
     }
     erro("texto");
+     contadorErro++;
     return false;
   }
   
@@ -948,6 +1038,7 @@ public class Parser {
       return true;
     }
     erro("boolean");
+     contadorErro++;
     return false;
   }
 
@@ -961,6 +1052,7 @@ public class Parser {
       return true;
     }
     erro("palavraReservadaNomeFuncao");
+     contadorErro++;
     return false;
   }
 
@@ -1017,7 +1109,7 @@ public class Parser {
   }
 
   private void inicializarFollows() {
-    firsts.put("listaComandos", Set.of("$"));
+    follows.put("listaComandos", Set.of("$"));
   }
 
   private boolean first(String regra) {
