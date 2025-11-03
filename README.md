@@ -32,7 +32,7 @@
 <br>operador_logicoE = ‘e’
 <br>operador_logicoOu = ‘ou’
 <br>operador_logicoNot = ‘!’
-<br>palavra_reservadaNomeFuncao = [A-Z][a-z0-9]*
+<br>palavra_reservadaNomeFuncao = [A-Z][a-z_0-9]*
 <br>operadorAtribuicao = ‘->’  
 <br>operadorDiferente = ‘<>’
 <br>operadorIgualdade = ‘<->’

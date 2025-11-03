@@ -30,9 +30,12 @@ public class Parser {
    */
    public void main() {
     token = getNextToken();
+    //como saber se td realmente fica dentro da main????????????????????????
+    header();
     Node root = new Node("listaComando");
     tree.setRoot(root);
     if (listaComandos(root) && matchT("EOF",root) &&  contadorErro == 0){
+      footer();
       System.out.println("Sintaticamente correto");
       //tree.preOrder();//imprime em pre ordem
       //tree.printCode(); //imprimeas folhas(codigo)
@@ -94,19 +97,12 @@ public class Parser {
    * listaComandos      comando (regra,ent first é firsts dessa regra), ε        $
    */
   private boolean listaComandos(Node root){
-    //System.out.println("entrou no listacomandos");
     Node listaComandoNode = root.addNode("listaComandos");
-
 
     //se tiver Entrada no codigo adiciona isso: traduz("import java.util.Scanner;");
     //traduz("public class CodigoExemplo{");
 
-
-
-   // System.out.println("TOKEN"+token);
-   // System.out.println("TOKENS"+tokens);
     if(first("comando") && comando(listaComandoNode) && listaComandos(listaComandoNode)){
-    //  System.out.println("deu match listacomandos");
       return true;
     }
     //follow
@@ -126,16 +122,11 @@ public class Parser {
    * comando     so regra, ent first é firsts dessas regras: (seCompleto,para,lacoEnquanto,declarar,atribuicao,criarFuncao,chamarFuncao)
    */
   private boolean comando(Node root){
-   // System.out.println("entrou no comando");
     Node comandoNode = root.addNode("comando");
-
-   // System.out.println("TOKEN"+token);
-  //  System.out.println("TOKENS"+tokens);
     if((first("declaracao") && declaracao(comandoNode))||(first("seCompleto") && seCompleto(comandoNode))||
     (first("para") && para(comandoNode))||(first("lacoEnquanto") && lacoEnquanto(comandoNode))||
     (first("atribui") && atribui(comandoNode))||(first("criarFuncao") && criarFuncao(comandoNode))||
     (first("chamarFuncao") && chamarFuncao(comandoNode))){
-    //  System.out.println("deu match no comando");
       return true;
     }
     erro("comando"); 
@@ -154,21 +145,18 @@ public class Parser {
    *               inteiro,decimal, texto, verdadeiroFalso
    */
   private boolean declaracao(Node root){
-   // System.out.println("entrou no declaracao");
     Node declaracaoNode = root.addNode("declaracao");
     if(first("declaracao") && tipoVariavel(declaracaoNode) && identificadores(declaracaoNode)) { //uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
       // Pode ser: tipo var; OU tipo var -> valor;
-      if(matchL(";",declaracaoNode)) {
-     //   System.out.println("deu match declaracao (simples)");
+      if(matchL(";",";", declaracaoNode)) {
         return true; // declaracao simples
       } 
-      else if(matchL("->",declaracaoNode) && valor(declaracaoNode) && matchL(";",declaracaoNode)) {
-      //  System.out.println("deu match declaracao com atribuição");
+      else if(matchL("->","=",declaracaoNode) && valor(declaracaoNode) && matchL(";",";",declaracaoNode)) {
         return true; // declaracao com atribuicao
       }
     }
     erro("declaracao");
-     contadorErro++;
+    contadorErro++;
     return false;
   }
 
@@ -178,12 +166,8 @@ public class Parser {
    *  seCompleto          "se"
    */
   private boolean seCompleto(Node root){
-   // System.out.println("entrou no seCompleto");
     Node seCompletoNode = root.addNode("seCompleto");
-    //  System.out.println("TOKEN"+token);
-    //  System.out.println("TOKENS"+tokens);
       if(first("se")&& se(seCompletoNode) && listaOuSe(seCompletoNode) && senaoOpcional(seCompletoNode)){
-    //    System.out.println("deu match no seCompleto");
         return true;
       }
     return false; // n tem erro especifico pq a regra especifcia (se, ouse e senao) darao o erro
@@ -195,10 +179,8 @@ public class Parser {
    * listaOuSe    ε, first é firsts dessa regra: ouSe
    */
   private boolean listaOuSe(Node root){
-  //  System.out.println("entrou no listaOuSe");
     Node listaOuSeNode = root.addNode("listaOuSe");
     if(first("ouSe") && ouSe(listaOuSeNode) && listaOuSe(listaOuSeNode)){
-  //    System.out.println("deu match no listaOuSe");
       return true;
     }
     return true;//ε
@@ -211,10 +193,8 @@ public class Parser {
    *                     ε, ""senao"
    */
   private boolean senaoOpcional(Node root){
-  //  System.out.println("entrou no senaoOpcional");
     Node senaoOpcionalNode = root.addNode("senaoOpcional");
     if(first("senao") && senao(senaoOpcionalNode)){
-  //    System.out.println("deu match no senaoOpcional");
       return true;
     }
     return true;//ε
@@ -224,14 +204,12 @@ public class Parser {
   /*
    * simbulos         first
    * se                se
-   */
+  */
   private boolean se(Node root){ 
-  //  System.out.println("entrou no se");
     Node seNode = root.addNode("se");
-  //  System.out.println("TOKEN"+token);
-  //  System.out.println("TOKENS"+tokens);
-     if (matchL("se",seNode) && matchL("(",seNode) && condicao(seNode) && matchL(")",seNode) && matchL("{",seNode) &&
-      listaComandosInternos(seNode) && matchL("}",seNode)){
+     if (matchL("se","if",seNode) && matchL("(","(",seNode) && condicao(seNode) && matchL(")",")",seNode) &&
+      matchL("{","{",seNode) &&
+      listaComandosInternos(seNode) && matchL("}","}",seNode)){
         return true;
      }
     erro("se");
@@ -246,8 +224,9 @@ public class Parser {
    */
   private boolean ouSe(Node root){
     Node ouSeNode = root.addNode("ouSe");
-    if(matchL("ouSe",ouSeNode) && matchL("(",ouSeNode) && condicao(ouSeNode) && matchL(")",ouSeNode) && matchL("{",ouSeNode) &&
-     listaComandosInternos(ouSeNode) && matchL("}",ouSeNode)){
+    if(matchL("ouSe","else if",ouSeNode) && matchL("(","(",ouSeNode) && condicao(ouSeNode) && matchL(")",")",ouSeNode) &&
+     matchL("{","{",ouSeNode) &&
+     listaComandosInternos(ouSeNode) && matchL("}","}",ouSeNode)){
         return true;
      }
     erro("ouSe");
@@ -261,11 +240,10 @@ public class Parser {
    * senao          senao
    */
   private boolean senao(Node root){ 
-  //  System.out.println("entrou no senao");
     Node senaoNode = root.addNode("senao");
-    if(matchL("senao",senaoNode) && matchL("{",senaoNode) && listaComandosInternos(senaoNode) && matchL("}",senaoNode)){
-    //    System.out.println("deu match no senao");
-        return true;
+    if(matchL("senao","else",senaoNode) && matchL("{","{",senaoNode) &&
+     listaComandosInternos(senaoNode) && matchL("}","}",senaoNode)){
+      return true;
      }
     erro("senao");
     contadorErro++;
@@ -278,11 +256,10 @@ public class Parser {
    * para          para
    */
   private boolean para(Node root){
-   // System.out.println("entrou no para");
     Node paraNode = root.addNode("para");
-    if(matchL("para",paraNode) && matchL("(",paraNode) && cabecalhoPara(paraNode) && matchL(")",paraNode) && matchL("{",paraNode) &&
-     listaComandosInternos(paraNode) && matchL("}",paraNode)){
-        return true;
+    if(matchL("para","for",paraNode) && matchL("(","(",paraNode) && cabecalhoPara(paraNode) &&
+     matchL(")",paraNode) && matchL("{",paraNode) && listaComandosInternos(paraNode) && matchL("}",paraNode)){
+      return true;
      }
     erro("para");
     contadorErro++;
@@ -295,7 +272,6 @@ public class Parser {
    * lacoenquanto     lacoenquanto
    */
   private boolean lacoEnquanto(Node root){ 
-  //  System.out.println("entrou em lacoEnquanto");
     Node lacoEnquantoNode = root.addNode("lacoEnquanto");
     if(matchL("lacoEnquanto",lacoEnquantoNode) && matchL("(",lacoEnquantoNode) && condicao(lacoEnquantoNode) && matchL(")",lacoEnquantoNode) &&
      matchL("{",lacoEnquantoNode) && listaComandosInternos(lacoEnquantoNode) && matchL("}",lacoEnquantoNode)){
@@ -313,7 +289,6 @@ public class Parser {
    * criarFuncao         criar
    */
   private boolean criarFuncao(Node root){ 
-  //  System.out.println("entrou criarfuncao");
     Node criarFuncaoNode = root.addNode("criarFuncao");
     if(matchL("criar",criarFuncaoNode) && palavraReservadaNomeFuncao(criarFuncaoNode) && matchL("(",criarFuncaoNode) && argumentosFuncao(criarFuncaoNode) &&
      matchL(")",criarFuncaoNode) && matchL("{",criarFuncaoNode) && listaComandosInternos(criarFuncaoNode)  && matchL("}",criarFuncaoNode)){
@@ -330,11 +305,9 @@ public class Parser {
    * chamarFuncao          "entrada","imprima", first é firsts dessa regra palavraReservadaNomeFuncao
    */
   private boolean chamarFuncao(Node root) {
-  //  System.out.println("entrou chamarFuncao");
     Node chamarFuncaoNode = root.addNode("chamarFuncao");
     if (first("chamarFuncao") && inicioChamarFuncao(chamarFuncaoNode) && matchL("(",chamarFuncaoNode) && argumentosChamada(chamarFuncaoNode) &&
      matchL(")",chamarFuncaoNode) && matchL(";",chamarFuncaoNode)) {
-    //  System.out.println("deu match em chamar funcao");
       return true;
     }
     erro("chamarFuncao");
@@ -345,11 +318,9 @@ public class Parser {
   //chamarFuncaoSemFim -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' 
   //usada quando desejamos atribui o resultado de uma funcao a uma declaracao ou chamar o resultado de uma funcao em outra funcao....
   private boolean chamarFuncaoSemFim(Node root) {
-  //  System.out.println("entrou chamarFuncao");
     Node chamarFuncaoSemFimNode = root.addNode("chamarFuncaoSemFim");
     if (first("chamarFuncao") && inicioChamarFuncao(chamarFuncaoSemFimNode) && matchL("(",chamarFuncaoSemFimNode) &&
      argumentosChamada(chamarFuncaoSemFimNode) && matchL(")",chamarFuncaoSemFimNode)) {
-    //  System.out.println("deu match em chamar funcao");
       return true;
     }
     erro("chamarFuncao");
@@ -363,11 +334,9 @@ public class Parser {
    * inicioChamarFuncao          "entrada","imprima", first é firsts dessa regra palavraReservadaNomeFuncao
    */
   private boolean inicioChamarFuncao(Node root){
-   // System.out.println("entrou inicioChamarFuncao");
     Node inicioChamarFuncaoNode = root.addNode("inicioChamarFuncao");
     if((first("palavraReservadaNomeFuncao") && palavraReservadaNomeFuncao(inicioChamarFuncaoNode))|| matchL("Entrada",inicioChamarFuncaoNode)||
     matchL("Imprima",inicioChamarFuncaoNode)){
-  //    System.out.println("deu match em inicioChamarFuncao");
     return true;
    }
     erro("inicioChamarFuncao");
@@ -380,7 +349,6 @@ public class Parser {
    * argumentosChamada   ε, first é first dessa regra: valor
    */
   private boolean argumentosChamada(Node root){
-  //  System.out.println("entrei em argumentosChamada");
     Node argumentosChamadaNode = root.addNode("argumentosChamada");
     if(first("valor") && valor(argumentosChamadaNode) && restoArgumentosChamada(argumentosChamadaNode)){
       return true;
@@ -465,10 +433,7 @@ public class Parser {
 
   //implementação do lookahead para pegar o prox token e distinguir se é identificadores, expressoesMatematicas ou condicoesComparacoesBasicas
   private boolean condicao(Node root) {
- //   System.out.println("entrou em condicao");
     Node condicaoNode = root.addNode("condicao");
- //   System.out.println("TOKENS condicao: " + tokens);
-  //  System.out.println("token condicao: " + token);
     // Negação
     if (token != null && "!".equals(token.lexema)) {
         return negacaoCondicao(condicaoNode) && condicaoDerivada(condicaoNode);
@@ -547,12 +512,8 @@ public class Parser {
    * condicao’   first é first dessa regra: operacao
    */
   private boolean condicaoDerivada(Node root){
-  //  System.out.println("entrou em condicaoDerivada");
     Node condicaoDerivadaNode = root.addNode("condicaoDerivada");
-   // System.out.println("TOKEN"+token);
-   // System.out.println("TOKENS"+tokens);
     if(first("operacao") && operacao(condicaoDerivadaNode) && condicao(condicaoDerivadaNode) && condicaoDerivada(condicaoDerivadaNode)){
-    //  System.out.println("deu match em condicao derivada");
       return true;
     }
     return true; //ε
@@ -565,7 +526,6 @@ public class Parser {
    * condicaoComparacoesBasicas    first é ! e first dessa regra: comparacoesBasicas
    */
   private boolean condicaoComparacoesBasicas(Node root){
-   // System.out.println("entrou em condicaoComparacoesBasicas");
     Node condicaoComparacoesBasicasNode = root.addNode("condicaoComparacoesBasicas");
     if((first("condicaoComparacoesBasicas") && comparacoesBasicas(condicaoComparacoesBasicasNode))|| (matchL("!",condicaoComparacoesBasicasNode) &&
      identificadores(condicaoComparacoesBasicasNode))){
@@ -582,7 +542,6 @@ public class Parser {
    * comparacoesBasicas    first é first dessas regras: identificadores, numero
    */
   private boolean comparacoesBasicas(Node root){
-   // System.out.println("entrou em comparacoesBasicas");
     Node comparacoesBasicasNode = root.addNode("comparacoesBasicas");
     if(((first("identificadores") && identificadores(comparacoesBasicasNode))||(first("numero") && numero(comparacoesBasicasNode))) &&
      operacao(comparacoesBasicasNode) && valoresOperacao(comparacoesBasicasNode)){
@@ -615,10 +574,8 @@ public class Parser {
    * negacaoCondicao    !
    */
   private boolean negacaoCondicao(Node root){
-  //  System.out.println("entrou na negacaoCondicao");
     Node negacaoCondicaoNode = root.addNode("negacaoCondicao");
     if(matchL("!",negacaoCondicaoNode) && condicao(negacaoCondicaoNode)){
-   //   System.out.println("deu match em negacaoCondicao");
       return true;
     }
     erro("negacaoCondicao");
@@ -632,10 +589,8 @@ public class Parser {
    * operacao            first é first dessas regras: operacaoRelacional, operacaoLogica
    */
   private boolean operacao(Node root){
-   // System.out.println("entrou na operacao");
     Node operacaoNode = root.addNode("operacao");
     if(first("operacaoRelacional") && operacaoRelacional(operacaoNode) || first("operacaoLogica") && operacaoLogica(operacaoNode)){
-    //  System.out.println("deu match na operacao");
       return true;
     }
     erro("operacao");
@@ -649,11 +604,9 @@ public class Parser {
    * operacaoRelacional    <>,<->,<=,>=
    */
   private boolean operacaoRelacional(Node root){
-  //  System.out.println("entrou na operacaoRelacional");
     Node operacaoRelacionalNode = root.addNode("operacaoRelacional");
     if(matchL("<",operacaoRelacionalNode)|| matchL(">",operacaoRelacionalNode) || matchL("<>",operacaoRelacionalNode) ||
      matchL("<->",operacaoRelacionalNode)|| matchL("<=",operacaoRelacionalNode)|| matchL(">=",operacaoRelacionalNode)){
-   //   System.out.println("deu match na operacao relacional");
       return true;
     }
     erro("operadorRelacional");
@@ -682,13 +635,16 @@ public class Parser {
    * listaComandosInternos     ε, first é first dessa regra: comandointerno
    */
   private boolean listaComandosInternos(Node root){ 
-   // System.out.println("entrou em listaComandosInternos");
-    Node listaComandosInternosNode = root.addNode("listaComandosInternos");
-    if(first("comandoInterno") && comandoInterno(listaComandosInternosNode) && listaComandosInternos(listaComandosInternosNode)){
-      return true;
+    if(first("comandoInterno")) {
+      Node listaComandosInternosNode = root.addNode("listaComandosInternos");
+      if(comandoInterno(listaComandosInternosNode) && listaComandosInternos(listaComandosInternosNode)){
+          return true;
+      }
+      return false;
     }
-    return true; //ε
-  }
+    // ε - não adiciona nó na árvore quando é vazio
+  return true;
+}
   
   //cabecalhoPara -> inicializacao ";" condicao ";" incremento
    /*
@@ -696,11 +652,9 @@ public class Parser {
    * cabecalhoPara        first é first dessa regra: inicializacao = first tipovariael = first delcaracao
    */
   private boolean cabecalhoPara(Node root){ 
-  //  System.out.println("entrou no cabecalhoPara");
     Node cabecalhoParaNode = root.addNode("cabecalhoPara");
     if(first("declaracao") && inicializacao(cabecalhoParaNode) && matchL(";",cabecalhoParaNode) && condicao(cabecalhoParaNode) && 
     matchL(";",cabecalhoParaNode) && incremento(cabecalhoParaNode)){
-  //    System.out.println("dei match em cabecalhopara");
       return true;
     }
     erro("listaComandosInternos");
@@ -715,7 +669,6 @@ public class Parser {
    *                   
    */
   private boolean atribui(Node root){ 
-  //  System.out.println("entrou em atribui");
     Node atribuiNode = root.addNode("atribui");
     if(first("identificadores") && identificadores(atribuiNode) && matchL("->",atribuiNode) && valor(atribuiNode) && matchL(";",atribuiNode)){
         return true;
@@ -731,10 +684,7 @@ public class Parser {
    * expressoesMatematicas   first é first dessa regra:precedenciaInferior
    */
   private boolean expressoesMatematicas(Node root){
-  //  System.out.println("entrei em expressoesMatematicas");
     Node expressoesMatematicasNode = root.addNode("expressoesMatematicas");
-   // System.out.println("TOKEN atual expMat"+token);
-   // System.out.println("TOKENS atual expMat"+tokens);
     if(first("precedenciaSuperior") && precedenciaInferior(expressoesMatematicasNode)){
   //    System.out.println("dei match em expressoesMatematicas");
       return true;
@@ -750,30 +700,21 @@ public class Parser {
    * valor          first é first dessas regras: numero,texto,isBoolean, identificadores,expressoesMatematicas
    */
   private boolean valor(Node root){ 
-  //  System.out.println("entrei em valor");
     Node valorNode = root.addNode("valor");
-   // System.out.println("TOKENSSSSS"+tokens);
-   // System.out.println("TOKEN"+token);
-
     //tokens é a lista com os proximos tokens             //quando quero chamar funcao e tem texto no comeco // argumento da chamada (ultimo argumento)// quando tem mais argumentos
     if(tokens.get(0).lexema.equals(";") || token.tipo.equals("TEXT") || tokens.get(0).lexema.equals(")") ||  tokens.get(0).lexema.equals(",") ){//se proximo token da lista for ; é declaracao simples e pode ser numero/texto/isboolean/identificadores
-     //  System.out.println("entrou na opcao basica em valor()");
       if((first("numero") && numero(valorNode))||(first("texto") && texto(valorNode))||(first("isBoolean") && isBoolean(valorNode))||
       (first("identificadores") && identificadores(valorNode))){
-      //  System.out.println("deu match nas opcoes basicas de valor");
         return true;
       }
     }
     else if (firsts.get("operacao").contains(token.lexema) || firsts.get("operacao").contains(tokens.get(0).lexema)){//se token atual for algum dos tokens do first operacao ou prox token for algum dos tokens do first de operacao
-     // System.out.println("entrou na opcao condicaoComparacoesBaiscas em valor()");
       return condicaoComparacoesBasicas(valorNode);
     }
     else if(token.tipo.equals("FUNCTION_NAME")){
-    //  System.out.println("entrou na opcao chamarFuncao em valor()");
       return chamarFuncaoSemFim(valorNode);
     }
     else if(firsts.get("validaExpressao").contains(token.lexema) || firsts.get("validaExpressao").contains(tokens.get(0).lexema)){//se token atual for algum dos tokens do first precedenciasuperior (representa expressoesmatematicas) ou prox token for algum dos tokens do first de precedenciasuperior
-    //  System.out.println("entrou na opcao expressoesMatematicas em valor()");
       return expressoesMatematicas(valorNode);
     }
     erro("valor");
@@ -813,7 +754,6 @@ public class Parser {
    * comandoInterno    first é first dessas regras:seCompleto,para,lacoEnquanto,declaracao,atribui,chamarFuncao,retornar
    */
   private boolean comandoInterno(Node root){
-  //  System.out.println("entrou em comandoInterno");
     Node comandoInternoNode = root.addNode("comandoInterno");
     if((first("se")&& seCompleto(comandoInternoNode))||(first("para") && para(comandoInternoNode))||
     (first("lacoEnquanto") && lacoEnquanto(comandoInternoNode))||(first("declaracao") && declaracao(comandoInternoNode))||
@@ -832,10 +772,8 @@ public class Parser {
    * retornar    retorna
    */
   private boolean retornar(Node root){ 
-  //  System.out.println("entrou em retornar");
     Node retornarNode = root.addNode("retornar");
     if(matchL("retorna",retornarNode) && conteudos(retornarNode) && matchL(";",retornarNode)){
-  //    System.out.println("deu match em retornar");
       return true;
     }
     erro("retornar");
@@ -849,11 +787,9 @@ public class Parser {
    * conteudos      first é first dessas regras: identificadores, expressoesMatematicas,numero
    */
   private boolean conteudos(Node root){ 
-  //  System.out.println("entrei em conteudos");
     Node conteudosNode = root.addNode("conteudos");
     if((first("identificadores") && identificadores(conteudosNode))||(first("numero") && numero(conteudosNode))||
     (first("expressoesMatematicas") && expressoesMatematicas(conteudosNode))||first("isBoolean") && isBoolean(conteudosNode)){
-   //   System.out.println("dei match em conteudos");
       return true;
     }
     erro("conteudos");
@@ -866,12 +802,10 @@ public class Parser {
    * simbulos         first
    * inicializacao    first é first dessa regra: tipoVariavel
    */
-  private boolean inicializacao(Node root){
-  //  System.out.println("entrou na inicializacao"); 
+  private boolean inicializacao(Node root){ 
     Node inicializacaoNode = root.addNode("inicializacao");
     if(first("declaracao") && tipoVariavel(inicializacaoNode) && identificadores(inicializacaoNode) && matchL("->",inicializacaoNode) &&
     conteudos(inicializacaoNode)){
-    //  System.out.println("dei match em inicializacao");
       return true;
     }
     erro("inicializacao");
@@ -885,12 +819,8 @@ public class Parser {
    * precedenciaInferior    first é first dessa regra:precedenciaIntermediaria = first("precedenciaSuperior")
    */
   private boolean precedenciaInferior(Node root){
-  //  System.out.println("entrei em precedenciaInferior");
     Node precedenciaInferiorNode = root.addNode("precedenciaInferior");
-  //  System.out.println("TOKEN em precedenciaInferior"+token);
-   // System.out.println("TOKENS em precedenciaInferior"+tokens);
     if(first("precedenciaSuperior") && precedenciaIntermediaria(precedenciaInferiorNode) && precedenciaInferiorDerivada(precedenciaInferiorNode)){
-  //    System.out.println("dei match em precedenciaInferior");
       return true;
     }
     erro("precedenciaInferior");
@@ -904,12 +834,8 @@ public class Parser {
    * precedenciaIntermediaria     first é first dessa regra:precedenciaAlta = first("precedenciaSuperior")
    */
   private boolean precedenciaIntermediaria(Node root){
- //   System.out.println("entrei em precedenciaIntermediaria");
     Node precedenciaIntermediariaNode = root.addNode("precedenciaIntermediaria");
-   // System.out.println("TOKEN em precedenciaIntermediaria"+token);
-   // System.out.println("TOKENS em precedenciaIntermediaria"+tokens);
     if(first("precedenciaSuperior") && precedenciaAlta(precedenciaIntermediariaNode) && precedenciaIntermediariaDerivada(precedenciaIntermediariaNode)){
-   //   System.out.println("dei match em precedenciaIntermediaria");
       return true;
     }
     erro("precedenciaIntermediaria");
@@ -923,9 +849,7 @@ public class Parser {
    * precedenciaInferior'    "+", "-", ε
    */
   private boolean precedenciaInferiorDerivada(Node root){
-  //  System.out.println("entrei em precedenciaInferiorDerivada");
     Node precedenciaInferiorDerivadaNode = root.addNode("precedenciaInferiorDerivada");
-   // System.out.println("TOKEN em precedenciaInferiorDerivada"+token);
     if(matchL("+",precedenciaInferiorDerivadaNode) && precedenciaIntermediaria(precedenciaInferiorDerivadaNode) &&
      precedenciaInferiorDerivada(precedenciaInferiorDerivadaNode)){
       return true;
@@ -944,12 +868,8 @@ public class Parser {
   * precedenciaAlta     first é first dessa regra: precedenciaSuperior
   */
   private boolean precedenciaAlta(Node root){
-  //  System.out.println("entrei em precedenciaAlta");
     Node precedenciaAltaNode = root.addNode("precedenciaAlta");
- //   System.out.println("TOKEN em precedenciaAlta"+token);
- //   System.out.println("TOKENS em precedenciaAlta"+tokens);
     if(first("precedenciaSuperior") && precedenciaSuperior(precedenciaAltaNode) && precedenciaAltaDerivada(precedenciaAltaNode)){
-//    System.out.println("dei match em precedenciaAlta");
       return true;
     }
     erro("precedenciaAlta");
@@ -963,9 +883,7 @@ public class Parser {
    * precedenciaIntermediaria'    "*", "/", ε
    */
   private boolean precedenciaIntermediariaDerivada(Node root){
- //   System.out.println("entrei em precedenciaIntermediariaDerivada");
     Node precedenciaIntermediariaDerivadaNode = root.addNode("precedenciaIntermediariaDerivada");
-   // System.out.println("TOKEN em precedenciaIntermediariaDerivada"+token);
     if(matchL("*",precedenciaIntermediariaDerivadaNode) && precedenciaAlta(precedenciaIntermediariaDerivadaNode) &&
      precedenciaIntermediariaDerivada(precedenciaIntermediariaDerivadaNode)){
       return true;
@@ -984,13 +902,9 @@ public class Parser {
     * precedenciaSuperior       "(", first é first dessa regra: identificadores,numero
    */
   private boolean precedenciaSuperior(Node root){
-  //  System.out.println("entrei em precedenciaSuperior");
     Node precedenciaSuperiorNode = root.addNode("precedenciaSuperior");
-  //  System.out.println("TOKEN em precedenciaSuperior"+token);
-  //  System.out.println("TOKENS em precedenciaSuperior"+tokens);
     if((first("identificadores") && identificadores(precedenciaSuperiorNode))||(first("numero") && numero(precedenciaSuperiorNode))||
      ((matchL("(",precedenciaSuperiorNode) && expressoesMatematicas(precedenciaSuperiorNode) && matchL(")",precedenciaSuperiorNode)))){
-   //   System.out.println("dei match em precedenciaSuperior");
       return true;
     }
     erro("precedenciaSuperior");
@@ -1004,9 +918,7 @@ public class Parser {
    * precedenciaAlta'    "^",ε
    */
   private boolean precedenciaAltaDerivada(Node root){
-  //  System.out.println("entrei em precedenciaAltaDerivada");
     Node precedenciaAltaDerivadaNode = root.addNode("precedenciaAltaDerivada");
-  //  System.out.println("TOKEN em precedenciaAltaDerivada"+token);
     if(matchL("^",precedenciaAltaDerivadaNode) && precedenciaSuperior(precedenciaAltaDerivadaNode) && precedenciaAltaDerivada(precedenciaAltaDerivadaNode)){
       return true;
     }
@@ -1020,10 +932,8 @@ public class Parser {
     * incremento     first é first dessa regra: identificadores
    */
   private boolean incremento(Node root){ 
-  //  System.out.println("entrei em incremento");
     Node incrementoNode = root.addNode("incremento");
     if((first("identificadores") && identificadores(incrementoNode) && operacaoIncremento(incrementoNode))){
-   //   System.out.println("dei match em incrmeento");
       return true;
     }
     erro("incremento");
@@ -1034,21 +944,18 @@ public class Parser {
   //operacaoIncremento -> operadorSoma operadorSoma|operadorSubtracao operadorSubtracao
   //é melhor reutilizar os token que já existem de +,-
   private boolean operacaoIncremento(Node root){ 
-  //  System.out.println("entrei em operacaoIncremento");
     Node operacaoIncrementoNode = root.addNode("operacaoIncremento");
     // Lookahead para ver se são dois operadores iguais
     if(!tokens.isEmpty() && token.lexema.equals(tokens.get(0).lexema)) {  
       // "++"
       if(token.lexema.equals("+")) {
         if(matchL("+", operacaoIncrementoNode) && matchL("+", operacaoIncrementoNode)) {
-     //     System.out.println("dei match em ++");
           return true;
         }
       }
       //"--"
       else if(token.lexema.equals("-")) {
         if(matchL("-", operacaoIncrementoNode) && matchL("-", operacaoIncrementoNode)) {
-      //    System.out.println("dei match em --");
           return true;
         }
       }
@@ -1064,11 +971,9 @@ public class Parser {
   * tipoVariavel    inteiro,decimal, texto, verdadeiroFalso
    */
   private boolean tipoVariavel(Node root){
-   // System.out.println("entrou tipovariavel");
     Node tipoVariavelNode = root.addNode("tipoVariavel");
     if(matchL("inteiro",tipoVariavelNode)||matchL("decimal",tipoVariavelNode)||matchL("texto",tipoVariavelNode)||
     matchL("verdadeiroFalso",tipoVariavelNode)){
-   //   System.out.println("deu algum match em tipo variavel");
       return true;
     }
     erro("tipoVariavel");
@@ -1085,7 +990,7 @@ public class Parser {
    */
   private boolean decimal(Node root){ 
     Node decimalNode = root.addNode("decimal");
-    if(matchT("DECIMAL",decimalNode)){
+    if(matchT("DECIMAL",token.lexema, decimalNode )){
       return true;
     }
     erro("decimal");
@@ -1099,7 +1004,7 @@ public class Parser {
    */
   private boolean inteiro(Node root){ 
     Node inteiroNode = root.addNode("inteiro");
-    if(matchT("INTEGER",inteiroNode)){
+    if(matchT("INTEGER",token.lexema,inteiroNode)){
       return true;
     }
     erro("inteiro");
@@ -1112,10 +1017,8 @@ public class Parser {
    * identificadores     IDENTIFIER
    */
   private boolean identificadores(Node root){ 
-  //  System.out.println("entrei no identificadores");
     Node identificadoresNode = root.addNode("identificadores");
-    if(matchT("IDENTIFIER",identificadoresNode)){
-  //    System.out.println("dei match em identificadores");
+    if(matchT("IDENTIFIER",token.lexema,identificadoresNode)){
       return true;
     }
     erro("identificadores");
@@ -1128,10 +1031,8 @@ public class Parser {
    * texto        TEXT
    */
   private boolean texto(Node root){ 
-   // System.out.println("entrou em texto");
     Node textoNode = root.addNode("texto");
-    if(matchT("TEXT",textoNode)){
-    //  System.out.println("deu match em texto");
+    if(matchT("TEXT",token.lexema,textoNode)){
       return true;
     }
     erro("texto");
@@ -1159,7 +1060,6 @@ public class Parser {
    * palavraReservadaNomeFuncao    FUNCTION_NAME
    */
   private boolean palavraReservadaNomeFuncao(Node root){
-   // System.out.println("entrou palavrReservadaNomeFuncao");
     Node palavraReservadaNomeFuncaoNode = root.addNode("palavraReservadaNomeFuncao");
     if(matchT("FUNCTION_NAME",palavraReservadaNomeFuncaoNode)){
       return true;
@@ -1297,7 +1197,7 @@ public class Parser {
   }
 
 
-  //-------------------------------TRADUÇÃO DO MINEIRES PARA JAVA------------------------
+  //-------------------------------PARA TRADUÇÃO DO MINEIRES PARA JAVA------------------------
 
   //sobrecargas 
   private boolean matchL(String palavra, String newcode){
@@ -1319,8 +1219,31 @@ public class Parser {
   }
 
   private void traduz(String code){
-    System.out.println("TRADUÇÃO\n");
-    System.out.println(code);
+    System.out.print(code);
   }
+
+  public void header(){
+    System.out.println("import java.util.Scanner;");
+    System.out.println("public class Code{");
+    System.out.println("public static void mai(String[]args){");
+  }
+
+  public void footer(){
+    System.out.println("}");
+    System.out.println("}");
+  }
+
+  //????????????????
+  private void gerarCodigoJava(String lexema) {
+    switch(lexema) {
+        case "se": System.out.print("if "); break;
+        case "entao": System.out.print(" "); break;
+        case "senao": System.out.print("else "); break;
+        case "->": System.out.print(" = "); break;
+        case "e": System.out.print(" && "); break;
+        case "ou": System.out.print(" || "); break;
+        default: System.out.print(lexema + " "); break;
+    }
+}
   
 }
