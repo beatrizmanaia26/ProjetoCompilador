@@ -13,12 +13,15 @@ public abstract class AFD {
             code.current() == '-' ||
             code.current() == '*' ||
             code.current() == '/' ||
+            code.current() == '^' ||
             code.current() == '(' ||
             code.current() == ')' ||
             code.current() == ',' ||
             code.current() == ';' ||
-            code.current() == '\n' ||
-            code.current() == '\r' ||
+            code.current() == '>' ||
+            code.current() == '<' ||
+            code.current() == '\n'||
+            code.current() == '\r'||
             code.current() == CharacterIterator.DONE; //chega no fim do arquivo/codigo 
     }
 
