@@ -1,6 +1,6 @@
 # 🛠 minasScript
 
-*minasScript* é um compilador escrito em *Java* que traduz uma linguagem criada por nós, Mineires — inspirada no português com sotaque mineiro — para outra linguagem de programação.
+*minasScript* é um compilador escrito em *Java* que traduz uma linguagem criada por nós, Mineires — inspirada no português com sotaque mineiro — para Java.
 
 ## 👥 Integrantes
 
@@ -32,7 +32,7 @@
 <br>operador_logicoE = ‘e’
 <br>operador_logicoOu = ‘ou’
 <br>operador_logicoNot = ‘!’
-<br>palavra_reservadaNomeFuncao = [A-Z][a-z0-9]*
+<br>palavra_reservadaNomeFuncao = [A-Z][a-z_0-9]*
 <br>operadorAtribuicao = ‘->’  
 <br>operadorDiferente = ‘<>’
 <br>operadorIgualdade = ‘<->’
@@ -47,6 +47,7 @@
 <br>oparadorDivisao = ‘/’
 <br>comentarioVariasLinhas = #uai... [A-Za-z0-9 , - . : “ (adicionar td)]...so#
 <br>fim_linha = ‘;’
+<br>virgula = ‘,’
 <br>aberturaChave = ‘{‘
 <br>fecharChave = ‘}’
 <br>abreParenteses = ‘(‘
@@ -54,21 +55,11 @@
 
 # Gramática completa do analisador sintático 
 
-a gramática não pode conter recursividade à esquerda
+a gramática não pode conter recursividade à esquerda (direta ou indireta) nem fatoração a esquerda.
 
-## Estruturas do código COLOCAR TODAS AS VARIAVEIS (ESQ) com letra maiuscula
+## Estruturas do código
 
-<br> consdierar q td linha termina com ;
-
-AJUSTAR TD Q TEM OPERACOES MATEMATICAS P COLOCAR A GLC EXPRESSOESMATEMATICAS (AJUSTAR CONDICAO (CABECALHOPARA (INICIALIZACAO...)))
-
-VER SE TEM DERIVACAO OU FATORACAO P ARRUMAR 
-
-fazer so comparacoes mais simples
-
-condciao so n faz chamada de metodo ex: exto.startsWith("A")
-
-RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
+fazer só comparacoes mais simples
 
 <br> listaComandos -> comando listaComandos | ε 
 <br> comando -> seCompleto|para|lacoEnquanto|declarar|atribui|
@@ -89,10 +80,6 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> inicializacao -> tipoVariavel identificadores "->" conteudos
 <br> incremento -> identificadores operacaoIncremento 
 <br> operacaoIncremento -> operadorSoma operadorSoma|operadorSubtracao operadorSubtracao 
-
-<br> inicio correcao "condicao" (ver se da certo e se n tem recursao ou fatoracao a esquerda):
-<br> condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas (nao usado)
-
 <br> condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
 <br> condicao’ -> operacao condição condicao’| ε
 <br> comparacoesBasicas -> identificadores|numero operacao valoresOperacao 
@@ -130,39 +117,53 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 
 <br> comentario nao precisa pq na linguagem so vai gera o executzvel de outrs ling nao um codigo p ler q precise de comentario, entao nao passa comentario pro token.
 
-<br> permitir ifs encadeados e lacos encadeados (com "comando" permite)
+<br> permitir ifs encadeados e laços encadeados (com "comando" permite)
 
-# Analisador semantico
+# Analisador Semântico
 
--como comparo string
--coloquei valor = ao tipo que declarei...
+- DESCREVER EXATAMENTE OQ FAZ!!!!!!!!!!!!!!!
 
-# Como executar o compilador
+-comparei valores do mesmo tipo?<br>
+- todas as variaveis que usei ja foram declaradas?<br>
+- coloquei valor = ao tipo que declarei...<br>
+- Verificação de tipos (a mais importante)<br>
+- Declaração e uso de variáveis (escopo)<br>
+- Compatibilidade em operações<br>
+- Chamada de funções (número e tipos de parâmetros)<br>
+- Retorno de funções<br>
 
-DESCREVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+DIRECIONAMENTO CHARLES DESCRIÇÃO PROJETO: <br>
+– Verificar se uma variável foi declara.<br>
+– Verificar se os tipos de dados de uma expressão são iguais.<br>
+– Verificar o escopo da variável.<br>
+
+
+# Como executar o compilador 
+
+- Fazer download do zip do projeto;
+- abrimos no vsCode 
+- rodamos Main.java e gera tokens e resultado "sintaticamente incorreto" ou "sintaticamente correto"
+
+TERMINAR DE DESCREVER COM TRADUCAO + ARVORE E VER DE COMPILAR POR LINHA DE COMANDO !!!!!!!!!!!!!!!!!!!!!!!!!
 
 # Características da linguagem criada
 
-# Sobre declarar e atribuir (declaracao())
+## Detalhes da gramática:
 
-- quando declaramos e atribuimos (ao mesmo tempo) uma variavel, podemos: <br>
-- atribuir numeros (inteiro,decima), booleano (true, false), identificadores <br>
-- expressoesMatematicas de qualquer tamanho<br>
-- comparacoesbasicas (comparar 2 coisas apenas, com quaquer operador, ex !Trem_a, 2 < 3, Trem_a ou Trem_b...), nao da para comparar muitas coisas ao mesmo tempo
-- nao da para misturar eles (ex: quando declarar, atribuir expressoes matematicas e comparacoes basicas (ex: verdadeiroFalso Trem_a -> (2.3 +4) > 2; verdadeiroFalso Trem_a -> (2.3 +4) <= Trem_b;))<br>
+### Sobre declarar e atribuir (declaracao())
 
-# Em condicao()
+- Quando declaramos e atribuímos (ao mesmo tempo) uma variável, podemos: <br>
+- atribuir números (inteiro,decimal), booleano (true, false), identificadores <br>
+- "expressoesMatematicas" de qualquer tamanho<br>
+- "comparacoesBasicas" (comparar 2 coisas apenas, com quaquer operador, ex !Trem_a, 2 < 3, Trem_a ou Trem_b...), nao da para comparar muitas coisas ao mesmo tempo. <br>
+- Nãoo da para misturar eles (ex: quando declarar, atribuir "expressoesMatematicas" e "comparacoesBasicas" (ex: verdadeiroFalso Trem_a -> (2.3 +4) > 2; verdadeiroFalso Trem_a -> (2.3 +4) <= Trem_b;))<br>
 
-- da para escrever varias comparacoes (ex: se(Trem_a < 2 ou Trem_b <> Trem_c e Trem_d <-> 5){}), porem o resultado estara errado se fizer dessa forma pois nao tem parenteses para determinar a ordem de comparacoes
+### Em condicao
 
-# Para atribuir valor
-
-- precisa ter espaço entre os tokens (ex: Trem_potI2 -> Trem_a ^ 2; )
-
-# condicao
-
-- em condicao posso comparar varias coisas (expressoesmatematicas de qqr tamanho com numero/expressoesmatematicas de qqr tamanho, identificadores...)
-
+- Ideia inicial era na glc de condicao ter (condicao), permitir "()" (condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas (nao usado)), porem retiramos isso <br>
+- "condicao" não faz chamada de metodo e nem ()<br>
+- Da para escrever várias comparacoes (ex: se(Trem_a < 2 ou Trem_b <> Trem_c e Trem_d <-> 5){}), porém o resultado estara errado se fizer dessa forma pois não tem parenteses para determinar a ordem de comparações<br>
+- Em "condicao" posso comparar varias coisas (expressoesmatematicas de qualquer tamanho com número/"expressoesMatematicas" de qualquer tamanho, identificadores...)<br>
 
 ## tipos de variáveis:<br>
 - inteiro<br>
@@ -170,76 +171,219 @@ DESCREVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 - texto<br>
 - verdadeiroFalso<br>
 
-## retorno de funcao<br>
-retorna<br>
+## retorno de função:<br>
+- retorna<br>
 
-## estrutura condicional de controle de fluxo<br>
--se(){}<br>
--ouSe(){}<br>
--senao{}<br>
+## estrutura condicional de controle de fluxo:<br>
+- se(condicao){}<br>
+- ouSe(condicao){}<br>
+- senao{}<br>
 
-## funcoes<br>
-criar Nomequalquer(qualquer coisa){}<br>
+## funções:<br>
+- criar Nomequalquer(qualquer coisa){}<br>
 
-## estruturas de repetição<br>
-- para{}<br>
-- lacoEnquanto {}<br>
+## estruturas de repetição:<br>
+- para(inicializacao;condicao;incremento){}<br>
+- lacoEnquanto(condicao){}<br>
  
-## atribuicao<br>
-  ->  <br>
-## operador relacional<br>
-  <>  diferente<br>
-  <->  igualdade<br>
-  <=  menor ou igual<br>
-  >=  maior ou igual<br>
-  <  menor<br>
-  >  maior<br>
+## atribuição:<br>
+- ->  <br>
 
-## operador matemático<br>
-soma +<br>
-subtracao -<br>
-vezes *<br>
-potencia ^<br>
-...so# (várias linhas)<br>
+## operadores relacionais:<br>
+- <>  diferente<br>
+- <->  igualdade<br>
+- <=  menor ou igual<br>
+- >=  maior ou igual<br>
+- <  menor<br>
+- >  maior<br>
 
-## leituras teclado<br>
-entrada <br>
-imprima<br>
+## operadores matemáticos:<br>
+- soma: +<br>
+- subtracao: -<br>
+- multiplicação: *<br>
+- potência: ^<br>
 
-# operador logico <br>
-e<br>
-ou<br>
-!(not)<br>
+## leituras do teclado:<br>
+- ler do usuário: Entrada <br>
+- imprimir na tela: Imprima <br>
+
+# operadores lógicos: <br>
+- e<br>
+- ou<br>
+- !(not)<br>
+
+# comentário <br>
+- #uai... ...so#: comentário<br>
 
 # Exemplos de código na sua linguagem criada e a tradução equivalente.
 
-inteiro Trem_inteiro;<br>
-decimal Trem_decimal -> 1.1;<br>
-texto Trem_texto -> “oi”;<br>
-verdadeiroFalso Trem_vf -> false;<br>
-Entrada(“digita um numero”, Trem_inteiro);<br>
+## exemplo 1:
 
+#uai... esse código mostra todos os encadeamentos possíveis: se dentro de se, para dentro de para, lacoDentroDePara e vice-versa ...so#
 
-criar Imprimir(inteiro Trem_num){<br>
-Imprima(“numero digitado”, Trem_num);<br>
-}<br>
-Se(Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
-Imprimir(Trem_inteiro);<br>
-#uai<br>
- código basico<br>
-so#<br>
+criar MostrarTabuada(inteiro Trem_n){<br>
+    Imprima("=== Tabuada de ", Trem_n, " ===");<br>
+    para(inteiro Trem_i -> 1; Trem_i <= 10; Trem_i++){<br>
+        Imprima(Trem_n, " x ", Trem_i, " = ", Trem_n * Trem_i);<br>
+    }<br>
 }<br>
 
-<br>}<br>
+criar SomarMatriz(){<br>
+    #uai... exemplo de para dentro de para ...so#<br>
+    inteiro Trem_soma -> 0;<br>
+    para(inteiro Trem_linha -> 1; Trem_linha <= 3; Trem_linha++){<br>
+        para(inteiro Trem_coluna -> 1; Trem_coluna <= 3; Trem_coluna++){<br>
+            Trem_soma -> Trem_soma + (Trem_linha * Trem_coluna);<br>
+            Imprima("Linha ", Trem_linha, " Coluna ", Trem_coluna, " Valor ", Trem_linha * Trem_coluna);<br>
+        }<br>
+    }<br>
+    retorna Trem_soma;<br>
+}<br>
+
+criar ContagemComCondicoes(){<br>
+    #uai... exemplo de lacoEnquanto dentro de para e se encadeado ...so#<br>
+    para(inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){<br>
+        inteiro Trem_y -> Trem_x;<br>
+
+        lacoEnquanto(Trem_y >= 0){
+
+            se(Trem_y <-> 0){
+
+                Imprima("x=", Trem_x, " terminou o lacoEnquanto!");
+
+            }
+
+            senao{
+
+                #uai... pra saber se é par sem usar %, divide por 2 e confere se o resultado * 2 é igual ...so#
+
+                inteiro Trem_metade -> Trem_y / 2;
+
+                se(Trem_metade * 2 <-> Trem_y){
+
+                    Imprima("x=", Trem_x, " y=", Trem_y, " (par)");
+
+                }
+
+                senao{
+
+                    Imprima("x=", Trem_x, " y=", Trem_y, " (ímpar)");
+
+                }
+
+            }
+
+            Trem_y -> Trem_y - 1;
+
+        }
+
+    }
+}<br>
+
+criar TesteEncadeamentos(){<br>
+    Imprima("=== Teste de se encadeado e funções ===");<br>
+    inteiro Trem_num;<br>
+    Entrada("Digite um número: ", Trem_num);<br>
+
+    se(Trem_num > 0){
+
+        Imprima("Número positivo!");
+
+        #uai... mesma lógica: checa se (Trem_num / 2) * 2 é igual a Trem_num ...so#
+
+        se((Trem_num / 2) * 2 <-> Trem_num){
+
+            Imprima("E também é par!");
+
+        }
+
+        senao{
+
+            Imprima("Mas é ímpar!");
+
+        }
+
+    }
+
+    ouSe(Trem_num < 0){
+
+        Imprima("Número negativo!");
+
+    }
+
+    senao{
+
+        Imprima("Zero detectado!");
+        
+    }
+
+}<br>
+
+criar Main(){<br>
+
+    Imprima("=== Programa MinasScript ===");
+
+    inteiro Trem_somaTotal -> SomarMatriz();   #uai... chama função com para dentro de para ...so#
+
+    Imprima("Soma total da matriz: ", Trem_somaTotal);
+
+    ContagemComCondicoes();               #uai... usa para + lacoEnquanto + se encadeado ...so#
+
+    TesteEncadeamentos();                 #uai... usa se dentro de se ...so#
 
 
+    inteiro Trem_valor;
+
+    Entrada("Digite um número para ver a tabuada: ", Trem_valor);
+
+    MostrarTabuada(Trem_valor);           #uai... chama função simples com para ...so#
+
+    Imprima("=== Fim do programa ===");
+
+}<br>
+
+Main();<br>
+
+## exemplo 2:
+
+inteiro Trem_idade -> 18;<br>
+inteiro Trem_pontuacao -> 85;<br>
+decimal Trem_notaAluno1 -> 3.5;<br>
+inteiro Trem_notaAluno2 -> 7;<br>
+Decimal Trem_mediaNotasMateriaX -> (((((Trem_notaAluno1^2) + (Trem_notaAluno2^2))*3)/4)-1);<br>
+
+se(Trem_idade >= 18){<br>
+    Imprima("Maior de idade");<br>
+}<br>
+senao{<br>
+    Imprima("Menor de idade");<br>
+}<br>
+
+se(Trem_pontuacao >= 90){<br>
+    Imprima("Nota A");<br>
+}<br>
+ouSe(Trem_pontuacao >= 80 e Trem_pontuacao < 90){<br>
+    Imprima("Nota B");<br>
+}<br>
+ouSe(Trem_pontuacao >= 70 e Trem_pontuacao < 80){<br>
+    Imprima("Nota C");<br>
+}<br>
+senao{<br>
+    Imprima("Nota D");<br>
+}<br>
+
+se(Trem_mediaNotasMateriaX > 2){<br>
+    Imprima("Passou com media", Trem_mediaNotasMateriaX);<br>
+}<br>
+
+## exemplo 3:
 
 inteiro Trem_num -> 77;<br>
 inteiro Trem_inteiro;<br>
 decimal Trem_decimal -> 1.1;<br>
 texto Trem_texto -> "oi";<br>
-verdadeiroFalso Trem_vf -> true;<br>
 
+verdadeiroFalso Trem_vf -> true;<br>
 Entrada("digite um numero", Trem_inteiro);<br>
 
 criar Imprimir(inteiro Trem_num){<br>
@@ -247,14 +391,13 @@ criar Imprimir(inteiro Trem_num){<br>
 }<br>
 se (Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
     para (inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){<br>
-        Imprima(Trem_x)<br>
+        Imprima(Trem_x);<br>
     }<br>
     Imprimir(Trem_inteiro);<br>
 }<br>
 senao{<br>
     retorna false;<br>
 }<br>
-} <br>
 
 decimal Trem_limiteSaque -> 2000.00;<br>
 decimal Trem_transferencia -> 2.5;<br>
@@ -264,28 +407,43 @@ criar Main(){<br>
     texto Trem_nome -> "Beatriz";<br>
     texto Trem_numeroConta -> "12345-6";<br>
     decimal Trem_saldo -> 16000.00;<br>
-    texto Trem_senhaCorreta -> "1234"<br>
+    texto Trem_senhaCorreta -> "1234";<br>
     verdadeiroFalso Trem_userLogado -> false;<br>
     inteiro Trem_tentativasSenha -> 0;<br>
     Imprima("bem vindo");<br>
 
-    lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){<br>
-        texto Trem_senha;<br>
-        Imprima("Digite a senha", Trem_senhaDigitada);<br>
+    lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){
 
-        se(Trem_senhaDigitada <-> Trem_senhaCorreta){<br>
-        Trem_userLogado -> true;<br>
-           Imprima("login realizado");<br>
-        }<br>
+        texto Trem_senha;
+
+        Imprima("Digite a senha", Trem_senhaDigitada);
+
+        se(Trem_senhaDigitada <-> Trem_senhaCorreta){
+
+        Trem_userLogado -> true;
+
+           Imprima("login realizado");
+
+        }
     
-        senao{<br>
-            Trem_tentativasSenha -> Trem_tentativasSenha + 1;<br>
-            Imprima("senha incorreta, tentativas restantes" Trem_maxTentativasSenha -  Trem_tentativasSenha);<br>
-            se(Trem_tentativasSenha >= Trem_maxTentativasSenha){<br>
-                Imprima("conta bloqueada por excesso de tentativas");<br>
-            }<br>
-        }<br>
-    } <br>
+        senao{
+
+            Trem_tentativasSenha -> Trem_tentativasSenha + 1;
+
+            Trem_result ->Trem_maxTentativasSenha -  Trem_tentativasSenha;
+
+            Imprima("senha incorreta, tentativas restantes",Trem_result);
+
+            se(Trem_tentativasSenha >= Trem_maxTentativasSenha){
+
+                Imprima("conta bloqueada por excesso de tentativas");
+
+            }
+
+        }
+
+    }
+
    verdadeiroFalso Trem_sistemaAtivo -> true;<br>
    lacoEnquanto(Trem_sistemaAtivo e Trem_userLogado){<br>
         Imprima(" MENU PRINCIPAL");<br>
@@ -308,7 +466,7 @@ criar Main(){<br>
             se(Trem_valorSaque <= Trem_limiteSaque){<br>
                 Trem_saldo -> Trem_valorSaque - Trem_saldo;<br>
                 Imprima("Saque  realizado com sucesso no valor de R$ ", Trem_valorSaque);<br>
-                Imprima("Novo saldo: R$ " Trem_saldo);<br>
+                Imprima("Novo saldo: R$ ", Trem_saldo);<br>
             }<br>
             senao{<br>
                 Imprima("Valor excede o limite de saque de R$", Trem_limiteSaque);<br>
@@ -316,13 +474,7 @@ criar Main(){<br>
         }<br>
     }<br>
 }<br>
-
-#uai...<br>
-1hello"<br>
-...so#<br>
-"helloO" <br>
+}<br>
 
 
-## Exemplo 3
-
-<br> elaborar um codigo facil (exs basicos introducao a computacao)
+# Tradução equivalente para Java:

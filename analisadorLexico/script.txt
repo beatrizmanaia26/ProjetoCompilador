@@ -1,2 +1,11 @@
+se(Trem_num > 0){
+        Imprima("Número positivo!");
+    }
+    ouSe(Trem_num < 0){
+        Imprima("Número negativo!");
+    }
+    senao{
+        Imprima("Zero detectado!");
+    }
 
-se(Trem_a){
+criar Amamaam_

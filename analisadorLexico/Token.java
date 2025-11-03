@@ -1,8 +1,8 @@
 package analisadorLexico;
 
 public class Token{
-    String tipo;
-    String lexema;
+    public String tipo;
+    public String lexema;
 
     public Token(String tipo, String lexema){
         this.tipo = tipo;
