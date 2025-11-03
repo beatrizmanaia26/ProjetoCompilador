@@ -85,23 +85,239 @@ criar Main(){
 }
 ...so#
 
-#uai...
- Teste básico de variáveis e operações matemáticas
-...so#
+#uai... Teste básico de variáveis e operações matemáticas ...so#
+
+#uai... DECLARACAO ...so#
+
+inteiro Trem_a;
+inteiro Trem_b;
+decimal Trem_c;
+texto Trem_mensagem;
+verdadeiroFalso Trem_vf;
+
+
+#uai...  DECLARACAO E ATRIBUICAO SIMPLES ...so#
 
 inteiro Trem_a -> 10;
 inteiro Trem_b -> 5;
 decimal Trem_c -> 2.5;
+decimal Trem_d -> 10.52;
 texto Trem_mensagem -> "Resultado: ";
 verdadeiroFalso Trem_ativo -> true;
+verdadeiroFalso Trem_ativoF -> false;
+verdadeiroFalso Trem_ativoF -> !Trem_a;
 
-#uai... Operações matemáticas básicas ...so#
-inteiro Trem_soma -> Trem_a + Trem_b; 
-Trem_soma -> Trem_a > Trem_b;
+
+#uai...  DECLARACAO E ATRIBUICAO COMPLEXA ...so#
+
+#uai...  EXPRESSOES MATEMATICAS BASICAS INTEIRO E DECIMAL ...so# 
+
+inteiro Trem_somaI -> Trem_a + Trem_b; 
+inteiro Trem_somaI2 -> Trem_a + 2; 
+inteiro Trem_somaI3 -> 3 + Trem_b; 
+inteiro Trem_somaI4 -> 3 + 2; 
+
+inteiro Trem_mulI -> Trem_a - Trem_b; 
+inteiro Trem_mulI2 -> Trem_a - 2; 
+inteiro Trem_mulI3 -> 3 - Trem_b; 
+inteiro Trem_mulI4 -> 3 - 2; 
+
+inteiro Trem_mulI -> Trem_a * Trem_b; 
+inteiro Trem_mulI2 -> Trem_a * 2; 
+inteiro Trem_mulI3 -> 3 * Trem_b; 
+inteiro Trem_mulI4 -> 3 * 2; 
+
+inteiro Trem_divI -> Trem_a / Trem_b; 
+inteiro Trem_divI2 -> Trem_a / 2; 
+inteiro Trem_divI3 -> 3 / Trem_b; 
+inteiro Trem_divI4 -> 3 / 2; 
+
+inteiro Trem_potI -> Trem_a ^ Trem_b; 
+inteiro Trem_potI2 -> Trem_a ^ 2; 
+inteiro Trem_potI3 -> 3 ^ Trem_b; 
+inteiro Trem_potI4 -> 3 ^ 2; 
+
+decimal Trem_somaD -> Trem_c + Trem_d; 
+decimal Trem_somaD2 -> Trem_c + 2; 
+decimal Trem_somaD3 -> 3.5 + Trem_d; 
+decimal Trem_somaD4 -> 3.4 + 2; 
+
+decimal Trem_subD -> Trem_c - Trem_d; 
+decimal Trem_subD2 -> Trem_c - 2; 
+decimal Trem_subD3 -> 3.5 - Trem_d; 
+decimal Trem_subD4 -> 3.4 - 2; 
+
+decimal Trem_mulD -> Trem_c * Trem_d; 
+decimal Trem_mulD2 -> Trem_c * 2; 
+decimal Trem_mulD3 -> 3.5 * Trem_d; 
+decimal Trem_mulD4 -> 3.4 * 2; 
+
+decimal Trem_divD -> Trem_c / Trem_d; 
+decimal Trem_divD2 -> Trem_c / 2; 
+decimal Trem_divD3 -> 3.5 / Trem_d; 
+decimal Trem_divD4 -> 3.4 / 2; 
+
+decimal Trem_potD -> Trem_c ^ Trem_d; 
+decimal Trem_potD2 -> Trem_c ^ 2; 
+decimal Trem_potD3 -> 3.5 ^ Trem_d; 
+decimal Trem_potD4 -> 3.4 ^ 2; 
+
+#uai... EXPRESSOES MATEMATICAS COM MAIS ITENS ...so#
+
+inteiro Trem_num -> 10;
+inteiro Trem_x -> (3.253 + 2);
+decimal Trem_expressao -> (((Trem_10 / 2) + (2 * 8)) -1) ^ 3 ; 
+
+#uai... OPERAÇÕES LOGICAS BASICAS ...so#
+
+verdadeiroFalso Trem_comparcao1 -> Trem_a > Trem_b; 
+verdadeiroFalso Trem_comparcao2 -> Trem_a < Trem_b; 
+verdadeiroFalso Trem_comparcao3 -> Trem_a <-> Trem_b; 
+verdadeiroFalso Trem_comparcao4 -> Trem_a <> Trem_b; 
+verdadeiroFalso Trem_comparcao5 -> Trem_a <= Trem_b; 
+verdadeiroFalso Trem_comparcao6 -> Trem_a >= Trem_b; 
+
+verdadeiroFalso Trem_comparcao7 -> 2 > Trem_b; 
+verdadeiroFalso Trem_comparcao8 -> 3.4 < Trem_b; 
+verdadeiroFalso Trem_comparcao9 -> 5 <-> Trem_b; 
+verdadeiroFalso Trem_comparcao10 -> 2.134 <> Trem_b; 
+verdadeiroFalso Trem_comparcao11 -> 190.9 <= Trem_b; 
+verdadeiroFalso Trem_comparcao12 -> 3 >= Trem_b; 
+
+verdadeiroFalso Trem_comparcao13 -> Trem_a > 2.4; 
+verdadeiroFalso Trem_comparcao14 -> Trem_a < 67; 
+verdadeiroFalso Trem_comparcao15 -> Trem_a <-> 245.2; 
+verdadeiroFalso Trem_comparcao16 -> Trem_a <> 12; 
+verdadeiroFalso Trem_comparcao17 -> Trem_a <= 352; 
+verdadeiroFalso Trem_comparcao18 -> Trem_a >= 54.6; 
+
+verdadeiroFalso Trem_comparcao19 -> 12 > 7; 
+verdadeiroFalso Trem_comparcao20 -> 23 < 14; 
+verdadeiroFalso Trem_comparcao21 -> 9 <-> 9; 
+verdadeiroFalso Trem_comparcao22 -> 78 <> 2; 
+verdadeiroFalso Trem_comparcao23 -> 87.3 <= 32; 
+verdadeiroFalso Trem_comparcao24 -> 12.2 >= 12; 
+
+verdadeiroFalso Trem_comparcao25 -> Trem_a e Trem_b; 
+verdadeiroFalso Trem_comparcao26 -> Trem_a ou Trem_b; 
+
+
+#uai... ATRIBUICAO ...so#
+
+Trem_a -> 10;
+Trem_b -> 5;
+Trem_c -> 2.5;
+Trem_d -> 10.52;
+Trem_mensagem -> "Resultado: ";
+Trem_ativo -> true;
+Trem_ativoF -> false;
+Trem_ativoF -> !Trem_a;
+
+
+#uai...  ATRIBUICAO COMPLEXA...so#
+
+#uai...  EXPRESSOES MATEMATICAS BASICAS INTEIRO E DECIMAL...so# 
+
+Trem_somaI -> Trem_a + Trem_b; 
+Trem_somaI2 -> Trem_a + 2; 
+Trem_somaI3 -> 3 + Trem_b; 
+Trem_somaI4 -> 3 + 2; 
+
+Trem_mulI -> Trem_a - Trem_b; 
+Trem_mulI2 -> Trem_a - 2; 
+Trem_mulI3 -> 3 - Trem_b; 
+Trem_mulI4 -> 3 - 2; 
+
+Trem_mulI -> Trem_a * Trem_b; 
+Trem_mulI2 -> Trem_a * 2; 
+Trem_mulI3 -> 3 * Trem_b; 
+Trem_mulI4 -> 3 * 2; 
+
+Trem_divI -> Trem_a / Trem_b; 
+Trem_divI2 -> Trem_a / 2; 
+Trem_divI3 -> 3 / Trem_b; 
+Trem_divI4 -> 3 / 2; 
+
+Trem_potI -> Trem_a ^ Trem_b; 
+Trem_potI2 -> Trem_a ^ 2; 
+Trem_potI3 -> 3 ^ Trem_b; 
+Trem_potI4 -> 3 ^ 2; 
+
+Trem_somaD -> Trem_c + Trem_d; 
+Trem_somaD2 -> Trem_c + 2; 
+Trem_somaD3 -> 3.5 + Trem_d; 
+Trem_somaD4 -> 3.4 + 2; 
+
+Trem_subD -> Trem_c - Trem_d; 
+Trem_subD2 -> Trem_c - 2; 
+Trem_subD3 -> 3.5 - Trem_d; 
+Trem_subD4 -> 3.4 - 2; 
+
+Trem_mulD -> Trem_c * Trem_d; 
+Trem_mulD2 -> Trem_c * 2; 
+Trem_mulD3 -> 3.5 * Trem_d; 
+Trem_mulD4 -> 3.4 * 2; 
+
+Trem_divD -> Trem_c / Trem_d; 
+Trem_divD2 -> Trem_c / 2; 
+Trem_divD3 -> 3.5 / Trem_d; 
+Trem_divD4 -> 3.4 / 2; 
+
+Trem_potD -> Trem_c ^ Trem_d; 
+Trem_potD2 -> Trem_c ^ 2; 
+Trem_potD3 -> 3.5 ^ Trem_d; 
+Trem_potD4 -> 3.4 ^ 2; 
+
+#uai... EXPRESSOES MATEMATICAS COM MAIS ITENS ...so#
+
+Trem_num -> 10;
+Trem_x -> (3.253 + 2);
+Trem_expressao -> (((Trem_10 / 2) + (2 * 8)) -1) ^ 3 ; 
+
+#uai... OPERAÇÕES LOGICAS BASICAS ...so#
+
+Trem_comparcao1 -> Trem_a > Trem_b; 
+Trem_comparcao2 -> Trem_a < Trem_b; 
+Trem_comparcao3 -> Trem_a <-> Trem_b; 
+Trem_comparcao4 -> Trem_a <> Trem_b; 
+Trem_comparcao5 -> Trem_a <= Trem_b; 
+Trem_comparcao6 -> Trem_a >= Trem_b; 
+
+Trem_comparcao7 -> 2 > Trem_b; 
+Trem_comparcao8 -> 3.4 < Trem_b; 
+Trem_comparcao9 -> 5 <-> Trem_b; 
+Trem_comparcao10 -> 2.134 <> Trem_b; 
+Trem_comparcao11 -> 190.9 <= Trem_b; 
+Trem_comparcao12 -> 3 >= Trem_b; 
+
+Trem_comparcao13 -> Trem_a > 2.4; 
+Trem_comparcao14 -> Trem_a < 67; 
+Trem_comparcao15 -> Trem_a <-> 245.2; 
+Trem_comparcao16 -> Trem_a <> 12; 
+Trem_comparcao17 -> Trem_a <= 352; 
+Trem_comparcao18 -> Trem_a >= 54.6; 
+
+Trem_comparcao19 -> 12 > 7; 
+Trem_comparcao20 -> 23 < 14; 
+Trem_comparcao21 -> 9 <-> 9; 
+Trem_comparcao22 -> 78 <> 2; 
+Trem_comparcao23 -> 87.3 <= 32; 
+Trem_comparcao24 -> 12.2 >= 12; 
+
+Trem_comparcao25 -> Trem_a e Trem_b; 
+Trem_comparcao26 -> Trem_a ou Trem_b; 
+
+#uai... FAZER ATRIBUIR PODER CONDICOES BASICAS  ...so#
+
+#uai... VER MAIS POSSIBILIDADES DE FAZER NA condicao() 
+
+  if((first("condicaoComparacoesBasicas") && condicaoComparacoesBasicas() && condicaoDerivada())||
+    (first("identificadores") && identificadores() && condicaoDerivada())||
+    (first("negacaoCondicao") && negacaoCondicao() && condicaoDerivada())||
+    (first("expressoesMatematicas") && expressoesMatematicas() && condicaoDerivada()))
+...so#
+
 
 #uai...
-FAZER DECLARAR PODER EXPRESSAO MATEMATICA
-FAZER ATRIBUIR PODER CONDICOES BASICAS 
-
 TESTAR: ver se no declara, declara e atribui, tribui, pode coisa mais siples de td, id, numeros, expressoes matematicas, e, ou -, comparacoes relacionais...
 ...so#

@@ -412,7 +412,7 @@ public class Parser {
         return expressoesMatematicas() && condicaoDerivada();
     }
     // numeros (também podem iniciar comparações)
-    if (token != null && (token.tipo.equals("INTEIRO") || token.tipo.equals("DECIMAL"))) {
+    if (token != null && (token.tipo.equals("INTEGER") || token.tipo.equals("DECIMAL"))) {
       return condicaoComparacoesBasicas() && condicaoDerivada();
     }
     
@@ -550,7 +550,7 @@ public class Parser {
    */
   private boolean cabecalhoPara(){ 
     System.out.println("entrou no cabecalhoPara");
-    if(first("declaracao") && inicializacao() && matchL(";") && condicao() && matchL(";") && incremento()){
+    if(first("declaracao") && inicializacao() && matchL(";") && condicao() && matchL(";") && first("expressoesMatematicas") && incremento()){
       System.out.println("dei match em cabecalhopara");
       return true;
     }
@@ -566,43 +566,11 @@ public class Parser {
    */
   private boolean atribui(){ 
     System.out.println("entrou em atribui");
-    /*
-    if (first("identificadores") && identificadores() && matchL("->")) {
-
-        // Garantir que temos pelo menos 2 tokens à frente
-        if (tokens.size() >= 2) {
-            Token proximo = tokens.get(0);     // primeiro após ->
-            Token depoisProximo = tokens.get(1); // segundo após ->
-
-            // Se o segundo token for um operador relacional (<, >, <=, >=, <>, <->)
-            if (firsts.get("operacaoRelacional").contains(depoisProximo.lexema)) {
-                return condicaoComparacoesBasicas() && matchL(";");
-            }
-
-            // Se o segundo token for um operador matemático (+, -, *, /, ^)
-            else if (firsts.get("operadoresMatematicos").contains(depoisProximo.lexema)) {
-                return expressoesMatematicas() && matchL(";");
-            }
-
-            // Se o segundo token for ponto e vírgula, é apenas um valor simples
-            else if (depoisProximo.lexema.equals(";")) {
-                return valor() && matchL(";");
-            }
-        }
-
-        // Caso não tenha 2 tokens (ex: fim de arquivo ou erro), tenta valor() por padrão
-        return valor() && matchL(";");
-    }
-
-    erro("atribui");
-    return false;
-    */
-    if(first("identificadores") && identificadores() && matchL("->") && (expressoesMatematicas()||condicaoComparacoesBasicas()||valor()) && matchL(";")){
+    if(first("identificadores") && identificadores() && matchL("->") && first("valor") && valor() && matchL(";")){
         return true;
     }
     erro("atribui");
-    return false;
-    
+    return false;    
   }
 
   //expressoesMatematicas -> precedenciaInferior
@@ -641,7 +609,7 @@ public class Parser {
    * numero           first é first dessas regras: decimal, inteiro
    */
   private boolean numero(){ 
-    if(first("decimal") && decimal()||first("Inteiro") && inteiro()){
+    if(first("decimal") && decimal()||first("inteiro") && inteiro()){
       return true;
     }
     erro("numero");
@@ -814,7 +782,7 @@ public class Parser {
    */
   private boolean incremento(){ 
     System.out.println("entrei em incremento");
-    if((first("identificadores") && identificadores() && operacaoIncremento()) ||
+    if((first("identificadores") && identificadores()  && first("incremento") && operacaoIncremento()) ||
      (first("identificadores") && identificadores() && matchL("->") && first("precedenciaSuperior") && expressoesMatematicas())){
       System.out.println("dei match em incrmeento");
       return true;
@@ -944,14 +912,14 @@ public class Parser {
     firsts.put("criarFuncao", Set.of("criar"));
     firsts.put("chamarFuncao", Set.of("FUNCTION_NAME","Entrada","Imprima"));
     //firsts valor
-    firsts.put("valor", Set.of("DECIMAL","INTEIRO","TEXT","true","false","IDENTIFIER","("));
-    firsts.put("numero", Set.of("DECIMAL","INTEIRO"));
+    firsts.put("valor", Set.of("DECIMAL","INTEGER","TEXT","true","false","IDENTIFIER","("));
+    firsts.put("numero", Set.of("DECIMAL","INTEGER"));
     firsts.put("texto", Set.of("TEXT"));
     firsts.put("isBoolean", Set.of("true","false"));
     firsts.put("identificadores", Set.of("IDENTIFIER"));
-    firsts.put("expressoesMatematicas", Set.of("(","IDENTIFIER", "DECIMAL","INTEIRO"));
+    firsts.put("expressoesMatematicas", Set.of("(","IDENTIFIER", "DECIMAL","INTEGER"));
     //firsts condicao:
-    firsts.put("condicaoComparacoesBasicas", Set.of("IDENTIFIER", "DECIMAL","INTEIRO"));  //PROBLEMA SER MTO PARECIDO COMEXPRESSOESMATEMATICAS???????????
+    firsts.put("condicaoComparacoesBasicas", Set.of("IDENTIFIER", "DECIMAL","INTEGER"));  //PROBLEMA SER MTO PARECIDO COMEXPRESSOESMATEMATICAS???????????
      //firsts operacao:
     firsts.put("operacao", Set.of("<",">","<>","<->","<=",">=","e","ou","!"));
     //firsts operacaoRelacional:
@@ -961,7 +929,9 @@ public class Parser {
     //firsts comandoInterno:
     firsts.put("comandoInterno", Set.of("se","para","lacoEnquanto","inteiro","decimal","texto","verdadeiroFalso","IDENTIFIER","FUNCTION_NAME","Entrada","Imprima","retorna"));
     //precedenciaSuperior:
-    firsts.put("precedenciaSuperior", Set.of("IDENTIFIER","DECIMAL","INTEIRO"));
+    firsts.put("precedenciaSuperior", Set.of("IDENTIFIER","DECIMAL","INTEGER"));
+    //firsts incremento e decremento
+    firsts.put("incremento", Set.of("++","--","+=","-="));
 
     // firsts basicos:
     firsts.put("se", Set.of("se"));
@@ -971,7 +941,7 @@ public class Parser {
     firsts.put("retornar", Set.of("retorna"));
     firsts.put("negacaoCondicao", Set.of("!"));
     firsts.put("decimal", Set.of("DECIMAL"));
-    firsts.put("inteiro", Set.of("INTEIRO"));
+    firsts.put("inteiro", Set.of("INTEGER"));
   }
 
   private boolean first(String regra) {

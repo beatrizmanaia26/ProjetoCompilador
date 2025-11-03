@@ -23,14 +23,14 @@ public class Main{
             List<Token> tokens = lexer.getTokens();//add todos os tokens na lista
             tokens.forEach(System.out::println); 
             // Filtrar comentários para nao enviar para o sintatico
-           List<Token> filteredTokens = new ArrayList<>();
+            List<Token> filteredTokens = new ArrayList<>();
             for (Token token : tokens) {
                 if (!token.tipo.equals("COMMENT")) {
                     filteredTokens.add(token);
                 }
             }
-            Parser parser = new Parser(filteredTokens);
-            parser.main();
+            // Parser parser = new Parser(filteredTokens);
+            // parser.main();
         } catch (LexicalException e) {
         System.err.println(e.getMessage());
         }
