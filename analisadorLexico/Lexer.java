@@ -70,12 +70,6 @@ public class Lexer {
         Token t;
         do {
             skipWhiteSpace();
-
-            if (code.current() == CharacterIterator.DONE) {
-                tokens.add(new Token("EOF", "$"));
-                break;
-            }
-
             t = searchNextToken();
             if (t == null) {
                 int startIndex = code.getIndex();

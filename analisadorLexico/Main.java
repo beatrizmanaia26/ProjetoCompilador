@@ -29,8 +29,8 @@ public class Main{
                     filteredTokens.add(token);
                 }
             }
-            // Parser parser = new Parser(filteredTokens);
-            // parser.main();
+            Parser parser = new Parser(filteredTokens);
+            parser.main();
         } catch (LexicalException e) {
         System.err.println(e.getMessage());
         }

@@ -1,17 +1,18 @@
-# 🛠️ minasScript
+# 🛠 minasScript
 
-**minasScript** é um compilador escrito em **Java** que traduz uma linguagem criada por nós, Mineires — inspirada java e no português com sotaque mineiro — para outra linguagem de programação.
+*minasScript* é um compilador escrito em *Java* que traduz uma linguagem criada por nós, Mineires — inspirada no português com sotaque mineiro — para outra linguagem de programação.
 
 ## 👥 Integrantes
-<br>- Beatriz Manaia Lourenço Berto — RA: 22.125.060-8  
-<br>- Mariane Souza Carvalho — RA: 22.123.105-3  
-<br>- Rafael Dias Silva Costa — RA: 22.222.039-4  
-<br>- Kayky Pires de Paula — RA: 22.222.040-2  
+
+- Beatriz Manaia Lourenço Berto — RA: 22.125.060-8  
+- Mariane Souza Carvalho — RA: 22.123.105-3  
+- Rafael Dias Silva Costa — RA: 22.222.039-4  
+- Kayky Pires de Paula — RA: 22.222.040-2  
 
 ## Expressões Regulares
 <br>numeroInteiro = [0-9]+
 <br>numeroDecimal = [0-9]+’.’[0-9]+
-<br>Texto = “[A-Za-z0-9,*&¨@.]*”’ (tudo)
+<br>Texto = “[A-Za-z0-9,&¨@ (tudo)]”’
 <br>tipos_dadoInt = ‘inteiro’
 <br>tipo_dadoDecimal = ‘decimal’
 <br>tipo_dadoVerdadeiroFalso = verdadeiroFalso
@@ -35,23 +36,21 @@
 <br>operadorAtribuicao = ‘->’  
 <br>operadorDiferente = ‘<>’
 <br>operadorIgualdade = ‘<->’
+<br>operadorMenor = ‘<’
+<br>operadorMaior = ‘>’
 <br>operadorMenorIgual = ‘<=’
 <br>operadorMaiorigual = ‘>=’
 <br>operadorSoma = ‘+’
 <br>operadorSubtracao = ‘-’
 <br>operadorMultiplicacao = ’*’
 <br>operadorPotencia =  ‘^’
-<br>operadorDivisao = ‘/’
+<br>oparadorDivisao = ‘/’
 <br>comentarioVariasLinhas = #uai... [A-Za-z0-9 , - . : “ (adicionar td)]...so#
 <br>fim_linha = ‘;’
 <br>aberturaChave = ‘{‘
 <br>fecharChave = ‘}’
 <br>abreParenteses = ‘(‘
 <br>fechaParenteses = ‘)’
-<br>operadorIncremento++ = ‘++’
-<br>operadorIncremento-- = ‘--’
-<br>operadorIncremento+= = ‘+=’
-<br>operadorIncremento-= = ‘-=’
 
 # Gramática completa do analisador sintático 
 
@@ -59,11 +58,15 @@ a gramática não pode conter recursividade à esquerda
 
 ## Estruturas do código COLOCAR TODAS AS VARIAVEIS (ESQ) com letra maiuscula
 
+<br> consdierar q td linha termina com ;
+
+AJUSTAR TD Q TEM OPERACOES MATEMATICAS P COLOCAR A GLC EXPRESSOESMATEMATICAS (AJUSTAR CONDICAO (CABECALHOPARA (INICIALIZACAO...)))
+
 VER SE TEM DERIVACAO OU FATORACAO P ARRUMAR 
 
 fazer so comparacoes mais simples
 
-**condiciao so n faz chamada de metodo ex: exto.startsWith("A")
+condciao so n faz chamada de metodo ex: exto.startsWith("A")
 
 RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 
@@ -84,14 +87,16 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> conteudos -> identificadores|expressoesMatematicas|numero|isBoolean
 <br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
 <br> inicializacao -> tipoVariavel identificadores "->" conteudos
-<br> incremento -> identificadores operacaoIncremento | identificadores operacaoIncremento numero|identificador | identficiador operacaoIncremento expressoesMatematicas
-<br> operacaoIncremento -> operadorIncremento++|operadorIncremento--|operadorIncremento+=|operadorIncremento-=|operadorIncremento*=|operadorIncremento/=
+<br> incremento -> identificadores operacaoIncremento 
+<br> operacaoIncremento -> operadorSoma operadorSoma|operadorSubtracao operadorSubtracao 
 
-<br>CONDICAO MAIS BÁSICA PARA DEPOIS APRIMORAR (ver se precisa do '('condicao')', tirei e arrumei )!!!!! condicao ->(condicao)| identificadores|negacaoCondicao|condicaoComparacoesBasicas 
+<br> inicio correcao "condicao" (ver se da certo e se n tem recursao ou fatoracao a esquerda):
+<br> condicao -> (condicao) | identificadores|negacaoCondicao|condicaoComparacoesBasicas (nao usado)
 
 <br> condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
 <br> condicao’ -> operacao condição condicao’| ε
-<br> condicaoComparacoesBasicas ->  identificadores|numero operacao valoresOperacao
+<br> comparacoesBasicas -> identificadores|numero operacao valoresOperacao 
+<br> condicaoComparacoesBasicas ->  comparacoesBasicas || !identificadores
 <br> valoresOperacao -> identificadores|numero|boolean
 <br> negacaoCondicao -> '!'condicao
 <br> operacao -> operacaoRelacional|operacaoLogica
@@ -116,28 +121,48 @@ RESOLVER RECURSIVIDADE INDIRETA DO PARAMETROFUNCAO E RESTOPARAMETROFUNCAO
 <br> parametro -> tipoVariavel identificadores
 <br> tipoVariavel -> tipos_dadoInt|tipo_dadoDecimal|tipo_dadoVerdadeiroFalso|tipo_dadoTexto
 <br> chamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' ';'
+<br> chamarFuncaoSemFim -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')'
 <br> inicioChamarFuncao -> inicioChamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima
 <br> argumentosChamada -> ε | valor restoArgumentosChamada
-<br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas
+<br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas|condicaoComparacoesBasicas|chamarFuncao
 <br> restoArgumentosChamada -> ε | ',' valor restoArgumentosChamada
 
-<br> INFORMAÇÕES GERAIS:
 
-<br> comentario nao precisa pq na linguagem so vai gera o executável de outra linguagem não um código para ler que precise de comentário, então não passa comentário para o token que gera gramática.
+<br> comentario nao precisa pq na linguagem so vai gera o executzvel de outrs ling nao um codigo p ler q precise de comentario, entao nao passa comentario pro token.
+
 <br> permitir ifs encadeados e lacos encadeados (com "comando" permite)
-<br> A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
 
 # Analisador semantico
 
-<br>-como comparo string
-<br>-coloquei valor = ao tipo que declarei...
+-como comparo string
+-coloquei valor = ao tipo que declarei...
 
 # Como executar o compilador
 
 DESCREVER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
 # Características da linguagem criada
+
+# Sobre declarar e atribuir (declaracao())
+
+- quando declaramos e atribuimos (ao mesmo tempo) uma variavel, podemos: <br>
+- atribuir numeros (inteiro,decima), booleano (true, false), identificadores <br>
+- expressoesMatematicas de qualquer tamanho<br>
+- comparacoesbasicas (comparar 2 coisas apenas, com quaquer operador, ex !Trem_a, 2 < 3, Trem_a ou Trem_b...), nao da para comparar muitas coisas ao mesmo tempo
+- nao da para misturar eles (ex: quando declarar, atribuir expressoes matematicas e comparacoes basicas (ex: verdadeiroFalso Trem_a -> (2.3 +4) > 2; verdadeiroFalso Trem_a -> (2.3 +4) <= Trem_b;))<br>
+
+# Em condicao()
+
+- da para escrever varias comparacoes (ex: se(Trem_a < 2 ou Trem_b <> Trem_c e Trem_d <-> 5){}), porem o resultado estara errado se fizer dessa forma pois nao tem parenteses para determinar a ordem de comparacoes
+
+# Para atribuir valor
+
+- precisa ter espaço entre os tokens (ex: Trem_potI2 -> Trem_a ^ 2; )
+
+# condicao
+
+- em condicao posso comparar varias coisas (expressoesmatematicas de qqr tamanho com numero/expressoesmatematicas de qqr tamanho, identificadores...)
+
 
 ## tipos de variáveis:<br>
 - inteiro<br>
@@ -154,7 +179,7 @@ retorna<br>
 -senao{}<br>
 
 ## funcoes<br>
-criar NomeFuncao(qualquer coisa){}<br>
+criar Nomequalquer(qualquer coisa){}<br>
 
 ## estruturas de repetição<br>
 - para{}<br>
@@ -162,27 +187,24 @@ criar NomeFuncao(qualquer coisa){}<br>
  
 ## atribuicao<br>
   ->  <br>
-
 ## operador relacional<br>
   <>  diferente<br>
   <->  igualdade<br>
   <=  menor ou igual<br>
   >=  maior ou igual<br>
+  <  menor<br>
+  >  maior<br>
 
 ## operador matemático<br>
 soma +<br>
 subtracao -<br>
 vezes *<br>
 potencia ^<br>
-divisao /<br>
-
-## comentario<br>
-#uai...<br>
 ...so# (várias linhas)<br>
 
 ## leituras teclado<br>
-Entrada <br>
-Imprima<br>
+entrada <br>
+imprima<br>
 
 # operador logico <br>
 e<br>
@@ -191,18 +213,17 @@ ou<br>
 
 # Exemplos de código na sua linguagem criada e a tradução equivalente.
 
-## Exemplo 1:
 inteiro Trem_inteiro;<br>
 decimal Trem_decimal -> 1.1;<br>
 texto Trem_texto -> “oi”;<br>
 verdadeiroFalso Trem_vf -> false;<br>
-
 Entrada(“digita um numero”, Trem_inteiro);<br>
+
 
 criar Imprimir(inteiro Trem_num){<br>
 Imprima(“numero digitado”, Trem_num);<br>
 }<br>
-se(Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
+Se(Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
 Imprimir(Trem_inteiro);<br>
 #uai<br>
  código basico<br>
@@ -211,7 +232,6 @@ so#<br>
 
 <br>}<br>
 
-## Exemplo 2:
 
 
 inteiro Trem_num -> 77;<br>
@@ -306,5 +326,3 @@ criar Main(){<br>
 ## Exemplo 3
 
 <br> elaborar um codigo facil (exs basicos introducao a computacao)
-
-    
