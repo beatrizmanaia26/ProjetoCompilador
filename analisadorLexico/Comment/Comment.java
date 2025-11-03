@@ -16,21 +16,11 @@ public class Comment extends AFD {
             code.next();
             curIndex++;
 
-            if (!readPrefixSufix(code, "uai...")) {
-                // comentário de linha
-                while (code.current() != '\n') {
-                    comment.append(code.current());
-                    code.next();
-                    curIndex++;
-                }
-
-                return new Token("COMMENT", comment.toString());
-
-            } else {
+            if (readPrefixSufix(code, "uai...")) {
                 curIndex += 5; // avançar o índice para após "uai..."
                 
                 // comentário de bloco
-                while (!readPrefixSufix(code, "...sô#")) {
+                while (!readPrefixSufix(code, "...so#")) {
                     comment.append(code.current());
                     code.next();
                     curIndex++;
@@ -39,14 +29,13 @@ public class Comment extends AFD {
                         int[] lc = computeLineColumn(start);
                         String lineText = extractLineText(lc[0]);
 
-                        throw new LexicalException("Erro lexico: comentario de bloco nao fechado corretamente (esperado '...sô#' antes do fim da proxima instrucao valida)", lc[0], lc[1], lineText);
+                        throw new LexicalException("Erro lexico: comentario de bloco nao fechado corretamente (esperado '...so#' antes do fim da proxima instrucao valida)", lc[0], lc[1], lineText);
                     }
                 }
 
                 return new Token("COMMENT", comment.toString());
 
-            }
-
+            } 
         }
 
         return null;
