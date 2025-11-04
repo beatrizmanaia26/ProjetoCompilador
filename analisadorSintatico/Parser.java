@@ -897,12 +897,12 @@ public class Parser {
    */
   private boolean precedenciaIntermediariaDerivada(Node root){
     Node precedenciaIntermediariaDerivadaNode = root.addNode("precedenciaIntermediariaDerivada");
-    if(matchL("*",precedenciaIntermediariaDerivadaNode) && precedenciaAlta(precedenciaIntermediariaDerivadaNode) &&
+    if(matchL("*","*",precedenciaIntermediariaDerivadaNode) && precedenciaAlta(precedenciaIntermediariaDerivadaNode) &&
      precedenciaIntermediariaDerivada(precedenciaIntermediariaDerivadaNode)){
       return true;
     }
     //ou
-    if(matchL("/",precedenciaIntermediariaDerivadaNode) && precedenciaAlta(precedenciaIntermediariaDerivadaNode) &&
+    if(matchL("/","/",precedenciaIntermediariaDerivadaNode) && precedenciaAlta(precedenciaIntermediariaDerivadaNode) &&
      precedenciaIntermediariaDerivada(precedenciaIntermediariaDerivadaNode)){
       return true;
     }
@@ -917,7 +917,7 @@ public class Parser {
   private boolean precedenciaSuperior(Node root){
     Node precedenciaSuperiorNode = root.addNode("precedenciaSuperior");
     if((first("identificadores") && identificadores(precedenciaSuperiorNode))||(first("numero") && numero(precedenciaSuperiorNode))||
-     ((matchL("(",precedenciaSuperiorNode) && expressoesMatematicas(precedenciaSuperiorNode) && matchL(")",precedenciaSuperiorNode)))){
+     ((matchL("(",precedenciaSuperiorNode) && expressoesMatematicas(precedenciaSuperiorNode) && matchL(")",")",precedenciaSuperiorNode)))){
       return true;
     }
     erro("precedenciaSuperior");
@@ -932,7 +932,7 @@ public class Parser {
    */
   private boolean precedenciaAltaDerivada(Node root){
     Node precedenciaAltaDerivadaNode = root.addNode("precedenciaAltaDerivada");
-    if(matchL("^",precedenciaAltaDerivadaNode) && precedenciaSuperior(precedenciaAltaDerivadaNode) && precedenciaAltaDerivada(precedenciaAltaDerivadaNode)){
+    if(matchL("^","Math.pow()",precedenciaAltaDerivadaNode) && precedenciaSuperior(precedenciaAltaDerivadaNode) && precedenciaAltaDerivada(precedenciaAltaDerivadaNode)){
       return true;
     }
     return true;//ε
@@ -962,13 +962,13 @@ public class Parser {
     if(!tokens.isEmpty() && token.lexema.equals(tokens.get(0).lexema)) {  
       // "++"
       if(token.lexema.equals("+")) {
-        if(matchL("+", operacaoIncrementoNode) && matchL("+", operacaoIncrementoNode)) {
+        if(matchL("+","+" ,operacaoIncrementoNode) && matchL("+","+",operacaoIncrementoNode)) {
           return true;
         }
       }
       //"--"
       else if(token.lexema.equals("-")) {
-        if(matchL("-", operacaoIncrementoNode) && matchL("-", operacaoIncrementoNode)) {
+        if(matchL("-", "-", operacaoIncrementoNode) && matchL("-",  "-", operacaoIncrementoNode)) {
           return true;
         }
       }
@@ -985,8 +985,8 @@ public class Parser {
    */
   private boolean tipoVariavel(Node root){
     Node tipoVariavelNode = root.addNode("tipoVariavel");
-    if(matchL("inteiro",tipoVariavelNode)||matchL("decimal",tipoVariavelNode)||matchL("texto",tipoVariavelNode)||
-    matchL("verdadeiroFalso",tipoVariavelNode)){
+    if(matchL("inteiro","int",tipoVariavelNode)||matchL("decimal","double",tipoVariavelNode)||matchL("texto","String",tipoVariavelNode)||
+    matchL("verdadeiroFalso","boolean",tipoVariavelNode)){
       return true;
     }
     erro("tipoVariavel");
@@ -1060,7 +1060,7 @@ public class Parser {
    */
   private boolean isBoolean(Node root){
     Node isBooleanNode = root.addNode("isBoolean");
-    if(matchL("true",isBooleanNode)||matchL("false",isBooleanNode)){
+    if(matchL("true","true",isBooleanNode)||matchL("false","false",isBooleanNode)){
       return true;
     }
     erro("boolean");
@@ -1074,7 +1074,7 @@ public class Parser {
    */
   private boolean palavraReservadaNomeFuncao(Node root){
     Node palavraReservadaNomeFuncaoNode = root.addNode("palavraReservadaNomeFuncao");
-    if(matchT("FUNCTION_NAME",palavraReservadaNomeFuncaoNode)){
+    if(matchT("FUNCTION_NAME",token.lexema,palavraReservadaNomeFuncaoNode)){
       return true;
     }
     erro("palavraReservadaNomeFuncao");
