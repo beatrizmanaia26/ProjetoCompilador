@@ -97,8 +97,9 @@ fazer só comparacoes mais simples
 <br> precedenciaAlta -> precedenciaSuperior precedenciaAlta'
 <br> precedenciaAlta' -> '^'precedenciaSuperior precedenciaAlta' | ε
 <br> precedenciaSuperior -> identificadores|numero|'('expressoesMatematicas')'
-<br> atribui -> identificadores '->' valor ';'
-<br> declaracao-> tipoVariavel identificadores (';' | '->' valor ';')
+<br> atribui -> tipoDadoOpcionalAtribuicao identificadores '->' valor ';'
+<br> tipoDadoOpcionalAtribuicao -> tipoVariavel|ε
+<br> declaracao-> tipoVariavel identificadores (';' | '->'tipoDadoOpcionalAtribuicao valor ';')
 <br> numero -> numeroDecimal|numeroInteiro 
 <br> boolean -> true|false 
 <br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'

@@ -1,11 +1,16 @@
-se(Trem_num > 0){
-        Imprima("Número positivo!");
-    }
-    ouSe(Trem_num < 0){
-        Imprima("Número negativo!");
-    }
-    senao{
-        Imprima("Zero detectado!");
-    }
 
-criar Amamaam_
+#uai... da certo ...so#
+
+#uai... inteiro Trem_resultadoSoma -> OPA(15); ...so#
+
+#uai... da errado ...so#
+
+inteiro Trem_a -> inteiro Entrada(2);
+
+#uai... permitir na atribuição (ex: quando for Entrada) pessoa colocar tipo de D\\\ado, adicionar uma regra opcional no atribui ...so#
+
+inteiro Trem_a -> inteiro Entrada(2);
+
+#uai... ...so#
+            #uai... baseado no tipoDadoOpcionalAtribuicao ...so#
+#uai... String linha = scanner.nextLine(); ...so#

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 
 public class Parser {
@@ -138,7 +139,7 @@ public class Parser {
   //PROBLEMA PQ DECLARAR E DECLARAREATRIBUIR (opcao dentro e atribuicao) tem os mesmos firsts ent melhor solucao é juntar os 2 em um codigo só
   // Juntar declarar e declaraEAtribui em uma única regra
 
-  // declaração -> tipoVariavel identificadores (';' | '->' valor ';')
+  // declaracao-> tipoVariavel identificadores (';' | '->'tipoDadoOpcionalAtribuicao valor ';')
   /*
    * simbulos     first
    * declaracao   so regra, ent first é firsts dessa regra: tipoVariavel
@@ -148,10 +149,10 @@ public class Parser {
     Node declaracaoNode = root.addNode("declaracao");
     if(first("declaracao") && tipoVariavel(declaracaoNode) && identificadores(declaracaoNode)) { //uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
       // Pode ser: tipo var; OU tipo var -> valor;
-      if(matchL(";",";", declaracaoNode)) {
+      if(matchL(";","; \n", declaracaoNode)) {
         return true; // declaracao simples
       } 
-      else if(matchL("->","=",declaracaoNode) && valor(declaracaoNode) && matchL(";",";",declaracaoNode)) {
+      else if(matchL("->","=",declaracaoNode) && tipoDadoOpcionalAtribuicao(declaracaoNode) && valor(declaracaoNode) && matchL(";","; \n",declaracaoNode)) {
         return true; // declaracao com atribuicao
       }
     }
@@ -273,8 +274,9 @@ public class Parser {
    */
   private boolean lacoEnquanto(Node root){ 
     Node lacoEnquantoNode = root.addNode("lacoEnquanto");
-    if(matchL("lacoEnquanto",lacoEnquantoNode) && matchL("(",lacoEnquantoNode) && condicao(lacoEnquantoNode) && matchL(")",lacoEnquantoNode) &&
-     matchL("{",lacoEnquantoNode) && listaComandosInternos(lacoEnquantoNode) && matchL("}",lacoEnquantoNode)){
+    if(matchL("lacoEnquanto","while",lacoEnquantoNode) && matchL("(","(",lacoEnquantoNode) &&
+    condicao(lacoEnquantoNode) && matchL(")",")",lacoEnquantoNode) &&
+     matchL("{","{",lacoEnquantoNode) && listaComandosInternos(lacoEnquantoNode) && matchL("}","}",lacoEnquantoNode)){
         return true;
      }
     erro("lacoEnquanto");
@@ -282,16 +284,17 @@ public class Parser {
     return false;
   }
 
-
   //criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'
   /*
    * simbulos            first
    * criarFuncao         criar
    */
-  private boolean criarFuncao(Node root){ 
+  private boolean criarFuncao(Node root){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ARRUMAR
     Node criarFuncaoNode = root.addNode("criarFuncao");
-    if(matchL("criar",criarFuncaoNode) && palavraReservadaNomeFuncao(criarFuncaoNode) && matchL("(",criarFuncaoNode) && argumentosFuncao(criarFuncaoNode) &&
-     matchL(")",criarFuncaoNode) && matchL("{",criarFuncaoNode) && listaComandosInternos(criarFuncaoNode)  && matchL("}",criarFuncaoNode)){
+    if(matchL("criar","public ARRUMAR ",criarFuncaoNode) && palavraReservadaNomeFuncao(criarFuncaoNode) &&
+     matchL("(","(",criarFuncaoNode) && argumentosFuncao(criarFuncaoNode) &&
+     matchL(")",")",criarFuncaoNode) && matchL("{","{",criarFuncaoNode) && listaComandosInternos(criarFuncaoNode) &&
+      matchL("}","}",criarFuncaoNode)){
       return true;
     }
     erro("criarFuncao");
@@ -306,8 +309,8 @@ public class Parser {
    */
   private boolean chamarFuncao(Node root) {
     Node chamarFuncaoNode = root.addNode("chamarFuncao");
-    if (first("chamarFuncao") && inicioChamarFuncao(chamarFuncaoNode) && matchL("(",chamarFuncaoNode) && argumentosChamada(chamarFuncaoNode) &&
-     matchL(")",chamarFuncaoNode) && matchL(";",chamarFuncaoNode)) {
+    if (first("chamarFuncao") && inicioChamarFuncao(chamarFuncaoNode) && matchL("(","(",chamarFuncaoNode) && argumentosChamada(chamarFuncaoNode) &&
+     matchL(")",")",chamarFuncaoNode) && matchL(";","; \n",chamarFuncaoNode)) {
       return true;
     }
     erro("chamarFuncao");
@@ -319,8 +322,8 @@ public class Parser {
   //usada quando desejamos atribui o resultado de uma funcao a uma declaracao ou chamar o resultado de uma funcao em outra funcao....
   private boolean chamarFuncaoSemFim(Node root) {
     Node chamarFuncaoSemFimNode = root.addNode("chamarFuncaoSemFim");
-    if (first("chamarFuncao") && inicioChamarFuncao(chamarFuncaoSemFimNode) && matchL("(",chamarFuncaoSemFimNode) &&
-     argumentosChamada(chamarFuncaoSemFimNode) && matchL(")",chamarFuncaoSemFimNode)) {
+    if (first("chamarFuncao") && inicioChamarFuncao(chamarFuncaoSemFimNode) && matchL("(","(",chamarFuncaoSemFimNode) &&
+     argumentosChamada(chamarFuncaoSemFimNode) && matchL(")",")",chamarFuncaoSemFimNode)) {
       return true;
     }
     erro("chamarFuncao");
@@ -333,10 +336,11 @@ public class Parser {
    * simbulos            first
    * inicioChamarFuncao          "entrada","imprima", first é firsts dessa regra palavraReservadaNomeFuncao
    */
-  private boolean inicioChamarFuncao(Node root){
+  private boolean inicioChamarFuncao(Node root){//!!!!!!!!!!!!!!!!!ARRUMAR SCANNER 
     Node inicioChamarFuncaoNode = root.addNode("inicioChamarFuncao");
-    if((first("palavraReservadaNomeFuncao") && palavraReservadaNomeFuncao(inicioChamarFuncaoNode))|| matchL("Entrada",inicioChamarFuncaoNode)||
-    matchL("Imprima",inicioChamarFuncaoNode)){
+    if((first("palavraReservadaNomeFuncao") && palavraReservadaNomeFuncao(inicioChamarFuncaoNode))||
+    matchL("Entrada","scanner.nextInt",inicioChamarFuncaoNode)||
+    matchL("Imprima","System.out.print",inicioChamarFuncaoNode)){
     return true;
    }
     erro("inicioChamarFuncao");
@@ -363,7 +367,7 @@ public class Parser {
    */
   private boolean restoArgumentosChamada(Node root){
     Node restoArgumentosChamadaNode = root.addNode("restoArgumentosChamada");
-    if(matchL(",",restoArgumentosChamadaNode) && valor(restoArgumentosChamadaNode) && restoArgumentosChamada(restoArgumentosChamadaNode)){
+    if(matchL(",",",",restoArgumentosChamadaNode) && valor(restoArgumentosChamadaNode) && restoArgumentosChamada(restoArgumentosChamadaNode)){
       return true;
     }
     return true; //ε
@@ -404,7 +408,7 @@ public class Parser {
    */
   private boolean emComumParametro(Node root){
     Node emComumParametroNode = root.addNode("emComumParametro");
-    if(matchL(",",emComumParametroNode) && parametroFuncao(emComumParametroNode) && emComumParametro(emComumParametroNode)){
+    if(matchL(",",",",emComumParametroNode) && parametroFuncao(emComumParametroNode) && emComumParametro(emComumParametroNode)){
       return true;
     }
     return true; //ε 
@@ -527,7 +531,7 @@ public class Parser {
    */
   private boolean condicaoComparacoesBasicas(Node root){
     Node condicaoComparacoesBasicasNode = root.addNode("condicaoComparacoesBasicas");
-    if((first("condicaoComparacoesBasicas") && comparacoesBasicas(condicaoComparacoesBasicasNode))|| (matchL("!",condicaoComparacoesBasicasNode) &&
+    if((first("condicaoComparacoesBasicas") && comparacoesBasicas(condicaoComparacoesBasicasNode))|| (matchL("!","!",condicaoComparacoesBasicasNode) &&
      identificadores(condicaoComparacoesBasicasNode))){
       return true;
     }
@@ -575,7 +579,7 @@ public class Parser {
    */
   private boolean negacaoCondicao(Node root){
     Node negacaoCondicaoNode = root.addNode("negacaoCondicao");
-    if(matchL("!",negacaoCondicaoNode) && condicao(negacaoCondicaoNode)){
+    if(matchL("!","!",negacaoCondicaoNode) && condicao(negacaoCondicaoNode)){
       return true;
     }
     erro("negacaoCondicao");
@@ -605,8 +609,8 @@ public class Parser {
    */
   private boolean operacaoRelacional(Node root){
     Node operacaoRelacionalNode = root.addNode("operacaoRelacional");
-    if(matchL("<",operacaoRelacionalNode)|| matchL(">",operacaoRelacionalNode) || matchL("<>",operacaoRelacionalNode) ||
-     matchL("<->",operacaoRelacionalNode)|| matchL("<=",operacaoRelacionalNode)|| matchL(">=",operacaoRelacionalNode)){
+    if(matchL("<","<",operacaoRelacionalNode)|| matchL(">",">",operacaoRelacionalNode) || matchL("<>","!=",operacaoRelacionalNode) ||
+     matchL("<->","==",operacaoRelacionalNode)|| matchL("<=","<=",operacaoRelacionalNode)|| matchL(">=",">=",operacaoRelacionalNode)){
       return true;
     }
     erro("operadorRelacional");
@@ -621,7 +625,7 @@ public class Parser {
    */
   private boolean operacaoLogica(Node root){
     Node operacaoLogicaNode = root.addNode("operacaoLogica");
-    if(matchL("e",operacaoLogicaNode)||matchL("ou",operacaoLogicaNode)||matchL("!",operacaoLogicaNode)){
+    if(matchL("e","&&",operacaoLogicaNode)||matchL("ou","||",operacaoLogicaNode)||matchL("!","!",operacaoLogicaNode)){
       return true;
     }
     erro("operacaoLogica");
@@ -653,8 +657,8 @@ public class Parser {
    */
   private boolean cabecalhoPara(Node root){ 
     Node cabecalhoParaNode = root.addNode("cabecalhoPara");
-    if(first("declaracao") && inicializacao(cabecalhoParaNode) && matchL(";",cabecalhoParaNode) && condicao(cabecalhoParaNode) && 
-    matchL(";",cabecalhoParaNode) && incremento(cabecalhoParaNode)){
+    if(first("declaracao") && inicializacao(cabecalhoParaNode) && matchL(";",";",cabecalhoParaNode) && condicao(cabecalhoParaNode) && 
+    matchL(";",";",cabecalhoParaNode) && incremento(cabecalhoParaNode)){
       return true;
     }
     erro("listaComandosInternos");
@@ -662,7 +666,7 @@ public class Parser {
     return false;
   }
 
-  //atribui -> identificadores operadorAtribuicao valor ';'
+  //atribui -> identificadores operadorAtribuicao tipoDadoOpcionalAtribuicao valor ';'
    /*
    * simbulos          first
    * atribui           first é first dessa regra: identificadores
@@ -670,12 +674,21 @@ public class Parser {
    */
   private boolean atribui(Node root){ 
     Node atribuiNode = root.addNode("atribui");
-    if(first("identificadores") && identificadores(atribuiNode) && matchL("->",atribuiNode) && valor(atribuiNode) && matchL(";",atribuiNode)){
+    if(first("identificadores") && identificadores(atribuiNode) && matchL("->","=",atribuiNode) && tipoDadoOpcionalAtribuicao(atribuiNode) && valor(atribuiNode) && matchL(";","; \n",atribuiNode)){
         return true;
     }
     erro("atribui");
     contadorErro++;
     return false;
+  }
+
+  // tipoDadoOpcionalAtribuicao -> tipoVariavel|ε
+  private boolean tipoDadoOpcionalAtribuicao(Node root){ 
+    Node tipoDadoOpcionalAtribuicaoNode = root.addNode("tipoDadoOpcionalAtribuicao");
+    if(tipoVariavel(tipoDadoOpcionalAtribuicaoNode)){
+      return true;
+    }
+    return true;
   }
 
   //expressoesMatematicas -> precedenciaInferior
@@ -711,7 +724,7 @@ public class Parser {
     else if (firsts.get("operacao").contains(token.lexema) || firsts.get("operacao").contains(tokens.get(0).lexema)){//se token atual for algum dos tokens do first operacao ou prox token for algum dos tokens do first de operacao
       return condicaoComparacoesBasicas(valorNode);
     }
-    else if(token.tipo.equals("FUNCTION_NAME")){
+    else if(token.tipo.equals("FUNCTION_NAME")||token.lexema.equals("Entrada")|| token.lexema.equals("Imprima")){
       return chamarFuncaoSemFim(valorNode);
     }
     else if(firsts.get("validaExpressao").contains(token.lexema) || firsts.get("validaExpressao").contains(tokens.get(0).lexema)){//se token atual for algum dos tokens do first precedenciasuperior (representa expressoesmatematicas) ou prox token for algum dos tokens do first de precedenciasuperior
@@ -773,7 +786,7 @@ public class Parser {
    */
   private boolean retornar(Node root){ 
     Node retornarNode = root.addNode("retornar");
-    if(matchL("retorna",retornarNode) && conteudos(retornarNode) && matchL(";",retornarNode)){
+    if(matchL("retorna","return",retornarNode) && conteudos(retornarNode) && matchL(";","; \n",retornarNode)){
       return true;
     }
     erro("retornar");
@@ -1226,6 +1239,7 @@ public class Parser {
     System.out.println("import java.util.Scanner;");
     System.out.println("public class Code{");
     System.out.println("public static void mai(String[]args){");
+    System.out.println("Scanner scanner = new Scanner(System.in);");
   }
 
   public void footer(){
@@ -1233,17 +1247,14 @@ public class Parser {
     System.out.println("}");
   }
 
-  //????????????????
-  private void gerarCodigoJava(String lexema) {
+  private void gerarScannerJava(String lexema) {
     switch(lexema) {
-        case "se": System.out.print("if "); break;
-        case "entao": System.out.print(" "); break;
-        case "senao": System.out.print("else "); break;
-        case "->": System.out.print(" = "); break;
-        case "e": System.out.print(" && "); break;
-        case "ou": System.out.print(" || "); break;
-        default: System.out.print(lexema + " "); break;
+      case "inteiro": System.out.print("scanner.nextInt"); break;
+      case "decimal": System.out.print("scanner.nextDouble"); break;
+      case "texto": System.out.print("scanner.nextLine"); break;
+      case "verdadeiroFalso": System.out.print("nextBoolean"); break;
+      default: System.out.print(lexema + " "); break;
     }
-}
+  }
   
 }
