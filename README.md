@@ -97,9 +97,8 @@ fazer só comparacoes mais simples
 <br> precedenciaAlta -> precedenciaSuperior precedenciaAlta'
 <br> precedenciaAlta' -> '^'precedenciaSuperior precedenciaAlta' | ε
 <br> precedenciaSuperior -> identificadores|numero|'('expressoesMatematicas')'
-<br> atribui -> tipoDadoOpcionalAtribuicao identificadores '->' valor ';'
-<br> tipoDadoOpcionalAtribuicao -> tipoVariavel|ε
-<br> declaracao-> tipoVariavel identificadores (';' | '->'tipoDadoOpcionalAtribuicao valor ';')
+<br> atribui ->  identificadores '->' valor ';'
+<br> declaracao-> tipoVariavel identificadores (';' | '->' valor ';')
 <br> numero -> numeroDecimal|numeroInteiro 
 <br> boolean -> true|false 
 <br> criarFuncao -> 'criar' palavra_reservadaNomeFuncao'('argumentosFuncao')''{'listaComandosInternos'}'
@@ -153,6 +152,7 @@ TERMINAR DE DESCREVER COM TRADUCAO + ARVORE E VER DE COMPILAR POR LINHA DE COMAN
 
 ### Sobre declarar e atribuir (declaracao())
 
+- só é possivel usar corretamente a "Entrada" se estivrmos declarando e atribuindo (para fazer a traducao certa) ex:decimal Trem_int2 -> Entrada();
 - Quando declaramos e atribuímos (ao mesmo tempo) uma variável, podemos: <br>
 - atribuir números (inteiro,decimal), booleano (true, false), identificadores <br>
 - "expressoesMatematicas" de qualquer tamanho<br>
@@ -165,6 +165,10 @@ TERMINAR DE DESCREVER COM TRADUCAO + ARVORE E VER DE COMPILAR POR LINHA DE COMAN
 - "condicao" não faz chamada de metodo e nem ()<br>
 - Da para escrever várias comparacoes (ex: se(Trem_a < 2 ou Trem_b <> Trem_c e Trem_d <-> 5){}), porém o resultado estara errado se fizer dessa forma pois não tem parenteses para determinar a ordem de comparações<br>
 - Em "condicao" posso comparar varias coisas (expressoesmatematicas de qualquer tamanho com número/"expressoesMatematicas" de qualquer tamanho, identificadores...)<br>
+
+## Sobre funcões:
+
+- permiti na gramatica colocar varias coisas dentro da chamada de entrada mesmo que só vamos usar com () vazio e passando 1 argumento do usuario (n tava pensando no java qnd fiz)
 
 ## tipos de variáveis:<br>
 - inteiro<br>
@@ -202,6 +206,7 @@ TERMINAR DE DESCREVER COM TRADUCAO + ARVORE E VER DE COMPILAR POR LINHA DE COMAN
 - soma: +<br>
 - subtracao: -<br>
 - multiplicação: *<br>
+- divisão: / <br>
 - potência: ^<br>
 
 ## leituras do teclado:<br>

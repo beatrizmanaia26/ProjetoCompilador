@@ -15,7 +15,13 @@ public class Parser {
   Map<String, Set<String>> follows = new HashMap<>();
   Tree tree; 
   int contadorErro;
-
+  String tipoScannerAtual = ""; //armazena o valor de tipoDadoOpcionalAtribuicao para determinar o final do scannet.next na traducao
+  String separadorArgumentosAtual = ""; 
+  String contextoFuncaoAtual = ""; //para usar o valor certo no separadorArgumentos nos momentos corretos
+  /*diferencia se a funcao é imprima:separador dos argumentos é traduzido pra + no java
+  Entrada: traudzido para nada (só pega 1 valor por vez)
+  qualquer outra funcao, que ai fica , o separador
+  */
   public Parser(List<Token> tokens) {
     this.tree = new Tree(new Node("PROGRAM")); 
     this.tokens = tokens;
@@ -99,10 +105,6 @@ public class Parser {
    */
   private boolean listaComandos(Node root){
     Node listaComandoNode = root.addNode("listaComandos");
-
-    //se tiver Entrada no codigo adiciona isso: traduz("import java.util.Scanner;");
-    //traduz("public class CodigoExemplo{");
-
     if(first("comando") && comando(listaComandoNode) && listaComandos(listaComandoNode)){
       return true;
     }
@@ -134,8 +136,7 @@ public class Parser {
     contadorErro++;
     return false;
   }
-  
-  
+   
   //PROBLEMA PQ DECLARAR E DECLARAREATRIBUIR (opcao dentro e atribuicao) tem os mesmos firsts ent melhor solucao é juntar os 2 em um codigo só
   // Juntar declarar e declaraEAtribui em uma única regra
 
@@ -152,7 +153,7 @@ public class Parser {
       if(matchL(";","; \n", declaracaoNode)) {
         return true; // declaracao simples
       } 
-      else if(matchL("->","=",declaracaoNode) && tipoDadoOpcionalAtribuicao(declaracaoNode) && valor(declaracaoNode) && matchL(";","; \n",declaracaoNode)) {
+      else if(matchL("->"," = ",declaracaoNode)&& valor(declaracaoNode) && matchL(";","; \n",declaracaoNode)) {
         return true; // declaracao com atribuicao
       }
     }
@@ -259,7 +260,7 @@ public class Parser {
   private boolean para(Node root){
     Node paraNode = root.addNode("para");
     if(matchL("para","for",paraNode) && matchL("(","(",paraNode) && cabecalhoPara(paraNode) &&
-     matchL(")",paraNode) && matchL("{",paraNode) && listaComandosInternos(paraNode) && matchL("}",paraNode)){
+     matchL(")",")",paraNode) && matchL("{","{",paraNode) && listaComandosInternos(paraNode) && matchL("}","}",paraNode)){
       return true;
      }
     erro("para");
@@ -291,7 +292,7 @@ public class Parser {
    */
   private boolean criarFuncao(Node root){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ARRUMAR
     Node criarFuncaoNode = root.addNode("criarFuncao");
-    if(matchL("criar","public ARRUMAR ",criarFuncaoNode) && palavraReservadaNomeFuncao(criarFuncaoNode) &&
+    if(matchL("criar",criarFuncaoNode) && palavraReservadaNomeFuncao(criarFuncaoNode) &&
      matchL("(","(",criarFuncaoNode) && argumentosFuncao(criarFuncaoNode) &&
      matchL(")",")",criarFuncaoNode) && matchL("{","{",criarFuncaoNode) && listaComandosInternos(criarFuncaoNode) &&
       matchL("}","}",criarFuncaoNode)){
@@ -336,10 +337,15 @@ public class Parser {
    * simbulos            first
    * inicioChamarFuncao          "entrada","imprima", first é firsts dessa regra palavraReservadaNomeFuncao
    */
-  private boolean inicioChamarFuncao(Node root){//!!!!!!!!!!!!!!!!!ARRUMAR SCANNER 
+  private boolean inicioChamarFuncao(Node root){
+     // SALVA O CONTEXTO também aqui para "Imprima" e "Entrada" (traduzir correto para java)
+    if(token != null) {
+      contextoFuncaoAtual = token.lexema;
+      separadorArgumentosAtual = ajusteTraducaoArgumentosChamada(token);
+    }
     Node inicioChamarFuncaoNode = root.addNode("inicioChamarFuncao");
     if((first("palavraReservadaNomeFuncao") && palavraReservadaNomeFuncao(inicioChamarFuncaoNode))||
-    matchL("Entrada","scanner.nextInt",inicioChamarFuncaoNode)||
+    matchL("Entrada","scanner.next"+tipoScannerAtual,inicioChamarFuncaoNode)||
     matchL("Imprima","System.out.print",inicioChamarFuncaoNode)){
     return true;
    }
@@ -367,7 +373,8 @@ public class Parser {
    */
   private boolean restoArgumentosChamada(Node root){
     Node restoArgumentosChamadaNode = root.addNode("restoArgumentosChamada");
-    if(matchL(",",",",restoArgumentosChamadaNode) && valor(restoArgumentosChamadaNode) && restoArgumentosChamada(restoArgumentosChamadaNode)){
+    if(matchL(",",separadorArgumentosAtual,restoArgumentosChamadaNode) && valor(restoArgumentosChamadaNode) &&
+    restoArgumentosChamada(restoArgumentosChamadaNode)){
       return true;
     }
     return true; //ε
@@ -674,21 +681,12 @@ public class Parser {
    */
   private boolean atribui(Node root){ 
     Node atribuiNode = root.addNode("atribui");
-    if(first("identificadores") && identificadores(atribuiNode) && matchL("->","=",atribuiNode) && tipoDadoOpcionalAtribuicao(atribuiNode) && valor(atribuiNode) && matchL(";","; \n",atribuiNode)){
+    if(first("identificadores") && identificadores(atribuiNode) && matchL("->"," = ",atribuiNode) && valor(atribuiNode) && matchL(";","; \n",atribuiNode)){
         return true;
     }
     erro("atribui");
     contadorErro++;
     return false;
-  }
-
-  // tipoDadoOpcionalAtribuicao -> tipoVariavel|ε
-  private boolean tipoDadoOpcionalAtribuicao(Node root){ 
-    Node tipoDadoOpcionalAtribuicaoNode = root.addNode("tipoDadoOpcionalAtribuicao");
-    if(tipoVariavel(tipoDadoOpcionalAtribuicaoNode)){
-      return true;
-    }
-    return true;
   }
 
   //expressoesMatematicas -> precedenciaInferior
@@ -786,7 +784,7 @@ public class Parser {
    */
   private boolean retornar(Node root){ 
     Node retornarNode = root.addNode("retornar");
-    if(matchL("retorna","return",retornarNode) && conteudos(retornarNode) && matchL(";","; \n",retornarNode)){
+    if(matchL("retorna","return ",retornarNode) && conteudos(retornarNode) && matchL(";","; \n",retornarNode)){
       return true;
     }
     erro("retornar");
@@ -984,9 +982,10 @@ public class Parser {
   * tipoVariavel    inteiro,decimal, texto, verdadeiroFalso
    */
   private boolean tipoVariavel(Node root){
+    tipoScannerAtual = getTipoScanner(token.lexema);
     Node tipoVariavelNode = root.addNode("tipoVariavel");
-    if(matchL("inteiro","int",tipoVariavelNode)||matchL("decimal","double",tipoVariavelNode)||matchL("texto","String",tipoVariavelNode)||
-    matchL("verdadeiroFalso","boolean",tipoVariavelNode)){
+    if(matchL("inteiro","int ",tipoVariavelNode)||matchL("decimal","double ",tipoVariavelNode)||matchL("texto","String ",tipoVariavelNode)||
+    matchL("verdadeiroFalso","boolean ",tipoVariavelNode)){
       return true;
     }
     erro("tipoVariavel");
@@ -1045,7 +1044,7 @@ public class Parser {
    */
   private boolean texto(Node root){ 
     Node textoNode = root.addNode("texto");
-    if(matchT("TEXT",token.lexema,textoNode)){
+    if(matchT("TEXT","\""+token.lexema+"\"",textoNode)){
       return true;
     }
     erro("texto");
@@ -1066,13 +1065,14 @@ public class Parser {
     erro("boolean");
     contadorErro++;
     return false;
-  }
-
+  } 
   /*
    * simbulos                      first
    * palavraReservadaNomeFuncao    FUNCTION_NAME
    */
   private boolean palavraReservadaNomeFuncao(Node root){
+    contextoFuncaoAtual = token.lexema;
+    separadorArgumentosAtual = ajusteTraducaoArgumentosChamada(token);
     Node palavraReservadaNomeFuncaoNode = root.addNode("palavraReservadaNomeFuncao");
     if(matchT("FUNCTION_NAME",token.lexema,palavraReservadaNomeFuncaoNode)){
       return true;
@@ -1106,6 +1106,7 @@ public class Parser {
     //PROBLEMA, ESSES FIRSTS EM COISAS EM COMUM:
     firsts.put("numero", Set.of("DECIMAL","INTEGER"));
     firsts.put("identificadores", Set.of("IDENTIFIER"));
+    firsts.put("expressoesMatematicas", Set.of("(","IDENTIFIER", "DECIMAL","INTEIRO"));
     firsts.put("condicaoComparacoesBasicas", Set.of("IDENTIFIER", "DECIMAL","INTEGER")); 
     firsts.put("precedenciaSuperior", Set.of("(", "IDENTIFIER","DECIMAL","INTEGER"));
      //firsts operacao:
@@ -1238,7 +1239,7 @@ public class Parser {
   public void header(){
     System.out.println("import java.util.Scanner;");
     System.out.println("public class Code{");
-    System.out.println("public static void mai(String[]args){");
+    System.out.println("public static void main(String[]args){");
     System.out.println("Scanner scanner = new Scanner(System.in);");
   }
 
@@ -1247,14 +1248,26 @@ public class Parser {
     System.out.println("}");
   }
 
-  private void gerarScannerJava(String lexema) {
-    switch(lexema) {
-      case "inteiro": System.out.print("scanner.nextInt"); break;
-      case "decimal": System.out.print("scanner.nextDouble"); break;
-      case "texto": System.out.print("scanner.nextLine"); break;
-      case "verdadeiroFalso": System.out.print("nextBoolean"); break;
-      default: System.out.print(lexema + " "); break;
+  private String getTipoScanner(String tipo) { //retorna o valor necessario para traduzir Entrada para o tipo especifico de scanner
+    switch(token.lexema) {
+      case "inteiro": return "Int";
+      case "decimal": return "Double";
+      case "texto": return "Line";
+      case "verdadeiroFalso": return "Boolean";
+      default: return "";
     }
   }
-  
+
+  private String ajusteTraducaoArgumentosChamada(Token token) {
+    if (token != null) {
+        if ("Imprima".equals(token.lexema)) {
+            return " + ";
+        } else if ("Entrada".equals(token.lexema)) {
+            return "";
+        } else if ("FUNCTION_NAME".equals(token.tipo)) {
+            return ", ";
+        }
+    }
+    return ", "; // Padrão
+}
 }

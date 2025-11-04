@@ -10,7 +10,6 @@ import analisadorLexico.Comment.Comment;
 import analisadorLexico.Delimiters.Delimiters;
 import analisadorLexico.FunctionName.FunctionName;
 import analisadorLexico.Identifiers.Identifiers;
-import analisadorLexico.IncrementDecrementOperators.IncrementDecrementOperator;
 import analisadorLexico.LogicOperator.LogicOperator;
 import analisadorLexico.MathOperators.MathOperator;
 import analisadorLexico.Numbers.DecimalNumber;
@@ -39,7 +38,6 @@ public class Lexer {
         afds.add(new RelationalOperators());
         afds.add(new Identifiers());
         afds.add(new Comment());
-        afds.add(new IncrementDecrementOperator());
         afds.add(new MathOperator());
         afds.add(new ReservedWords());
         afds.add(new LogicOperator());

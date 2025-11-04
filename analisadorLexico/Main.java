@@ -23,7 +23,7 @@ public class Main{
         try {
             Lexer lexer = new Lexer(code);
             List<Token> tokens = lexer.getTokens();//add todos os tokens na lista
-            // tokens.forEach(System.out::println); 
+            tokens.forEach(System.out::println); 
             // Filtrar comentários para nao enviar para o sintatico
             List<Token> filteredTokens = new ArrayList<>();
             for (Token token : tokens) {
