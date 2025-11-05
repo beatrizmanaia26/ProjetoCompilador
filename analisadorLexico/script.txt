@@ -1,47 +1,13 @@
-            senao{
-                Imprima("Erro: Divisão por zero!");
-            }
-        }
-    }
-    ouSe(Trem_opcao <-> 0){
-        Imprima("Saindo da calculadora...");
-    }
-    senao{
-        Imprima("Opção inválida!");
-    }
-}
 
-#uai... Chamando a calculadora ...so#
-Calculadora();
+#uai... 
+inteiro Trem_c->5;
+inteiro Trem_b->10;
+inteiro Trem_d->2;
+inteiro Trem_a -> (((Trem_b+Trem_c)*2 + (5-2))/Trem_d)^2;
+Imprima("res",Trem_a);
 
+RESOLVER MATH POW (exemplos noscript de quando tem ^e ver onde colocar se tiver ^ salvar o valor anteiror e o posterior a isso p colocar no mathpow
 
-#uai...
- Teste de escopo de variáveis
 ...so#
-
-inteiro Trem_varGlobal -> 100;
-
-criar TesteEscopo(){
-    inteiro Trem_varLocal -> 50;
-    Imprima("Variável local: ", Trem_varLocal);
-    Imprima("Variável global: ", Trem_varGlobal);
-    
-    #uai... Modificando variável local ...so#
-    Trem_varLocal -> Trem_varLocal * 2;
-    Imprima("Variável local modificada: ", Trem_varLocal);
-}
-
-criar OutraFuncao(){
-    inteiro Trem_outraVar -> 25;
-    Imprima("Outra variável: ", Trem_outraVar);
-    Imprima("Ainda posso acessar a global: ", Trem_varGlobal);
-    
-    #uai... Esta função não pode acessar Trem_varLocal da outra função ...so#
-}
-
-#uai... Chamando as funções ...so#
-TesteEscopo();
-OutraFuncao();
-
-#uai... Variável global ainda acessível ...so#
-Imprima("Global no escopo principal: ", Trem_varGlobal);
+inteiro Trem_A -> 3;
+inteiro Trem_a -> Trem_A^2;

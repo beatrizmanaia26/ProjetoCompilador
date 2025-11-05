@@ -170,6 +170,10 @@ TERMINAR DE DESCREVER COM TRADUCAO + ARVORE E VER DE COMPILAR POR LINHA DE COMAN
 
 - permiti na gramatica colocar varias coisas dentro da chamada de entrada mesmo que só vamos usar com () vazio e passando 1 argumento do usuario (n tava pensando no java qnd fiz)
 
+## potencia
+
+- para usar potencia o tipo de variavel que recebe tem que ser decimal (pois nao fiz a verificacao para verificar o tipo de variavel que recebe a potencia e se for inteiro adicionar um (int) antes do math.pow
+
 ## tipos de variáveis:<br>
 - inteiro<br>
 - decimal<br>

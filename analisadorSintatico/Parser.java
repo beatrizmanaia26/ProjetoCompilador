@@ -1,6 +1,11 @@
 package analisadorSintatico;  
 
-import analisadorLexico.Token;  
+import analisadorLexico.Token;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -13,20 +18,33 @@ public class Parser {
   Token token;
   Map<String, Set<String>> firsts = new HashMap<>();
   Map<String, Set<String>> follows = new HashMap<>();
+  Map<String, String> tabelaInformacoesIdentificadores = new HashMap<>();
+  /*armazeno nome dos identificadores e seus tipos para, na hora de o retorno de uma funcao ser identificador, eu verifico o tipo dele aqui 
+  e traduzo para o tipo certo em java*/
   Tree tree; 
   int contadorErro;
   String tipoScannerAtual = ""; //armazena o valor de tipoDadoOpcionalAtribuicao para determinar o final do scannet.next na traducao
   String separadorArgumentosAtual = ""; 
+  String tipoAtual = null; // para armazenar temporariamente o tipo do identificador pois so adicionara na hash cada identificador 1x ai armazena junto com o tipo (essa hash era p ser usada para pegaro tipo correto para a traducao da funcao pro java)
   String contextoFuncaoAtual = ""; //para usar o valor certo no separadorArgumentos nos momentos corretos
   /*diferencia se a funcao é imprima:separador dos argumentos é traduzido pra + no java
   Entrada: traudzido para nada (só pega 1 valor por vez)
   qualquer outra funcao, que ai fica , o separador
-  */
+  */ 
+  //para traducao do ^
+  String base;
+  String expoente;
+
+  //arquivo com codigo taduzido
+  private PrintWriter arquivoSaida;
+  private String nomeArquivoSaida = "CodigoTraduzido.java";
+
   public Parser(List<Token> tokens) {
     this.tree = new Tree(new Node("PROGRAM")); 
     this.tokens = tokens;
     inicializarFirsts();
     inicializarFollows();
+    inicializarArquivoSaida();
   }
 
   /*
@@ -36,6 +54,8 @@ public class Parser {
 
    */
    public void main() {
+    tabelaInformacoesIdentificadores.clear();
+    tipoAtual = null;
     token = getNextToken();
     //como saber se td realmente fica dentro da main????????????????????????
     header();
@@ -44,6 +64,7 @@ public class Parser {
     if (listaComandos(root) && matchT("EOF",root) &&  contadorErro == 0){
       footer();
       System.out.println("Sintaticamente correto");
+      //imprimirTabelaIdentificadores(); //debugar (tem todos os identificadores)
       //tree.preOrder();//imprime em pre ordem
       //tree.printCode(); //imprimeas folhas(codigo)
       tree.printTree(); //imprimea arvore
@@ -51,6 +72,8 @@ public class Parser {
       erro("main");
       System.out.println("Sintaticamente Incorreto! Programa caiu em " + contadorErro + " regras de erro(s) sintático(s)");
     }
+    fecharArquivoSaida();
+    System.out.println("\ncódigo traduzido salvo em: " + nomeArquivoSaida);
   }
 
    public Token getNextToken() {
@@ -149,6 +172,7 @@ public class Parser {
   private boolean declaracao(Node root){
     Node declaracaoNode = root.addNode("declaracao");
     if(first("declaracao") && tipoVariavel(declaracaoNode) && identificadores(declaracaoNode)) { //uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
+      tipoAtual = null;//limpar para apenas adicionar o tipo nos identificadores que realmente tem tipo na hash
       // Pode ser: tipo var; OU tipo var -> valor;
       if(matchL(";","; \n", declaracaoNode)) {
         return true; // declaracao simples
@@ -211,7 +235,7 @@ public class Parser {
     Node seNode = root.addNode("se");
      if (matchL("se","if",seNode) && matchL("(","(",seNode) && condicao(seNode) && matchL(")",")",seNode) &&
       matchL("{","{",seNode) &&
-      listaComandosInternos(seNode) && matchL("}","}",seNode)){
+      listaComandosInternos(seNode) && matchL("}","}\n",seNode)){
         return true;
      }
     erro("se");
@@ -228,7 +252,7 @@ public class Parser {
     Node ouSeNode = root.addNode("ouSe");
     if(matchL("ouSe","else if",ouSeNode) && matchL("(","(",ouSeNode) && condicao(ouSeNode) && matchL(")",")",ouSeNode) &&
      matchL("{","{",ouSeNode) &&
-     listaComandosInternos(ouSeNode) && matchL("}","}",ouSeNode)){
+     listaComandosInternos(ouSeNode) && matchL("}","}\n",ouSeNode)){
         return true;
      }
     erro("ouSe");
@@ -244,7 +268,7 @@ public class Parser {
   private boolean senao(Node root){ 
     Node senaoNode = root.addNode("senao");
     if(matchL("senao","else",senaoNode) && matchL("{","{",senaoNode) &&
-     listaComandosInternos(senaoNode) && matchL("}","}",senaoNode)){
+     listaComandosInternos(senaoNode) && matchL("}","}\n",senaoNode)){
       return true;
      }
     erro("senao");
@@ -260,7 +284,7 @@ public class Parser {
   private boolean para(Node root){
     Node paraNode = root.addNode("para");
     if(matchL("para","for",paraNode) && matchL("(","(",paraNode) && cabecalhoPara(paraNode) &&
-     matchL(")",")",paraNode) && matchL("{","{",paraNode) && listaComandosInternos(paraNode) && matchL("}","}",paraNode)){
+     matchL(")",")",paraNode) && matchL("{","{",paraNode) && listaComandosInternos(paraNode) && matchL("}","}\n",paraNode)){
       return true;
      }
     erro("para");
@@ -277,7 +301,7 @@ public class Parser {
     Node lacoEnquantoNode = root.addNode("lacoEnquanto");
     if(matchL("lacoEnquanto","while",lacoEnquantoNode) && matchL("(","(",lacoEnquantoNode) &&
     condicao(lacoEnquantoNode) && matchL(")",")",lacoEnquantoNode) &&
-     matchL("{","{",lacoEnquantoNode) && listaComandosInternos(lacoEnquantoNode) && matchL("}","}",lacoEnquantoNode)){
+     matchL("{","{",lacoEnquantoNode) && listaComandosInternos(lacoEnquantoNode) && matchL("}","}\n",lacoEnquantoNode)){
         return true;
      }
     erro("lacoEnquanto");
@@ -290,25 +314,34 @@ public class Parser {
    * simbulos            first
    * criarFuncao         criar
    */
-  private boolean criarFuncao(Node root){ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ARRUMAR
+  private boolean criarFuncao(Node root){//ARRUMARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR (nao pode declarar metodos dentro da main)
+
+     /*PROBLEMA EH QUE PRECISO SABER O RETORNO (token que esta dps de retorna ante de processar lista comandos internos, ou seja td q estiver em lista documandos internos que declara alguma variavel que nao
+      esta na hash precisa ser incluido na hash e ai eu vejo tb o identificador que esta dps de retorna antes de processá-la ou seja dps de "Public" para baseado noq ta dps de retorna passar para os metodos e retornar corretamente o tipo 
+      de retorno da funcao )*/
     Node criarFuncaoNode = root.addNode("criarFuncao");
-    if(matchL("criar",criarFuncaoNode) && palavraReservadaNomeFuncao(criarFuncaoNode) &&
-     matchL("(","(",criarFuncaoNode) && argumentosFuncao(criarFuncaoNode) &&
-     matchL(")",")",criarFuncaoNode) && matchL("{","{",criarFuncaoNode) && listaComandosInternos(criarFuncaoNode) &&
-      matchL("}","}",criarFuncaoNode)){
-      return true;
+    // processa apenas a declaração da função (sem corpo) pq nesse momento ainda nao sabe o tipo de retorno pq esta comecando a ler a criacao da funcao agora
+    if(matchL("criar","public ",criarFuncaoNode)){
+      String tipoRetorno = acharTokenDeRetornoFuncao(tokens);//recebe toda a lista de tokens para processar e retornr o tipo de retorno para a traducao para o java 
+     traduz(tipoRetorno); 
+     // String tipoRetorno = acharTokenDeRetornoFuncao(tokens);//recebe toda a lista de tokens para processar e retornr o tipo de retorno para a traducao para o java 
+     // traduz(tipoRetorno); 
+      if(palavraReservadaNomeFuncao(criarFuncaoNode) && matchL("(","(",criarFuncaoNode) && argumentosFuncao(criarFuncaoNode) &&
+      matchL(")",")",criarFuncaoNode)){
+        return matchL("{","{ \n",criarFuncaoNode) && listaComandosInternos(criarFuncaoNode) &&
+        matchL("}","} \n",criarFuncaoNode);
+      }
     }
     erro("criarFuncao");
     contadorErro++;
     return false;
   }
-
   //chamarFuncao -> inicioChamarFuncao '('argumentosChamada')' ';'
   /*
    * simbulos            first
    * chamarFuncao          "entrada","imprima", first é firsts dessa regra palavraReservadaNomeFuncao
    */
-  private boolean chamarFuncao(Node root) {
+  private boolean chamarFuncao(Node root) { //sempre tem que chamar funcao dentro da main 
     Node chamarFuncaoNode = root.addNode("chamarFuncao");
     if (first("chamarFuncao") && inicioChamarFuncao(chamarFuncaoNode) && matchL("(","(",chamarFuncaoNode) && argumentosChamada(chamarFuncaoNode) &&
      matchL(")",")",chamarFuncaoNode) && matchL(";","; \n",chamarFuncaoNode)) {
@@ -429,6 +462,7 @@ public class Parser {
   private boolean parametro(Node root){
     Node parametroNode = root.addNode("parametro");
     if(first("declaracao") && tipoVariavel(parametroNode) && identificadores(parametroNode)){
+       tipoAtual = null;
       return true;
     }
     erro("parametro");
@@ -457,7 +491,7 @@ public class Parser {
         boolean encontrouMatematico = false;
         boolean encontrouRelacional = false;
       
-        for (int i = 0; i < Math.min(3, tokens.size()); i++) {
+        for (int i = 0; i < Math.min(3, tokens.size()); i++) {//min pra ter operacao matematica
           Token nextToken = tokens.get(i);
           String lexema = nextToken.lexema;
           if (Set.of("+", "-", "*", "/", "^").contains(lexema)) {
@@ -777,7 +811,7 @@ public class Parser {
     return false;
   }
   
-  //retornar -> 'retorna' tiposRetorno';'
+  //retornar -> 'retorna' conteudos';'
     /*
    * simbulos     first
    * retornar    retorna
@@ -798,9 +832,13 @@ public class Parser {
    * conteudos      first é first dessas regras: identificadores, expressoesMatematicas,numero
    */
   private boolean conteudos(Node root){ 
+    //se comecar com ( o (token.lexema) ou tokens.get(0) tiver validaexpressao ´expressao matrematica
     Node conteudosNode = root.addNode("conteudos");
-    if((first("identificadores") && identificadores(conteudosNode))||(first("numero") && numero(conteudosNode))||
-    (first("expressoesMatematicas") && expressoesMatematicas(conteudosNode))||first("isBoolean") && isBoolean(conteudosNode)){
+    if(firsts.get("validaExpressao").contains(token.lexema) || firsts.get("validaExpressao").contains(tokens.get(0).lexema)){
+      return expressoesMatematicas(conteudosNode);
+    }
+    if((first("identificadores") && identificadores(conteudosNode))||(first("numero") && numero(conteudosNode))
+    ||first("isBoolean") && isBoolean(conteudosNode)){
       return true;
     }
     erro("conteudos");
@@ -861,12 +899,12 @@ public class Parser {
    */
   private boolean precedenciaInferiorDerivada(Node root){
     Node precedenciaInferiorDerivadaNode = root.addNode("precedenciaInferiorDerivada");
-    if(matchL("+",precedenciaInferiorDerivadaNode) && precedenciaIntermediaria(precedenciaInferiorDerivadaNode) &&
+    if(matchL("+","+",precedenciaInferiorDerivadaNode) && precedenciaIntermediaria(precedenciaInferiorDerivadaNode) &&
      precedenciaInferiorDerivada(precedenciaInferiorDerivadaNode)){
       return true;
     }
     //ou
-    if(matchL("-",precedenciaInferiorDerivadaNode) && precedenciaIntermediaria(precedenciaInferiorDerivadaNode) && 
+    if(matchL("-","-",precedenciaInferiorDerivadaNode) && precedenciaIntermediaria(precedenciaInferiorDerivadaNode) && 
     precedenciaInferiorDerivada(precedenciaInferiorDerivadaNode)){
       return true;
     }
@@ -879,6 +917,10 @@ public class Parser {
   * precedenciaAlta     first é first dessa regra: precedenciaSuperior
   */
   private boolean precedenciaAlta(Node root){
+    base = token.lexema;
+    if(tokens.get(0).lexema.equals("^")){
+      expoente = tokens.get(1).lexema;
+    }
     Node precedenciaAltaNode = root.addNode("precedenciaAlta");
     if(first("precedenciaSuperior") && precedenciaSuperior(precedenciaAltaNode) && precedenciaAltaDerivada(precedenciaAltaNode)){
       return true;
@@ -915,7 +957,7 @@ public class Parser {
   private boolean precedenciaSuperior(Node root){
     Node precedenciaSuperiorNode = root.addNode("precedenciaSuperior");
     if((first("identificadores") && identificadores(precedenciaSuperiorNode))||(first("numero") && numero(precedenciaSuperiorNode))||
-     ((matchL("(",precedenciaSuperiorNode) && expressoesMatematicas(precedenciaSuperiorNode) && matchL(")",")",precedenciaSuperiorNode)))){
+     ((matchL("(","(",precedenciaSuperiorNode) && expressoesMatematicas(precedenciaSuperiorNode) && matchL(")",")",precedenciaSuperiorNode)))){
       return true;
     }
     erro("precedenciaSuperior");
@@ -930,8 +972,13 @@ public class Parser {
    */
   private boolean precedenciaAltaDerivada(Node root){
     Node precedenciaAltaDerivadaNode = root.addNode("precedenciaAltaDerivada");
-    if(matchL("^","Math.pow()",precedenciaAltaDerivadaNode) && precedenciaSuperior(precedenciaAltaDerivadaNode) && precedenciaAltaDerivada(precedenciaAltaDerivadaNode)){
-      return true;
+    if(matchL("^","Math.pow(",precedenciaAltaDerivadaNode)){
+      traduz(base);
+      traduz(",");
+      if(precedenciaSuperior(precedenciaAltaDerivadaNode) && precedenciaAltaDerivada(precedenciaAltaDerivadaNode)){
+        traduz(")");
+        return true;
+      }
     }
     return true;//ε
   }
@@ -982,10 +1029,11 @@ public class Parser {
   * tipoVariavel    inteiro,decimal, texto, verdadeiroFalso
    */
   private boolean tipoVariavel(Node root){
+    tipoAtual = token.lexema; //utiliado para armazenar o tipo atual do identificador para, no metodo do identificador, aidiconar na hash (verificada quando for traduzir criacao de funcao pro java)
     tipoScannerAtual = getTipoScanner(token.lexema);
     Node tipoVariavelNode = root.addNode("tipoVariavel");
     if(matchL("inteiro","int ",tipoVariavelNode)||matchL("decimal","double ",tipoVariavelNode)||matchL("texto","String ",tipoVariavelNode)||
-    matchL("verdadeiroFalso","boolean ",tipoVariavelNode)){
+    matchL("verdadeiroFalso","boolean ",tipoVariavelNode)){ 
       return true;
     }
     erro("tipoVariavel");
@@ -1028,16 +1076,49 @@ public class Parser {
    * simbulos            first
    * identificadores     IDENTIFIER
    */
+
   private boolean identificadores(Node root){ 
     Node identificadoresNode = root.addNode("identificadores");
+    String nomeIdentificador = token.lexema;
+    
+    //verifica se prox token é ^ - ^se for nao traduz aqui (para token apaenas aparecer dentro o math.pow)
+    boolean proximoEhPotencia = !tokens.isEmpty() && tokens.get(0).lexema.equals("^");
+    if(matchT("IDENTIFIER", proximoEhPotencia ? "" : token.lexema, identificadoresNode)){
+        // Só adiciona se for um identificador novo
+        if (tipoAtual != null && !tabelaInformacoesIdentificadores.containsKey(nomeIdentificador)) {
+            tabelaInformacoesIdentificadores.put(nomeIdentificador, tipoAtual);
+        } else if (tabelaInformacoesIdentificadores.containsKey(nomeIdentificador)) {
+            // Identificador já existe
+        }
+        return true;
+    }
+    erro("identificadores");
+    contadorErro++;
+    return false;
+}
+   /* 
+  private boolean identificadores(Node root){ 
+    traduz("aqui");
+    System.out.println("aqui");
+    System.out.println("TOKENS IDENTIFICADORES"+tokens);
+    Node identificadoresNode = root.addNode("identificadores");
+    String nomeIdentificador = token.lexema;
     if(matchT("IDENTIFIER",token.lexema,identificadoresNode)){
+      // Só adiciona se for um identificador novo
+      if (tipoAtual != null && !tabelaInformacoesIdentificadores.containsKey(nomeIdentificador)) {
+        tabelaInformacoesIdentificadores.put(nomeIdentificador, tipoAtual);
+       // System.out.println("adicionado na hash: " + nomeIdentificador + " -> " + tipoAtual);
+      } else if (tabelaInformacoesIdentificadores.containsKey(nomeIdentificador)) {
+      //  System.out.println("ℹdentificador já existe: " + nomeIdentificador + " -> " + tabelaInformacoesIdentificadores.get(nomeIdentificador));
+      }
       return true;
     }
     erro("identificadores");
     contadorErro++;
     return false;
   }
-  
+  */
+
   /*
    * simbulos     first
    * texto        TEXT
@@ -1171,7 +1252,7 @@ public class Parser {
 
   //-------------------------------ARVORE DE DERIVACAO----------------------------------
 
-  //sobrecargas
+  //sobrecargas para parser normal + arvore
   private boolean matchT(String tipo, Node node){
     if(token.tipo.equals(tipo)){
       node.addNode(token.lexema);
@@ -1181,7 +1262,28 @@ public class Parser {
     return false;
   }
 
-   private boolean matchT(String tipo, String newcode, Node node){
+  private boolean matchL(String tipo, Node node){
+    if(token.lexema.equals(tipo)){
+      node.addNode(token.lexema);
+      token = getNextToken();
+      return true;
+    }
+    return false;
+  }
+
+  //----------------METODOS PARA TRADUÇÃO DO MINEIRES PARA JAVA------------------------
+
+  private boolean matchL(String tipo, String newcode, Node node){
+    if(token.lexema.equals(tipo)){
+      traduz(newcode);
+      node.addNode(token.lexema);
+      token = getNextToken();
+      return true;
+    }
+    return false;
+  }
+
+  private boolean matchT(String tipo, String newcode, Node node){
     if(token.tipo.equals(tipo)){
       traduz(newcode);
       node.addNode(token.lexema);
@@ -1191,61 +1293,32 @@ public class Parser {
     return false;
   }
 
-    private boolean matchL(String tipo, Node node){
-    if(token.lexema.equals(tipo)){
-      node.addNode(token.lexema);
-      token = getNextToken();
-      return true;
-    }
-    return false;
-  }
-
-   private boolean matchL(String tipo, String newcode, Node node){
-    if(token.lexema.equals(tipo)){
-      traduz(newcode);
-      node.addNode(token.lexema);
-      token = getNextToken();
-      return true;
-    }
-    return false;
-  }
-
-
-  //-------------------------------PARA TRADUÇÃO DO MINEIRES PARA JAVA------------------------
-
-  //sobrecargas 
-  private boolean matchL(String palavra, String newcode){
-    if(token.lexema.equals(palavra)){
-      traduz(newcode);
-      token = getNextToken();
-      return true;
-    }
-    return false;
-  }
-
-   private boolean matchT(String palavra, String newcode){
-    if(token.tipo.equals(palavra)){
-      traduz(newcode);
-      token = getNextToken();
-      return true;
-    }
-    return false;
-  }
-
   private void traduz(String code){
-    System.out.print(code);
+   // System.out.print(code);
+    arquivoSaida.print(code);
+    arquivoSaida.flush(); // Garante que seja escrito imediatamente (limpa buffer)
+
   }
 
   public void header(){
-    System.out.println("import java.util.Scanner;");
+    arquivoSaida.println("import java.util.Scanner;");
+    arquivoSaida.println("public class CodigoTraduzido{");
+    arquivoSaida.println("public static void main(String[]args){");
+    arquivoSaida.println("Scanner scanner = new Scanner(System.in);");
+   /* System.out.println("import java.util.Scanner;");
     System.out.println("public class Code{");
     System.out.println("public static void main(String[]args){");
     System.out.println("Scanner scanner = new Scanner(System.in);");
+    */
+    arquivoSaida.flush();
   }
 
   public void footer(){
-    System.out.println("}");
-    System.out.println("}");
+    arquivoSaida.println("}");
+    arquivoSaida.println("}");
+    /*System.out.println("}");
+    System.out.println("}");*/
+    arquivoSaida.flush();
   }
 
   private String getTipoScanner(String tipo) { //retorna o valor necessario para traduzir Entrada para o tipo especifico de scanner
@@ -1269,5 +1342,98 @@ public class Parser {
         }
     }
     return ", "; // Padrão
-}
+  }
+
+  /*metodo que recebe toda a lista de tokens e percorre ela para achar o retorna e pegar o token seguinte para na
+   funcao ajusteTraducaoTipoRetornoFuncaoComTokendeterminar o tipo de retorno correto para a conversao para o java */
+  private String acharTokenDeRetornoFuncao(List<Token> tokens) {
+    // percorre todos os tokens procurando por "retorna"
+    for (int i = 0; i < tokens.size(); i++) {
+      Token tokenAtual = tokens.get(i); 
+      //encontrou o token "retorna"
+      if ("retorna".equals(tokenAtual.lexema)) {
+        // verifica token após "retorna"
+        if (i + 1 < tokens.size()) {
+          Token tokenAposRetorna = tokens.get(i + 1);
+          //valida se é expressao amtematica sem () e se for retorna sempre double
+          Token tokenValidaExpMat = tokens.get(i + 2);
+          if(firsts.get("validaExpressao").contains(tokenValidaExpMat.lexema)){
+            return "double ";
+          }
+          else{
+            // System.out.println("Token após 'retorna': " + tokenAposRetorna); //debug
+            return ajusteTraducaoTipoRetornoFuncaoComToken(tokenAposRetorna);
+          }
+        }
+      }
+    }
+    return "void ";
+  }
+
+  // determina o tipo baseado no token após "retorna"
+  private String ajusteTraducaoTipoRetornoFuncaoComToken(Token token){
+    if (token != null) {
+      if ("IDENTIFIER".equals(token.tipo)) {
+        //le a hash procurando o token.lexema(identififcador) e retorna o tipo equivalente ao identificador para ser o tipo de retorno
+        String tipoIdentificador = tabelaInformacoesIdentificadores.get(token.lexema);
+        if (tipoIdentificador != null) {
+          switch(tipoIdentificador) {
+            case "inteiro":
+              return "int ";
+            case "decimal":
+              return "double ";
+            case "texto":
+              return "String ";
+            case "verdadeiroFalso":
+              return "boolean ";
+          }
+        }
+      }
+      else if ("INTEGER".equals(token.tipo)) {
+        return "int ";
+      } 
+      else if ("DECIMAL".equals(token.tipo) || "ABR_PAR".equals(token.tipo)) {
+        return "double ";
+      }
+      else if ("true".equals(token.lexema) || "false".equals(token.lexema)) {
+        return "boolean ";
+      }
+    }
+    return "void "; // Padrão
+  } 
+  
+  //metodo para debugar hash de identificadores e seus tipos
+  private void imprimirTabelaIdentificadores() {
+    System.out.println("----- TABELA DE IDENTIFICADORES----");
+    System.out.println("IDENTIFICADOR -> TIPO");
+    
+    if (tabelaInformacoesIdentificadores.isEmpty()) {
+      System.out.println("Tabela vazia - nenhum identificador declarado");
+    }
+    else {
+      for (Map.Entry<String, String> entry : tabelaInformacoesIdentificadores.entrySet()) {
+        System.out.println(entry.getKey() + " -> " + entry.getValue());
+      }
+    }
+  }
+
+
+  //metodos para arquivo onde ficará o cóigo traduzido para java 
+      
+  private void inicializarArquivoSaida() {
+    try {
+      arquivoSaida = new PrintWriter(new FileWriter(nomeArquivoSaida));
+    } catch (IOException e) {
+      System.err.println("Erro ao criar arquivo de saída: " + e.getMessage());
+      // Fallback para System.out se não conseguir criar o arquivo
+      arquivoSaida = new PrintWriter(System.out);
+    }
+  }
+  // Método para fechar o arquivo
+  private void fecharArquivoSaida() {
+    if (arquivoSaida != null) {
+      arquivoSaida.close();
+    }
+  }
+
 }
