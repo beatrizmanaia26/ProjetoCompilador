@@ -83,7 +83,7 @@ fazer só comparacoes mais simples
 <br> condicao -> identificadores condicao’ | negacaoCondicao condicao’ | expressoesMatematicas condicao’| condicaoComparacoesBasicas condicao’
 <br> condicao’ -> operacao condição condicao’| ε
 <br> comparacoesBasicas -> identificadores|numero operacao valoresOperacao 
-<br> condicaoComparacoesBasicas ->  comparacoesBasicas || !identificadores
+<br> condicaoComparacoesBasicas ->  comparacoesBasicas | !identificadores
 <br> valoresOperacao -> identificadores|numero|boolean
 <br> negacaoCondicao -> '!'condicao
 <br> operacao -> operacaoRelacional|operacaoLogica
@@ -140,11 +140,10 @@ DIRECIONAMENTO CHARLES DESCRIÇÃO PROJETO: <br>
 
 # Como executar o compilador 
 
-- Fazer download do zip do projeto;
-- abrimos no vsCode 
-- rodamos Main.java e gera tokens e resultado "sintaticamente incorreto" ou "sintaticamente correto"
-
-TERMINAR DE DESCREVER COM TRADUCAO + ARVORE E VER DE COMPILAR POR LINHA DE COMANDO !!!!!!!!!!!!!!!!!!!!!!!!!
+ - Fazer download do zip do projeto. <br>
+ - Escrever um código em minasScript no “script.txt”.<br>
+ - Rodar a Main.java que está na pasta analisadorLexico(no terminal aparecera os token, arvore e se o código está sintaticamente correto ou incorreto, bem como o nome do arquivo com a tradução do código).<br>
+  - O arquivo com o código traduzido está em CodigoTraduzido.java, execute esse código e veja rodar corretamente.<br>
 
 # Características da linguagem criada
 
@@ -152,7 +151,7 @@ TERMINAR DE DESCREVER COM TRADUCAO + ARVORE E VER DE COMPILAR POR LINHA DE COMAN
 
 ### Sobre declarar e atribuir (declaracao())
 
-- só é possivel usar corretamente a "Entrada" se estivrmos declarando e atribuindo (para fazer a traducao certa) ex:decimal Trem_int2 -> Entrada();
+- só é possivel usar corretamente a "Entrada" se estivrmos declarando e atribuindo (para fazer a traducao certa) ex:decimal Trem_int2 -> Entrada();<br>
 - Quando declaramos e atribuímos (ao mesmo tempo) uma variável, podemos: <br>
 - atribuir números (inteiro,decimal), booleano (true, false), identificadores <br>
 - "expressoesMatematicas" de qualquer tamanho<br>
@@ -225,6 +224,14 @@ TERMINAR DE DESCREVER COM TRADUCAO + ARVORE E VER DE COMPILAR POR LINHA DE COMAN
 
 # comentário <br>
 - #uai... ...so#: comentário<br>
+
+# ADICIONAIS (não solicitados porém feitos):
+•	Um tipo de variável a mais<br>
+•	Pode criar função <br>
+•	Utilizamos operadores lógicos<br>
+•	Comentário<br>
+•	Um tipo a mais de expressão matemática (potência)<br>
+
 
 # Exemplos de código na sua linguagem criada e a tradução equivalente.
 

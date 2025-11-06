@@ -29,11 +29,12 @@ public class Parser {
   Entrada: traudzido para nada (só pega 1 valor por vez)
   qualquer outra funcao, que ai fica , o separador
   */ 
-  //para traducao do ^
+
+  //para traducao do ^:
   String base;
   String expoente;
 
-  //para separar oq fica dentro e fora da main
+  //para separar oq fica dentro e fora da main na hora da tradução
   private boolean dentroDaMain = true;
   private boolean processandoFuncao = false;
   private StringBuilder codigoFuncoes = new StringBuilder();
@@ -53,7 +54,7 @@ public class Parser {
 
   /*
    método para pré-processar identificadores baseado no token anterior que utiliza a lista de tokens para popular a hash de identificadores com identificadores 
-  que foram declarados (precedidos por tipos: inteiro, decimal, texto, verdadeiroFalso)
+  que foram declarados (precedidos por tipos: inteiro, decimal, texto, verdadeiroFalso) para ja ter a hash populada conforme foi fazer analise sintatica
    */
   private void preProcessarIdentificadores() {
     for (int i = 0; i < tokens.size(); i++) {
@@ -78,7 +79,6 @@ public class Parser {
     }
   }
 
-  
   /*
   -verificar apos tradução se: 
   A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
@@ -99,7 +99,7 @@ public class Parser {
     if (listaComandos(root) && matchT("EOF",root) && contadorErro == 0) {
       // se tinha código global, fecha a main
       if (temCodigoGlobal) {
-        arquivoSaida.println("}"); 
+        arquivoSaida.println("}"); //fechar a main
       }
       // adiciona as funções fora da main
       if (codigoFuncoes.length() > 0) {
@@ -108,7 +108,7 @@ public class Parser {
       }
       footerClasse();
       System.out.println("Sintaticamente correto");
-      imprimirTabelaIdentificadores(); //debugar (tem todos os identificadores)
+      //imprimirTabelaIdentificadores(); //debugar (tem todos os identificadores)
       //tree.preOrder();//imprime em pre ordem
       //tree.printCode(); //imprimeas folhas(codigo)
       tree.printTree(); //imprimea arvore
@@ -120,7 +120,7 @@ public class Parser {
     System.out.println("\ncódigo traduzido salvo em: " + nomeArquivoSaida);
 }
 
-   public Token getNextToken() {
+  public Token getNextToken() {
     if (tokens.size() > 0) 
       return tokens.remove(0);
     return null;
@@ -903,7 +903,7 @@ public class Parser {
    */
   private boolean inicializacao(Node root){ 
     Node inicializacaoNode = root.addNode("inicializacao");
-    if(first("declaracao") && tipoVariavel(inicializacaoNode) && identificadores(inicializacaoNode) && matchL("->",inicializacaoNode) &&
+    if(first("declaracao") && tipoVariavel(inicializacaoNode) && identificadores(inicializacaoNode) && matchL("->"," = ",inicializacaoNode) &&
     conteudos(inicializacaoNode)){
       return true;
     }
@@ -1128,9 +1128,7 @@ public class Parser {
 
   private boolean identificadores(Node root){ 
     Node identificadoresNode = root.addNode("identificadores");
-    String nomeIdentificador = token.lexema;
-    
-    //verifica se prox token é ^ - ^se for nao traduz aqui (para token apaenas aparecer dentro o math.pow)
+    //verifica se prox token é ^ - ^se for nao traduz aqui (para token apenas aparecer dentro o math.pow)
     boolean proximoEhPotencia = !tokens.isEmpty() && tokens.get(0).lexema.equals("^");
     if(matchT("IDENTIFIER", proximoEhPotencia ? "" : token.lexema, identificadoresNode)){
         return true;
@@ -1343,14 +1341,13 @@ public class Parser {
   }
 
   private boolean verificarSeTemCodigoGlobal() {
-    // Faz uma análise preliminar para ver se há comandos que devem estar na main
-    // (comandos que não são declarações de função)
+    // Faz uma análise preliminar para ver se tem comandos que devem estar na main (comandos que não são declarações de função)
     for (Token t : tokens) {
       if (!"criar".equals(t.lexema) && !"FUNCTION_NAME".equals(t.tipo)) {
-        return true; // Tem código que deve ir na main
+        return true; //tTem código que deve ir na main
       }
     }
-    return false; // Apenas funções, não precisa de main
+    return false; // apenas funções, não precisa de main
   }
 
   private String getTipoScanner(String tipo) { //retorna o valor necessario para traduzir Entrada para o tipo especifico de scanner
