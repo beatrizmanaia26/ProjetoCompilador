@@ -25,7 +25,6 @@ public class Parser {
   int contadorErro;
   String tipoScannerAtual = ""; //armazena o valor de tipoDadoOpcionalAtribuicao para determinar o final do scannet.next na traducao
   String separadorArgumentosAtual = ""; 
-  String contextoFuncaoAtual = ""; //para usar o valor certo no separadorArgumentos nos momentos corretos
   /*diferencia se a funcao é imprima:separador dos argumentos é traduzido pra + no java
   Entrada: traudzido para nada (só pega 1 valor por vez)
   qualquer outra funcao, que ai fica , o separador
@@ -33,6 +32,12 @@ public class Parser {
   //para traducao do ^
   String base;
   String expoente;
+
+  //para separar oq fica dentro e fora da main
+  private boolean dentroDaMain = true;
+  private boolean processandoFuncao = false;
+  private StringBuilder codigoFuncoes = new StringBuilder();
+  private boolean identificadorChamadaDentroCriacao = false; //pq se eu chamar uma funcao dentro da criacao de outra essa chamada nao pode aparecer dentro da main mas sim dentro da fucnao
 
   //arquivo com codigo taduzido
   private PrintWriter arquivoSaida;
@@ -73,34 +78,47 @@ public class Parser {
     }
   }
 
+  
   /*
   -verificar apos tradução se: 
   A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
   -verificar se da para ler da tela com Entrada e imprimir no console com Imprima() 
-
    */
-   public void main() {
+  public void main() {
     tabelaInformacoesIdentificadores.clear();
     preProcessarIdentificadores();
     token = getNextToken();
-    //como saber se td realmente fica dentro da main????????????????????????
-    header();
+    headerClasse();
+    boolean temCodigoGlobal = verificarSeTemCodigoGlobal(); //verifica se tem código global (fora de funções) antes de criar a main
+    if (temCodigoGlobal) {
+      headerMain(); // se tem código, gera a main
+    }
     Node root = new Node("listaComando");
     tree.setRoot(root);
-    if (listaComandos(root) && matchT("EOF",root) &&  contadorErro == 0){
-      footer();
+    
+    if (listaComandos(root) && matchT("EOF",root) && contadorErro == 0) {
+      // se tinha código global, fecha a main
+      if (temCodigoGlobal) {
+        arquivoSaida.println("}"); 
+      }
+      // adiciona as funções fora da main
+      if (codigoFuncoes.length() > 0) {
+        arquivoSaida.println("\n");
+        arquivoSaida.print(codigoFuncoes.toString());
+      }
+      footerClasse();
       System.out.println("Sintaticamente correto");
       imprimirTabelaIdentificadores(); //debugar (tem todos os identificadores)
       //tree.preOrder();//imprime em pre ordem
       //tree.printCode(); //imprimeas folhas(codigo)
       tree.printTree(); //imprimea arvore
-    }else{
+    } else {
       erro("main");
       System.out.println("Sintaticamente Incorreto! Programa caiu em " + contadorErro + " regras de erro(s) sintático(s)");
     }
     fecharArquivoSaida();
     System.out.println("\ncódigo traduzido salvo em: " + nomeArquivoSaida);
-  }
+}
 
    public Token getNextToken() {
     if (tokens.size() > 0) 
@@ -332,29 +350,35 @@ public class Parser {
    * simbulos            first
    * criarFuncao         criar
    */
-  private boolean criarFuncao(Node root){//ARRUMARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR (nao pode declarar metodos dentro da main)
-
-     /*PROBLEMA EH QUE PRECISO SABER O RETORNO (token que esta dps de retorna ante de processar lista comandos internos, ou seja td q estiver em lista documandos internos que declara alguma variavel que nao
-      esta na hash precisa ser incluido na hash e ai eu vejo tb o identificador que esta dps de retorna antes de processá-la ou seja dps de "Public" para baseado noq ta dps de retorna passar para os metodos e retornar corretamente o tipo 
-      de retorno da funcao )*/
+  private boolean criarFuncao(Node root){
     Node criarFuncaoNode = root.addNode("criarFuncao");
+    identificadorChamadaDentroCriacao = true;
+    //marcadores pra determinar oq fica dentro e fora da main na traducao
+    processandoFuncao = true;
+    dentroDaMain = false; // sai da main
     // processa apenas a declaração da função (sem corpo) pq nesse momento ainda nao sabe o tipo de retorno pq esta comecando a ler a criacao da funcao agora
-    if(matchL("criar","public ",criarFuncaoNode)){
+    if(matchL("criar","public static ",criarFuncaoNode)){
       String tipoRetorno = acharTokenDeRetornoFuncao(tokens);//recebe toda a lista de tokens para processar e retornr o tipo de retorno para a traducao para o java 
       traduz(tipoRetorno); 
-      System.out.println("TIPO RETORNO"+tipoRetorno);
-     // String tipoRetorno = acharTokenDeRetornoFuncao(tokens);//recebe toda a lista de tokens para processar e retornr o tipo de retorno para a traducao para o java 
-     // traduz(tipoRetorno); 
       if(palavraReservadaNomeFuncao(criarFuncaoNode) && matchL("(","(",criarFuncaoNode) && argumentosFuncao(criarFuncaoNode) &&
       matchL(")",")",criarFuncaoNode)){
-        return matchL("{","{ \n",criarFuncaoNode) && listaComandosInternos(criarFuncaoNode) &&
-        matchL("}","} \n",criarFuncaoNode);
+        if(matchL("{","{ \n",criarFuncaoNode) && listaComandosInternos(criarFuncaoNode) &&
+        matchL("}","} \n",criarFuncaoNode)){
+          //restaura após processar a função
+          processandoFuncao = false;
+          dentroDaMain = true;
+          return true;
+        }
       }
     }
+    // Em caso de erro, restaura contexto
+    processandoFuncao = false;
+    dentroDaMain = true;
     erro("criarFuncao");
     contadorErro++;
     return false;
   }
+
   //chamarFuncao -> inicioChamarFuncao '('argumentosChamada')' ';'
   /*
    * simbulos            first
@@ -362,6 +386,12 @@ public class Parser {
    */
   private boolean chamarFuncao(Node root) { //sempre tem que chamar funcao dentro da main 
     Node chamarFuncaoNode = root.addNode("chamarFuncao");
+    if (!dentroDaMain && identificadorChamadaDentroCriacao == false) { //determinar lugar que aparece da tradução
+      dentroDaMain = true;
+    }
+    else{
+      dentroDaMain = false;
+    }
     if (first("chamarFuncao") && inicioChamarFuncao(chamarFuncaoNode) && matchL("(","(",chamarFuncaoNode) && argumentosChamada(chamarFuncaoNode) &&
      matchL(")",")",chamarFuncaoNode) && matchL(";","; \n",chamarFuncaoNode)) {
       return true;
@@ -369,12 +399,15 @@ public class Parser {
     erro("chamarFuncao");
     contadorErro++;
     return false;
-}
+  }
 
   //chamarFuncaoSemFim -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')' 
   //usada quando desejamos atribui o resultado de uma funcao a uma declaracao ou chamar o resultado de uma funcao em outra funcao....
   private boolean chamarFuncaoSemFim(Node root) {
     Node chamarFuncaoSemFimNode = root.addNode("chamarFuncaoSemFim");
+    if (!dentroDaMain) { //determinar lugar que aparece da tradução
+      dentroDaMain = true;
+    }
     if (first("chamarFuncao") && inicioChamarFuncao(chamarFuncaoSemFimNode) && matchL("(","(",chamarFuncaoSemFimNode) &&
      argumentosChamada(chamarFuncaoSemFimNode) && matchL(")",")",chamarFuncaoSemFimNode)) {
       return true;
@@ -392,7 +425,6 @@ public class Parser {
   private boolean inicioChamarFuncao(Node root){
      // SALVA O CONTEXTO também aqui para "Imprima" e "Entrada" (traduzir correto para java)
     if(token != null) {
-      contextoFuncaoAtual = token.lexema;
       separadorArgumentosAtual = ajusteTraducaoArgumentosChamada(token);
     }
     Node inicioChamarFuncaoNode = root.addNode("inicioChamarFuncao");
@@ -1141,7 +1173,6 @@ public class Parser {
    * palavraReservadaNomeFuncao    FUNCTION_NAME
    */
   private boolean palavraReservadaNomeFuncao(Node root){
-    contextoFuncaoAtual = token.lexema;
     separadorArgumentosAtual = ajusteTraducaoArgumentosChamada(token);
     Node palavraReservadaNomeFuncaoNode = root.addNode("palavraReservadaNomeFuncao");
     if(matchT("FUNCTION_NAME",token.lexema,palavraReservadaNomeFuncaoNode)){
@@ -1282,32 +1313,44 @@ public class Parser {
     return false;
   }
 
-  private void traduz(String code){
-   // System.out.print(code);
-    arquivoSaida.print(code);
-    arquivoSaida.flush(); // Garante que seja escrito imediatamente (limpa buffer)
-
+  private void traduz(String code) {
+    if (processandoFuncao && !dentroDaMain) {
+      // Se está processando função, o código vai para o StringWriter temporário
+      codigoFuncoes.append(code);
+    } 
+    else {
+      // Se está na main, vai direto para o arquivo
+      arquivoSaida.print(code);
+      arquivoSaida.flush();// Garante que seja escrito imediatamente (limpa buffer)
+    }
   }
-
-  public void header(){
+  
+  private void headerClasse() {
     arquivoSaida.println("import java.util.Scanner;");
-    arquivoSaida.println("public class CodigoTraduzido{");
-    arquivoSaida.println("public static void main(String[]args){");
-    arquivoSaida.println("Scanner scanner = new Scanner(System.in);");
-   /* System.out.println("import java.util.Scanner;");
-    System.out.println("public class Code{");
-    System.out.println("public static void main(String[]args){");
-    System.out.println("Scanner scanner = new Scanner(System.in);");
-    */
+    arquivoSaida.println("public class CodigoTraduzido {");
     arquivoSaida.flush();
   }
 
-  public void footer(){
-    arquivoSaida.println("}");
-    arquivoSaida.println("}");
-    /*System.out.println("}");
-    System.out.println("}");*/
+  private void headerMain() {
+    arquivoSaida.println("public static void main(String[] args) {");
+    arquivoSaida.println("Scanner scanner = new Scanner(System.in);");
     arquivoSaida.flush();
+  }
+
+  private void footerClasse() {
+    arquivoSaida.println("}"); 
+    arquivoSaida.flush();
+  }
+
+  private boolean verificarSeTemCodigoGlobal() {
+    // Faz uma análise preliminar para ver se há comandos que devem estar na main
+    // (comandos que não são declarações de função)
+    for (Token t : tokens) {
+      if (!"criar".equals(t.lexema) && !"FUNCTION_NAME".equals(t.tipo)) {
+        return true; // Tem código que deve ir na main
+      }
+    }
+    return false; // Apenas funções, não precisa de main
   }
 
   private String getTipoScanner(String tipo) { //retorna o valor necessario para traduzir Entrada para o tipo especifico de scanner

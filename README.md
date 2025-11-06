@@ -111,7 +111,7 @@ fazer só comparacoes mais simples
 <br> chamarFuncaoSemFim -> palavra_reservadaNomeFuncao|Entrada|Imprima '('argumentosChamada')'
 <br> inicioChamarFuncao -> inicioChamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima
 <br> argumentosChamada -> ε | valor restoArgumentosChamada
-<br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas|condicaoComparacoesBasicas|chamarFuncao
+<br> valor -> numero|texto|boolean|identificadores|expressoesMatematicas|condicaoComparacoesBasicas|chamarFuncaoSemFim
 <br> restoArgumentosChamada -> ε | ',' valor restoArgumentosChamada
 
 
@@ -169,6 +169,7 @@ TERMINAR DE DESCREVER COM TRADUCAO + ARVORE E VER DE COMPILAR POR LINHA DE COMAN
 ## Sobre funcões:
 
 - permiti na gramatica colocar varias coisas dentro da chamada de entrada mesmo que só vamos usar com () vazio e passando 1 argumento do usuario (n tava pensando no java qnd fiz)
+- toda criacao de funcao fica fora da main e toda chamada de funcao fica dentro da main, poré, se eu chamar uma função dentro da criação de outra, ela aparece dentro da função.
 
 ## potencia
 
