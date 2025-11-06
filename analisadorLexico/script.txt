@@ -1,13 +1,78 @@
-
-#uai... 
-inteiro Trem_c->5;
+#uai...
+decimal Trem_c->5;
+inteiro Trem_b->10; 
+decimal Trem_c->5;
 inteiro Trem_b->10;
 inteiro Trem_d->2;
 inteiro Trem_a -> (((Trem_b+Trem_c)*2 + (5-2))/Trem_d)^2;
 Imprima("res",Trem_a);
 
-RESOLVER MATH POW (exemplos noscript de quando tem ^e ver onde colocar se tiver ^ salvar o valor anteiror e o posterior a isso p colocar no mathpow
-
-...so#
 inteiro Trem_A -> 3;
-inteiro Trem_a -> Trem_A^2;
+decimal Trem_a -> Trem_A^2;
+
+inteiro Trem_a;
+criar Funcao(){
+    inteiro Trem_b -> 3;
+    retorna 2+3;
+}
+...so#
+
+criar SomarDoisNumeros(inteiro Trem_x, inteiro Trem_y){
+   inteiro Trem_resultado -> Trem_x + Trem_y;
+   retorna Trem_resultado; 
+}
+
+
+#uai...
+arrumar retorno funcao e colocar criacao de funcao fora da main!!!!!!!!!!!!!!!!!
+
+usar a lista de tokens pra criar a hash ante do sintatico ...so#
+
+#uai...
+
+inteiro Trem_A -> 2+5;
+decimal Trem_c -> Trem_A;
+verdadeiroFalso Trem_f;
+inteiro Trem_x;
+
+inteiro Trem_input -> Entrada();
+se(Trem_input < 10){
+   Imprima("valido",Trem_input);
+}
+senao{
+    Imprima("invalido",Trem_input);
+}
+
+
+
+criar VerificarPar(inteiro Trem_numero){
+   se(Trem_numero / 2 <-> 0){
+      retorna false;
+   }
+   senao{
+      retorna false;
+   }
+}
+...so#
+
+#uai...
+
+AJUSTAR PARA PEGAR IDENTIFICADOR CORRETAMENTE (hash ja ter identificadores), ver como pegar correto  oretorno do identificador na hr que preciso dele no criarFunca
+preciso antes de popular a hash!!!!!!!!!!!!!!!!!!!!
+
+
+TESTAR SE DA CERTO!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+criar SomarDoisNumeros(inteiro Trem_x, inteiro Trem_y){
+   inteiro Trem_resultado -> Trem_x + Trem_y;
+   retorna Trem_resultado; 
+}
+
+TRADUCAO DE criar Funcao (com ou sem retorno) para java
+-ver se tem algo equivalente ao set de c++ no java pra tipo adicionar algo so 1 vez? e quero mistruar isso com hash (tipo adicionar cada identificador 1x e colocar o tipo de dado dele)
+para quando entrar no conteudo dps de retornar e, se for um identificador, eu procurar esse identificador nessa hash, ver o tipo e com base nisso colocar o retorno da funcao
+-se retorno for expressoesmatematicas traduzir para double
+
+1-hash ta funcionando (todo identificador com seu tipo)
+2-fazer logica similar a string = "" e metodos p pegar o token dps de retornar e com base nisso ver o retorno traduzido pro java
+...so#

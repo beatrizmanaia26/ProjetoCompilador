@@ -25,7 +25,6 @@ public class Parser {
   int contadorErro;
   String tipoScannerAtual = ""; //armazena o valor de tipoDadoOpcionalAtribuicao para determinar o final do scannet.next na traducao
   String separadorArgumentosAtual = ""; 
-  String tipoAtual = null; // para armazenar temporariamente o tipo do identificador pois so adicionara na hash cada identificador 1x ai armazena junto com o tipo (essa hash era p ser usada para pegaro tipo correto para a traducao da funcao pro java)
   String contextoFuncaoAtual = ""; //para usar o valor certo no separadorArgumentos nos momentos corretos
   /*diferencia se a funcao é imprima:separador dos argumentos é traduzido pra + no java
   Entrada: traudzido para nada (só pega 1 valor por vez)
@@ -48,6 +47,33 @@ public class Parser {
   }
 
   /*
+   método para pré-processar identificadores baseado no token anterior que utiliza a lista de tokens para popular a hash de identificadores com identificadores 
+  que foram declarados (precedidos por tipos: inteiro, decimal, texto, verdadeiroFalso)
+   */
+  private void preProcessarIdentificadores() {
+    for (int i = 0; i < tokens.size(); i++) {
+      Token tokenAtual = tokens.get(i);
+      // se é um IDENTIFIER
+      if ("IDENTIFIER".equals(tokenAtual.tipo)) {
+        String identificador = tokenAtual.lexema;
+        // verifica se já existe na hash
+        if (!tabelaInformacoesIdentificadores.containsKey(identificador)) {
+          // procura pelo token anterior que seja um tipo
+          if (i > 0) {
+            Token tokenAnterior = tokens.get(i - 1);
+            // verifica se o token anterior é um tipo válido
+            if (firsts.get("declaracao").contains(tokenAnterior.lexema)) {
+              String tipo = tokenAnterior.lexema;
+              tabelaInformacoesIdentificadores.put(identificador, tipo);
+              System.out.println("Adicionado: " + identificador + " -> " + tipo);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  /*
   -verificar apos tradução se: 
   A parte de expressões envolvendo os operadores matemáticos deve ser realizada de maneira correta, respeitando a precedência.
   -verificar se da para ler da tela com Entrada e imprimir no console com Imprima() 
@@ -55,7 +81,7 @@ public class Parser {
    */
    public void main() {
     tabelaInformacoesIdentificadores.clear();
-    tipoAtual = null;
+    preProcessarIdentificadores();
     token = getNextToken();
     //como saber se td realmente fica dentro da main????????????????????????
     header();
@@ -64,7 +90,7 @@ public class Parser {
     if (listaComandos(root) && matchT("EOF",root) &&  contadorErro == 0){
       footer();
       System.out.println("Sintaticamente correto");
-      //imprimirTabelaIdentificadores(); //debugar (tem todos os identificadores)
+      imprimirTabelaIdentificadores(); //debugar (tem todos os identificadores)
       //tree.preOrder();//imprime em pre ordem
       //tree.printCode(); //imprimeas folhas(codigo)
       tree.printTree(); //imprimea arvore
@@ -109,17 +135,10 @@ public class Parser {
 
    */
   
-  //REGRAS DA GRAMÁTICA
+  /* --------------------------------------REGRAS DA GRAMÁTICA------------------------------------------------*/
 
-  //verificar como tava declararetribuir, decarar e atribuicao (commit antes) deu trocar declaracao p ver se da p declarar qqr coisa!!!!!!!!!!
-
-  //VER SE FIZ CERTO EPSULON:Palavra vazia é sair de uma regra sem casar token = return true (follow)
-  //ONDE NAO TEM RETURN FALSE (E SIM RETURN TRUE)  //testar passar coisa incorreta para ver se aceita (EX: Aargumentoschamada, senaoopcional, listaouse...)
-  //VE SE DA P OTIMIZA ALGUM CODIGO (ex: restoArgumentosChamada())
-
-
+  //EPSULON:Palavra vazia é sair de uma regra sem casar token = return true (pode precisar de follow)
   //site que calcula first e follow: REFAZER FIST CONSIDERANDO EPSULON !!!!!!!!!!!!!!!
-
 
   // listaComandos -> comando listaComandos | ε
   /*
@@ -172,8 +191,7 @@ public class Parser {
   private boolean declaracao(Node root){
     Node declaracaoNode = root.addNode("declaracao");
     if(first("declaracao") && tipoVariavel(declaracaoNode) && identificadores(declaracaoNode)) { //uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
-      tipoAtual = null;//limpar para apenas adicionar o tipo nos identificadores que realmente tem tipo na hash
-      // Pode ser: tipo var; OU tipo var -> valor;
+    // Pode ser: tipo var; OU tipo var -> valor;
       if(matchL(";","; \n", declaracaoNode)) {
         return true; // declaracao simples
       } 
@@ -323,7 +341,8 @@ public class Parser {
     // processa apenas a declaração da função (sem corpo) pq nesse momento ainda nao sabe o tipo de retorno pq esta comecando a ler a criacao da funcao agora
     if(matchL("criar","public ",criarFuncaoNode)){
       String tipoRetorno = acharTokenDeRetornoFuncao(tokens);//recebe toda a lista de tokens para processar e retornr o tipo de retorno para a traducao para o java 
-     traduz(tipoRetorno); 
+      traduz(tipoRetorno); 
+      System.out.println("TIPO RETORNO"+tipoRetorno);
      // String tipoRetorno = acharTokenDeRetornoFuncao(tokens);//recebe toda a lista de tokens para processar e retornr o tipo de retorno para a traducao para o java 
      // traduz(tipoRetorno); 
       if(palavraReservadaNomeFuncao(criarFuncaoNode) && matchL("(","(",criarFuncaoNode) && argumentosFuncao(criarFuncaoNode) &&
@@ -462,7 +481,6 @@ public class Parser {
   private boolean parametro(Node root){
     Node parametroNode = root.addNode("parametro");
     if(first("declaracao") && tipoVariavel(parametroNode) && identificadores(parametroNode)){
-       tipoAtual = null;
       return true;
     }
     erro("parametro");
@@ -1029,7 +1047,6 @@ public class Parser {
   * tipoVariavel    inteiro,decimal, texto, verdadeiroFalso
    */
   private boolean tipoVariavel(Node root){
-    tipoAtual = token.lexema; //utiliado para armazenar o tipo atual do identificador para, no metodo do identificador, aidiconar na hash (verificada quando for traduzir criacao de funcao pro java)
     tipoScannerAtual = getTipoScanner(token.lexema);
     Node tipoVariavelNode = root.addNode("tipoVariavel");
     if(matchL("inteiro","int ",tipoVariavelNode)||matchL("decimal","double ",tipoVariavelNode)||matchL("texto","String ",tipoVariavelNode)||
@@ -1084,40 +1101,12 @@ public class Parser {
     //verifica se prox token é ^ - ^se for nao traduz aqui (para token apaenas aparecer dentro o math.pow)
     boolean proximoEhPotencia = !tokens.isEmpty() && tokens.get(0).lexema.equals("^");
     if(matchT("IDENTIFIER", proximoEhPotencia ? "" : token.lexema, identificadoresNode)){
-        // Só adiciona se for um identificador novo
-        if (tipoAtual != null && !tabelaInformacoesIdentificadores.containsKey(nomeIdentificador)) {
-            tabelaInformacoesIdentificadores.put(nomeIdentificador, tipoAtual);
-        } else if (tabelaInformacoesIdentificadores.containsKey(nomeIdentificador)) {
-            // Identificador já existe
-        }
         return true;
     }
     erro("identificadores");
     contadorErro++;
     return false;
 }
-   /* 
-  private boolean identificadores(Node root){ 
-    traduz("aqui");
-    System.out.println("aqui");
-    System.out.println("TOKENS IDENTIFICADORES"+tokens);
-    Node identificadoresNode = root.addNode("identificadores");
-    String nomeIdentificador = token.lexema;
-    if(matchT("IDENTIFIER",token.lexema,identificadoresNode)){
-      // Só adiciona se for um identificador novo
-      if (tipoAtual != null && !tabelaInformacoesIdentificadores.containsKey(nomeIdentificador)) {
-        tabelaInformacoesIdentificadores.put(nomeIdentificador, tipoAtual);
-       // System.out.println("adicionado na hash: " + nomeIdentificador + " -> " + tipoAtual);
-      } else if (tabelaInformacoesIdentificadores.containsKey(nomeIdentificador)) {
-      //  System.out.println("ℹdentificador já existe: " + nomeIdentificador + " -> " + tabelaInformacoesIdentificadores.get(nomeIdentificador));
-      }
-      return true;
-    }
-    erro("identificadores");
-    contadorErro++;
-    return false;
-  }
-  */
 
   /*
    * simbulos     first
@@ -1373,6 +1362,7 @@ public class Parser {
   // determina o tipo baseado no token após "retorna"
   private String ajusteTraducaoTipoRetornoFuncaoComToken(Token token){
     if (token != null) {
+      System.out.println("TOKEN AJUSTE"+token);
       if ("IDENTIFIER".equals(token.tipo)) {
         //le a hash procurando o token.lexema(identififcador) e retorna o tipo equivalente ao identificador para ser o tipo de retorno
         String tipoIdentificador = tabelaInformacoesIdentificadores.get(token.lexema);
@@ -1401,6 +1391,7 @@ public class Parser {
     }
     return "void "; // Padrão
   } 
+  
   
   //metodo para debugar hash de identificadores e seus tipos
   private void imprimirTabelaIdentificadores() {
@@ -1437,3 +1428,4 @@ public class Parser {
   }
 
 }
+//como compoilar um arquivo dentro do java (compilar automaticamente o CodigoTraduzido.java)
