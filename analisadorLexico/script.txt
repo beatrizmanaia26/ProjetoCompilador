@@ -1,58 +1,78 @@
-Imprima("---------requisitos do projeto realizados em codigo----------\n");
-inteiro Trem_contador -> 1;
-inteiro Trem_soma -> 0;
-verdadeiroFalso Trem_v -> true;
-verdadeiroFalso Trem_f -> false;
-decimal Trem_d -> 12.5;
-inteiro Trem_i2 -> 4+3;
-texto Trem_n -> "Digite um numero";
-Imprima(Trem_n);
-inteiro Trem_input -> Entrada();
 
-decimal Trem_expressao -> (((Trem_i2/ 2) + (Trem_d * 8)) -1) ^ 3; 
-Imprima("expressao matematica grande ",Trem_expressao);
 
-Imprima("---Contagem crescente: (evidencia para)---\n");
-para(inteiro Trem_i -> 1; Trem_i <= 5; Trem_i++){
-   Imprima("Número: ", Trem_i);
-}
+decimal Trem_limiteSaque -> 2000.00;  
+decimal Trem_transferencia -> 2.5;  
+inteiro Trem_maxTentativasSenha -> 3;  
 
-Imprima("---verifica se m-níumero é par (evidencia ifs encadeados e função)---\n");
-criar VerificarPar(inteiro Trem_input){
-   inteiro Trem_resto -> Trem_input - ((Trem_input / 2) * 2);
-   se (Trem_input < 20){
-      Imprima("numero digitado eh menor que 20 entao verificarei se é par");
-      se(Trem_resto <-> 0){
-         Imprima(" eh par ", Trem_input, "\n");
-         retorna Trem_v;
-     }
-      senao{
-         Imprima("nao eh par ", Trem_input, "\n");
-         retorna Trem_f;
-      }
-   }
-   ouSe(Trem_input > 20){
-      Imprima("maior que 20, nao farei conta para ver se é par");
-   }
-}
-VerificarPar(Trem_input);
+texto Trem_nome -> "Beatriz";  
+texto Trem_numeroConta -> "12345-6";  
+decimal Trem_saldo -> 16000.00;  
+inteiro Trem_senhaCorreta -> 1234;  
+verdadeiroFalso Trem_userLogado -> false;  
+inteiro Trem_tentativasSenha -> 0;  
+Imprima("bem vindo\n");  
 
-Imprima("---soma dos primeiros 10 numeros (evidencia lacoEnquanto)---\n");
+lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){
 
-lacoEnquanto(Trem_contador <= 10){
-   Trem_soma -> Trem_soma + Trem_contador;
-   Trem_contador -> Trem_contador + 1;
-}
-Imprima("Soma dos primeiros 10 números: ", Trem_soma);
+    texto Trem_senha;
 
-Imprima("---tabuada(evidencia lacos encadeados)---\n");
-criar TabuadaCompleta(){
-    para(inteiro Trem_tabuada -> 1; Trem_tabuada <= 10; Trem_tabuada++){
-        Imprima("\nTabuada do ", Trem_tabuada, ":");
-        para(inteiro Trem_multiplicador -> 1; Trem_multiplicador <= 10; Trem_multiplicador++){
-            inteiro Trem_resultado -> Trem_tabuada * Trem_multiplicador;
-            Imprima(Trem_tabuada, " x ", Trem_multiplicador, " = ", Trem_resultado);
-        }
+    Imprima("Digite a senha");
+    inteiro Trem_senhaDigitada -> Entrada();
+
+    se(Trem_senhaDigitada <-> Trem_senhaCorreta){
+
+    Trem_userLogado -> true;
+
+        Imprima("login realizado\n");
+
     }
+
+    senao{
+
+        Trem_tentativasSenha -> Trem_tentativasSenha + 1;
+
+        inteiro Trem_result ->Trem_maxTentativasSenha -  Trem_tentativasSenha;
+
+        Imprima("senha incorreta, tentativas restantes\n",Trem_result);
+
+        se(Trem_tentativasSenha >= Trem_maxTentativasSenha){
+
+            Imprima("conta bloqueada por excesso de tentativas");
+
+        }
+
+    }
+
 }
-TabuadaCompleta();
+
+verdadeiroFalso Trem_sistemaAtivo -> true;  
+lacoEnquanto(Trem_sistemaAtivo e Trem_userLogado){  
+    Imprima(" MENU PRINCIPAL\n");  
+    Imprima("\nCliente: ", Trem_nome);  
+    Imprima("\nConta: ", Trem_numeroConta);  
+    Imprima("\nSaldo: R$ ",Trem_saldo);  
+    Imprima("\n1 - Saque");   
+    Imprima("\n0 - Sair");  
+    Imprima("\nEscolha uma opcao:");  
+    Imprima("\nDigite a opcao");
+    inteiro Trem_opcao ->Entrada();  
+    se(Trem_opcao <-> 1){  
+    Imprima("\nDigite o valor do saque");  
+    decimal Trem_valorSaque -> Entrada();  
+    se(Trem_valorSaque > 0 e Trem_valorSaque <= Trem_saldo){  
+        se(Trem_valorSaque <= Trem_limiteSaque){  
+            Trem_saldo -> Trem_valorSaque - Trem_saldo;  
+            Imprima("Saque  realizado com sucesso no valor de R$ ", Trem_valorSaque);  
+            Imprima("Novo saldo: R$ ", Trem_saldo);  
+        }  
+        senao{  
+            Imprima("Valor excede o limite de saque de R$", Trem_limiteSaque);  
+        }  
+    } 
+    }
+     ouSe(Trem_opcao <-> 0){
+        Imprima("tchau");
+        Trem_sistemaAtivo -> false; 
+    }   
+}  
+  

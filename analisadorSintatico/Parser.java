@@ -360,11 +360,13 @@ public class Parser {
     if(matchL("criar","public static ",criarFuncaoNode)){
       String tipoRetorno = acharTokenDeRetornoFuncao(tokens);//recebe toda a lista de tokens para processar e retornr o tipo de retorno para a traducao para o java 
       traduz(tipoRetorno); 
+      tipoRetorno = "";
       if(palavraReservadaNomeFuncao(criarFuncaoNode) && matchL("(","(",criarFuncaoNode) && argumentosFuncao(criarFuncaoNode) &&
       matchL(")",")",criarFuncaoNode)){
         if(matchL("{","{ \n",criarFuncaoNode) && listaComandosInternos(criarFuncaoNode) &&
         matchL("}","} \n",criarFuncaoNode)){
           //restaura após processar a função
+          identificadorChamadaDentroCriacao = false;
           processandoFuncao = false;
           dentroDaMain = true;
           return true;
@@ -386,10 +388,11 @@ public class Parser {
    */
   private boolean chamarFuncao(Node root) { //sempre tem que chamar funcao dentro da main 
     Node chamarFuncaoNode = root.addNode("chamarFuncao");
-    if (!dentroDaMain && identificadorChamadaDentroCriacao == false) { //determinar lugar que aparece da tradução
+    // caso contrário → fica dentro da função atual
+    boolean deveIrParaMain = !processandoFuncao && !identificadorChamadaDentroCriacao;
+    if (deveIrParaMain) {
       dentroDaMain = true;
-    }
-    else{
+    } else {
       dentroDaMain = false;
     }
     if (first("chamarFuncao") && inicioChamarFuncao(chamarFuncaoNode) && matchL("(","(",chamarFuncaoNode) && argumentosChamada(chamarFuncaoNode) &&
@@ -405,8 +408,12 @@ public class Parser {
   //usada quando desejamos atribui o resultado de uma funcao a uma declaracao ou chamar o resultado de uma funcao em outra funcao....
   private boolean chamarFuncaoSemFim(Node root) {
     Node chamarFuncaoSemFimNode = root.addNode("chamarFuncaoSemFim");
-    if (!dentroDaMain) { //determinar lugar que aparece da tradução
+    // caso contrário → fica dentro da função atual
+    boolean deveIrParaMain = !processandoFuncao && !identificadorChamadaDentroCriacao;
+    if (deveIrParaMain) {
       dentroDaMain = true;
+    } else {
+      dentroDaMain = false;
     }
     if (first("chamarFuncao") && inicioChamarFuncao(chamarFuncaoSemFimNode) && matchL("(","(",chamarFuncaoSemFimNode) &&
      argumentosChamada(chamarFuncaoSemFimNode) && matchL(")",")",chamarFuncaoSemFimNode)) {
@@ -1099,7 +1106,9 @@ public class Parser {
    */
   private boolean decimal(Node root){ 
     Node decimalNode = root.addNode("decimal");
-    if(matchT("DECIMAL",token.lexema, decimalNode )){
+    //verifica se prox token é ^ - ^se for nao traduz aqui (para token apenas aparecer dentro o math.pow)
+    boolean proximoEhPotencia = !tokens.isEmpty() && tokens.get(0).lexema.equals("^");
+    if(matchT("DECIMAL",proximoEhPotencia ? "" : token.lexema, decimalNode )){
       return true;
     }
     erro("decimal");
@@ -1113,7 +1122,9 @@ public class Parser {
    */
   private boolean inteiro(Node root){ 
     Node inteiroNode = root.addNode("inteiro");
-    if(matchT("INTEGER",token.lexema,inteiroNode)){
+    //verifica se prox token é ^ - ^se for nao traduz aqui (para token apenas aparecer dentro o math.pow)
+    boolean proximoEhPotencia = !tokens.isEmpty() && tokens.get(0).lexema.equals("^");
+    if(matchT("INTEGER", proximoEhPotencia ? "" : token.lexema,inteiroNode)){
       return true;
     }
     erro("inteiro");
@@ -1136,7 +1147,7 @@ public class Parser {
     erro("identificadores");
     contadorErro++;
     return false;
-}
+  }
 
   /*
    * simbulos     first
@@ -1326,12 +1337,12 @@ public class Parser {
   private void headerClasse() {
     arquivoSaida.println("import java.util.Scanner;");
     arquivoSaida.println("public class CodigoTraduzido {");
+    arquivoSaida.println("static Scanner scanner = new Scanner(System.in);");
     arquivoSaida.flush();
   }
 
   private void headerMain() {
     arquivoSaida.println("public static void main(String[] args) {");
-    arquivoSaida.println("Scanner scanner = new Scanner(System.in);");
     arquivoSaida.flush();
   }
 

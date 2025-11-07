@@ -62,7 +62,7 @@ a gramática não pode conter recursividade à esquerda (direta ou indireta) nem
 fazer só comparacoes mais simples
 
 <br> listaComandos -> comando listaComandos | ε 
-<br> comando -> seCompleto|para|lacoEnquanto|declarar|atribui|
+<br> comando -> seCompleto|para|lacoEnquanto|declararcao|atribui|
 <br> criarFuncao|chamarFuncao
 <br> seCompleto ->se listaOuSe senaoOpcional
 <br> listaOuSe -> ouSe listaOuSe | ε
@@ -73,7 +73,7 @@ fazer só comparacoes mais simples
 <br> para -> 'para''('cabecalhoPara')''{'listaComandosInternos'}'
 <br> lacoEnquanto -> 'lacoEnquanto''('condicao')''{'listaComandosInternos'}' 
 <br> listaComandosInternos -> comandoInterno listaComandosInternos | ε
-<br> comandoInterno -> se|ouSe|senao|para|lacoEnquanto|declarar|atribui|chamarFuncao|retornar
+<br> comandoInterno -> se|ouSe|senao|para|lacoEnquanto|declaracao|atribui|chamarFuncao|retornar
 <br> retornar -> 'retorna' conteudos';'
 <br> conteudos -> identificadores|expressoesMatematicas|numero|isBoolean
 <br> cabecalhoPara -> inicializacao ";" condicao ";" incremento
@@ -156,7 +156,7 @@ DIRECIONAMENTO CHARLES DESCRIÇÃO PROJETO: <br>
 - atribuir números (inteiro,decimal), booleano (true, false), identificadores <br>
 - "expressoesMatematicas" de qualquer tamanho<br>
 - "comparacoesBasicas" (comparar 2 coisas apenas, com quaquer operador, ex !Trem_a, 2 < 3, Trem_a ou Trem_b...), nao da para comparar muitas coisas ao mesmo tempo. <br>
-- Nãoo da para misturar eles (ex: quando declarar, atribuir "expressoesMatematicas" e "comparacoesBasicas" (ex: verdadeiroFalso Trem_a -> (2.3 +4) > 2; verdadeiroFalso Trem_a -> (2.3 +4) <= Trem_b;))<br>
+- Não da para misturar eles (ex: quando declarar, atribuir "expressoesMatematicas" e "comparacoesBasicas" (ex: verdadeiroFalso Trem_a -> (2.3 +4) > 2; verdadeiroFalso Trem_a -> (2.3 +4) <= Trem_b;))<br>
 
 ### Em condicao
 
@@ -169,6 +169,7 @@ DIRECIONAMENTO CHARLES DESCRIÇÃO PROJETO: <br>
 
 - permiti na gramatica colocar varias coisas dentro da chamada de entrada mesmo que só vamos usar com () vazio e passando 1 argumento do usuario (n tava pensando no java qnd fiz)
 - toda criacao de funcao fica fora da main e toda chamada de funcao fica dentro da main, poré, se eu chamar uma função dentro da criação de outra, ela aparece dentro da função.
+- bug: ocorre apenas com funcao sem retorno, se ela é a primeira funcao declarada e as outras tem retorno, o void eh sobrescrito pelo retorno das coisas, então funcao sem retorno declara sempre por ultimo (pois se tiver alguma funcqao com retorno apos ela, seu retorno sera igual ao que a precede)
 
 ## potencia
 
@@ -236,263 +237,443 @@ DIRECIONAMENTO CHARLES DESCRIÇÃO PROJETO: <br>
 # Exemplos de código na sua linguagem criada e a tradução equivalente.
 
 ## exemplo 1:
-
 #uai... esse código mostra todos os encadeamentos possíveis: se dentro de se, para dentro de para, lacoDentroDePara e vice-versa ...so#
 
-criar MostrarTabuada(inteiro Trem_n){<br>
-    Imprima("=== Tabuada de ", Trem_n, " ===");<br>
-    para(inteiro Trem_i -> 1; Trem_i <= 10; Trem_i++){<br>
-        Imprima(Trem_n, " x ", Trem_i, " = ", Trem_n * Trem_i);<br>
-    }<br>
-}<br>
+criar SomarMatriz(){
+    #uai... exemplo de para dentro de para ...so#
+    inteiro Trem_soma -> 0;
+    para(inteiro Trem_linha -> 1; Trem_linha <= 3; Trem_linha++){
+        para(inteiro Trem_coluna -> 1; Trem_coluna <= 3; Trem_coluna++){
+            Trem_soma -> Trem_soma + (Trem_linha * Trem_coluna);
+            Imprima("Linha ", Trem_linha, " Coluna ", Trem_coluna, " Valor \n", Trem_linha * Trem_coluna);
+        }
+    }
+    retorna Trem_soma;
+}
 
-criar SomarMatriz(){<br>
-    #uai... exemplo de para dentro de para ...so#<br>
-    inteiro Trem_soma -> 0;<br>
-    para(inteiro Trem_linha -> 1; Trem_linha <= 3; Trem_linha++){<br>
-        para(inteiro Trem_coluna -> 1; Trem_coluna <= 3; Trem_coluna++){<br>
-            Trem_soma -> Trem_soma + (Trem_linha * Trem_coluna);<br>
-            Imprima("Linha ", Trem_linha, " Coluna ", Trem_coluna, " Valor ", Trem_linha * Trem_coluna);<br>
-        }<br>
-    }<br>
-    retorna Trem_soma;<br>
-}<br>
-
-criar ContagemComCondicoes(){<br>
-    #uai... exemplo de lacoEnquanto dentro de para e se encadeado ...so#<br>
-    para(inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){<br>
-        inteiro Trem_y -> Trem_x;<br>
+criar ContagemComCondicoes(){
+    #uai... exemplo de lacoEnquanto dentro de para e se encadeado ...so#
+    para(inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){
+        inteiro Trem_y -> Trem_x;
 
         lacoEnquanto(Trem_y >= 0){
-
             se(Trem_y <-> 0){
-
-                Imprima("x=", Trem_x, " terminou o lacoEnquanto!");
-
+                Imprima("x=", Trem_x, " terminou o lacoEnquanto!\n");
             }
-
             senao{
-
                 #uai... pra saber se é par sem usar %, divide por 2 e confere se o resultado * 2 é igual ...so#
-
                 inteiro Trem_metade -> Trem_y / 2;
-
                 se(Trem_metade * 2 <-> Trem_y){
-
-                    Imprima("x=", Trem_x, " y=", Trem_y, " (par)");
-
+                    Imprima("x=", Trem_x, " y=", Trem_y, " (par)\n");
                 }
-
                 senao{
-
-                    Imprima("x=", Trem_x, " y=", Trem_y, " (ímpar)");
-
+                    Imprima("x=", Trem_x, " y=", Trem_y, " (impar)\n");
                 }
-
             }
-
             Trem_y -> Trem_y - 1;
-
         }
-
     }
-}<br>
+}
+#uai... esse código mostra todos os encadeamentos possíveis: se dentro de se, para dentro de para, lacoDentroDePara e vice-versa ...so#
 
-criar TesteEncadeamentos(){<br>
-    Imprima("=== Teste de se encadeado e funções ===");<br>
-    inteiro Trem_num;<br>
-    Entrada("Digite um número: ", Trem_num);<br>
+criar TesteEncadeamentos(){
+    Imprima("=== Teste de se encadeado e funcoes ===\n");
+    Imprima("Digite um numero: ");
+    inteiro Trem_num -> Entrada();
 
     se(Trem_num > 0){
+        Imprima("Numero positivo!\n");
 
-        Imprima("Número positivo!");
-
-        #uai... mesma lógica: checa se (Trem_num / 2) * 2 é igual a Trem_num ...so#
-
+        #uai... mesma lógica: checa se (Trem_num / 2) * 2 eh igual a Trem_num ...so#
         se((Trem_num / 2) * 2 <-> Trem_num){
-
-            Imprima("E também é par!");
-
+            Imprima(Trem_num, " eh par!\n");
         }
-
         senao{
-
-            Imprima("Mas é ímpar!");
-
+            Imprima(Trem_num, " eh impar!\n");
         }
-
     }
-
     ouSe(Trem_num < 0){
+        Imprima("Numero negativo!\n");
+    }
+    senao{
+        Imprima("Zero detectado!\n");
+    }
+}
+criar Main(){
+    inteiro Trem_somaTotal -> SomarMatriz();  
+    Imprima("Soma total da matriz:\n ", Trem_somaTotal);
 
-        Imprima("Número negativo!");
+    ContagemComCondicoes();             
+    TesteEncadeamentos();                
+    inteiro Trem_valor;
+}
+Main();
+
+  
+
+## exemplo 2:
+inteiro Trem_idade -> 18;<br>
+inteiro Trem_pontuacao -> 85;<br>
+decimal Trem_notaAluno1 -> 3.5;<br>
+inteiro Trem_notaAluno2 -> 7;<br>
+decimal Trem_mediaNotasMateriaX -> (((((Trem_notaAluno1^2) + (Trem_notaAluno2^2))*3)/4)-1);<br>
+se(Trem_idade >= 18){<br>
+    Imprima("\nMaior de idade");<br>
+}<br>
+senao{<br>
+    Imprima("\nMenor de idade");<br>
+}<br>
+se(Trem_pontuacao >= 90){<br>
+    Imprima("\nNota A");<br>
+}<br>
+ouSe(Trem_pontuacao >= 80 e Trem_pontuacao < 90){<br>
+    Imprima("\nNota B");<br>
+}<br>
+ouSe(Trem_pontuacao >= 70 e Trem_pontuacao < 80){<br>
+    Imprima("\nNota C");<br>
+}<br>
+senao{<br>
+    Imprima("\nNota D");<br>
+}<br>
+se(Trem_mediaNotasMateriaX > 2){<br>
+    Imprima("\nPassou com media", Trem_mediaNotasMateriaX);<br>
+}<br>
+
+## exemplo 3:
+
+decimal Trem_limiteSaque -> 2000.00; <br> 
+decimal Trem_transferencia -> 2.5;  <br>
+inteiro Trem_maxTentativasSenha -> 3;  <br>
+
+texto Trem_nome -> "Beatriz";  <br>
+texto Trem_numeroConta -> "12345-6";  <br>
+decimal Trem_saldo -> 16000.00;  <br>
+inteiro Trem_senhaCorreta -> 1234;  <br>
+verdadeiroFalso Trem_userLogado -> false;  <br>
+inteiro Trem_tentativasSenha -> 0;  <br>
+Imprima("bem vindo\n");  <br>
+
+lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){<br>
+    texto Trem_senha;<br>
+
+    Imprima("Digite a senha");
+
+    inteiro Trem_senhaDigitada -> Entrada();
+
+    se(Trem_senhaDigitada <-> Trem_senhaCorreta){
+
+    Trem_userLogado -> true;
+
+        Imprima("login realizado\n");
 
     }
 
     senao{
 
-        Imprima("Zero detectado!");
-        
+        Trem_tentativasSenha -> Trem_tentativasSenha + 1;
+
+        inteiro Trem_result ->Trem_maxTentativasSenha -  Trem_tentativasSenha;
+
+        Imprima("senha incorreta, tentativas restantes\n",Trem_result);
+
+        se(Trem_tentativasSenha >= Trem_maxTentativasSenha){
+
+            Imprima("conta bloqueada por excesso de tentativas");
+
+        }
+
     }
-
 }<br>
 
-criar Main(){<br>
-
-    Imprima("=== Programa MinasScript ===");
-
-    inteiro Trem_somaTotal -> SomarMatriz();   #uai... chama função com para dentro de para ...so#
-
-    Imprima("Soma total da matriz: ", Trem_somaTotal);
-
-    ContagemComCondicoes();               #uai... usa para + lacoEnquanto + se encadeado ...so#
-
-    TesteEncadeamentos();                 #uai... usa se dentro de se ...so#
-
-
-    inteiro Trem_valor;
-
-    Entrada("Digite um número para ver a tabuada: ", Trem_valor);
-
-    MostrarTabuada(Trem_valor);           #uai... chama função simples com para ...so#
-
-    Imprima("=== Fim do programa ===");
-
-}<br>
-
-Main();<br>
-
-## exemplo 2:
-
-inteiro Trem_idade -> 18;<br>
-inteiro Trem_pontuacao -> 85;<br>
-decimal Trem_notaAluno1 -> 3.5;<br>
-inteiro Trem_notaAluno2 -> 7;<br>
-Decimal Trem_mediaNotasMateriaX -> (((((Trem_notaAluno1^2) + (Trem_notaAluno2^2))*3)/4)-1);<br>
-
-se(Trem_idade >= 18){<br>
-    Imprima("Maior de idade");<br>
-}<br>
-senao{<br>
-    Imprima("Menor de idade");<br>
-}<br>
-
-se(Trem_pontuacao >= 90){<br>
-    Imprima("Nota A");<br>
-}<br>
-ouSe(Trem_pontuacao >= 80 e Trem_pontuacao < 90){<br>
-    Imprima("Nota B");<br>
-}<br>
-ouSe(Trem_pontuacao >= 70 e Trem_pontuacao < 80){<br>
-    Imprima("Nota C");<br>
-}<br>
-senao{<br>
-    Imprima("Nota D");<br>
-}<br>
-
-se(Trem_mediaNotasMateriaX > 2){<br>
-    Imprima("Passou com media", Trem_mediaNotasMateriaX);<br>
-}<br>
-
-## exemplo 3:
-
-inteiro Trem_num -> 77;<br>
-inteiro Trem_inteiro;<br>
-decimal Trem_decimal -> 1.1;<br>
-texto Trem_texto -> "oi";<br>
-
-verdadeiroFalso Trem_vf -> true;<br>
-Entrada("digite um numero", Trem_inteiro);<br>
-
-criar Imprimir(inteiro Trem_num){<br>
-    Imprima("número digitado", Trem_num);<br>
-}<br>
-se (Trem_inteiro <> 10 e Trem_inteiro <= 20){<br>
-    para (inteiro Trem_x -> 1; Trem_x <= 5; Trem_x++){<br>
-        Imprima(Trem_x);<br>
+verdadeiroFalso Trem_sistemaAtivo -> true;  <br>
+lacoEnquanto(Trem_sistemaAtivo e Trem_userLogado){ <br> 
+    Imprima(" MENU PRINCIPAL\n");  <br>
+    Imprima("\nCliente: ", Trem_nome);  <br>
+    Imprima("\nConta: ", Trem_numeroConta);  <br>
+    Imprima("\nSaldo: R$ ",Trem_saldo);  <br>
+    Imprima("\n1 - Saque");   <br>
+    Imprima("\n0 - Sair");  <br>
+    Imprima("\nEscolha uma opcao:");  <br>
+    Imprima("\nDigite a opcao");<br>
+    inteiro Trem_opcao ->Entrada();  <br>
+    se(Trem_opcao <-> 1){  <br>
+    Imprima("\nDigite o valor do saque");  <br>
+    decimal Trem_valorSaque -> Entrada();  <br>
+    se(Trem_valorSaque > 0 e Trem_valorSaque <= Trem_saldo){  <br>
+        se(Trem_valorSaque <= Trem_limiteSaque){  <br>
+            Trem_saldo -> Trem_valorSaque - Trem_saldo;  <br>
+            Imprima("Saque  realizado com sucesso no valor de R$ ", Trem_valorSaque);  <br>
+            Imprima("Novo saldo: R$ ", Trem_saldo);  <br>
+        }  <br>
+        senao{  <br>
+            Imprima("Valor excede o limite de saque de R$", Trem_limiteSaque);  <br>
+        }  <br>
+    } <br>
     }<br>
-    Imprimir(Trem_inteiro);<br>
+     ouSe(Trem_opcao <-> 0){<br>
+        Imprima("tchau");<br>
+        Trem_sistemaAtivo -> false; <br>
+    }<br>   
+} <br>
+  
+
+
+## Exemplo 4:
+
+Imprima("---------requisitos do projeto realizados em codigo----------\n");<br>
+inteiro Trem_contador -> 1;<br>
+inteiro Trem_soma -> 0;<br>
+verdadeiroFalso Trem_v -> true;<br>
+verdadeiroFalso Trem_f -> false;<br>
+decimal Trem_d -> 1.5;<br>
+inteiro Trem_i2 -> 1+3;<br>
+texto Trem_n -> "Digite um numero";<br>
+Imprima(Trem_n);<br>
+inteiro Trem_input -> Entrada();<br>
+decimal  Trem_grande -> ((Trem_i2/ 2) + (Trem_d * 8)) -1;<br>
+Imprima("\n Antes da potencia:",Trem_grande);<br>
+decimal Trem_expressao -> Trem_grande^ 3; <br>
+Imprima("\n expressao matematica grande\n ",Trem_expressao);<br>
+
+Imprima("\n ---Contagem crescente: (evidencia para)---\n");<br>
+para(inteiro Trem_i -> 1; Trem_i <= 5; Trem_i++){<br>
+   Imprima("Numero: ", Trem_i);<br>
 }<br>
-senao{<br>
-    retorna false;<br>
+
+Imprima("\n ---verifica se m-níumero é par (evidencia ifs encadeados e função)---\n");<br>
+criar VerificarPar(inteiro Trem_input){<br>
+   inteiro Trem_resto -> Trem_input - ((Trem_input / 2) * 2);<br>
+   se (Trem_input < 20){<br>
+      Imprima("\n numero digitado eh menor que 20 entao verificarei se é par");<br>
+      se(Trem_resto <-> 0){<br>
+         Imprima("\n eh par ", Trem_input, "\n");<br>
+     }<br>
+      senao{<br>
+         Imprima("\n nao eh par ", Trem_input, "\n");<br>
+      }<br>
+   }<br>
+   ouSe(Trem_input > 20){<br>
+      Imprima("maior que 20, nao farei conta para ver se é par");<br>
+   }<br>
+     retorna true;<br>
 }<br>
+VerificarPar(Trem_input);<br>
 
-decimal Trem_limiteSaque -> 2000.00;<br>
-decimal Trem_transferencia -> 2.5;<br>
-inteiro Trem_maxTentativasSenha -> 3;<br>
+Imprima("\n---soma dos primeiros 10 numeros (evidencia lacoEnquanto)---\n");<br>
 
-criar Main(){<br>
-    texto Trem_nome -> "Beatriz";<br>
-    texto Trem_numeroConta -> "12345-6";<br>
-    decimal Trem_saldo -> 16000.00;<br>
-    texto Trem_senhaCorreta -> "1234";<br>
-    verdadeiroFalso Trem_userLogado -> false;<br>
-    inteiro Trem_tentativasSenha -> 0;<br>
-    Imprima("bem vindo");<br>
+lacoEnquanto(Trem_contador <= 10){<br>
+   Trem_soma -> Trem_soma + Trem_contador;<br>
+   Trem_contador -> Trem_contador + 1;<br>
+}<br>
+Imprima("\nSoma dos primeiros 10 números: ", Trem_soma);<br>
 
-    lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){
-
-        texto Trem_senha;
-
-        Imprima("Digite a senha", Trem_senhaDigitada);
-
-        se(Trem_senhaDigitada <-> Trem_senhaCorreta){
-
-        Trem_userLogado -> true;
-
-           Imprima("login realizado");
-
-        }
-    
-        senao{
-
-            Trem_tentativasSenha -> Trem_tentativasSenha + 1;
-
-            Trem_result ->Trem_maxTentativasSenha -  Trem_tentativasSenha;
-
-            Imprima("senha incorreta, tentativas restantes",Trem_result);
-
-            se(Trem_tentativasSenha >= Trem_maxTentativasSenha){
-
-                Imprima("conta bloqueada por excesso de tentativas");
-
-            }
-
-        }
-
-    }
-
-   verdadeiroFalso Trem_sistemaAtivo -> true;<br>
-   lacoEnquanto(Trem_sistemaAtivo e Trem_userLogado){<br>
-        Imprima(" MENU PRINCIPAL");<br>
-        Imprima("Cliente: ", Trem_nome);<br>
-        Imprima("Conta: ", Trem_numeroConta);<br>
-        Imprima("Saldo: R$ ",Trem_saldo);<br>
-        Imprima("1 - Saque");<br>
-        Imprima("2 - Depósito");<br>
-        Imprima("3 - Transferência");<br>
-        Imprima("4 - Extrato");<br>
-        Imprima("5 - Alterar Senha");<br>
-        Imprima("0 - Sair");<br>
-        Imprima("Escolha uma opção: ");<br>
-        inteiro Trem_opcao;<br>
-        Entrada("Digite a opcao ", Trem_opcao);<br>
-        se(Trem_opcao <-> 1){<br>
-        Imprima("Digite o valor do saque");<br>
-        decimal Trem_valorSaque;<br>
-        se(Trem_valorSaque > 0 e Trem_valorSaque <= Trem_saldo){<br>
-            se(Trem_valorSaque <= Trem_limiteSaque){<br>
-                Trem_saldo -> Trem_valorSaque - Trem_saldo;<br>
-                Imprima("Saque  realizado com sucesso no valor de R$ ", Trem_valorSaque);<br>
-                Imprima("Novo saldo: R$ ", Trem_saldo);<br>
-            }<br>
-            senao{<br>
-                Imprima("Valor excede o limite de saque de R$", Trem_limiteSaque);<br>
-            }<br>
+Imprima("\n---tabuada(evidencia lacos encadeados)---\n");<br>
+criar TabuadaCompleta(){<br>
+    para(inteiro Trem_tabuada -> 1; Trem_tabuada <= 10; Trem_tabuada++){<br>
+        Imprima("\nTabuada do ", Trem_tabuada, ":");<br>
+        para(inteiro Trem_multiplicador -> 1; Trem_multiplicador <= 10; Trem_multiplicador++){<br>
+            inteiro Trem_resultado -> Trem_tabuada * Trem_multiplicador;<br>
+            Imprima(Trem_tabuada, " x ", Trem_multiplicador, " = ", Trem_resultado);<br>
         }<br>
     }<br>
 }<br>
+TabuadaCompleta();<br>
+
+# Tradução equivalente para Java:
+
+## Exemplo 1:
+
+import java.util.Scanner;<br>
+public class CodigoTraduzido {<br>
+static Scanner scanner = new Scanner(System.in);<br>
+public static void main(String[] args) {<br>
+Main(); <br>
+}<br>
+
+public static int SomarMatriz(){ <br>
+int Trem_soma = 0; <br>
+for(int Trem_linha = 1;Trem_linha<=3;Trem_linha++){for(int Trem_coluna = 1;Trem_coluna<=3;Trem_coluna++){Trem_soma = Trem_soma+(Trem_linha*Trem_coluna); <br>
+System.out.print("Linha " + Trem_linha + " Coluna " + Trem_coluna + " Valor \n" + Trem_linha*Trem_coluna); <br>
+}<br>
+}<br>
+return Trem_soma; <br>
+} <br>
+public static void ContagemComCondicoes(){ <br>
+for(int Trem_x = 1;Trem_x<=5;Trem_x++){int Trem_y = Trem_x; <br>
+while(Trem_y>=0){if(Trem_y==0){System.out.print("x=" + Trem_x + " terminou o lacoEnquanto!\n"); <br>
+}<br>
+else{int Trem_metade = Trem_y/2; <br>
+if(Trem_metade*2==Trem_y){System.out.print("x=" + Trem_x + " y=" + Trem_y + " (par)\n"); <br>
+}<br>
+else{System.out.print("x=" + Trem_x + " y=" + Trem_y + " (impar)\n"); <br>
+}<br>
+}<br>
+Trem_y = Trem_y-1; <br>
+}<br>
+}<br>
+} <br>
+public static void TesteEncadeamentos(){ <br>
+System.out.print("=== Teste de se encadeado e funcoes ===\n"); <br>
+System.out.print("Digite um numero: "); <br>
+int Trem_num = scanner.nextInt(); <br>
+if(Trem_num>0){System.out.print("Numero positivo!\n"); <br>
+if((Trem_num/2)*2==Trem_num){System.out.print(Trem_num + " eh par!\n"); <br>
+}<br>
+else{System.out.print(Trem_num + " eh impar!\n"); <br>
+}<br>
+}<br>
+else if(Trem_num<0){System.out.print("Numero negativo!\n"); <br>
+}<br>
+else{System.out.print("Zero detectado!\n"); <br>
+}<br>
+} <br>
+public static void Main(){ <br>
+int Trem_somaTotal = SomarMatriz(); <br>
+System.out.print("Soma total da matriz:\n " + Trem_somaTotal); <br>
+ContagemComCondicoes(); <br>
+TesteEncadeamentos(); <br>
+int Trem_valor; <br>
+} <br>
+}<br>
+
+## Exemplo 2:
+
+import java.util.Scanner;<br>
+public class CodigoTraduzido {<br>
+static Scanner scanner = new Scanner(System.in);<br>
+public static void main(String[] args) {<br>
+int Trem_idade = 18; <br>
+int Trem_pontuacao = 85; <br>
+double Trem_notaAluno1 = 3.5; <br>
+int Trem_notaAluno2 = 7; <br>
+double Trem_mediaNotasMateriaX = (((((Math.pow(Trem_notaAluno1,2))+(Math.pow(Trem_notaAluno2,2)))*3)/4)-1); <br>
+if(Trem_idade>=18){System.out.print("\nMaior de idade"); <br>
+}<br>
+else{System.out.print("\nMenor de idade"); <br>
+}<br>
+if(Trem_pontuacao>=90){System.out.print("\nNota A"); <br>
+}<br>
+else if(Trem_pontuacao>=80&&Trem_pontuacao<90){System.out.print("\nNota B"); <br>
+}<br>
+else if(Trem_pontuacao>=70&&Trem_pontuacao<80){System.out.print("\nNota C"); <br>
+}<br>
+else{System.out.print("\nNota D"); <br>
+}<br>
+if(Trem_mediaNotasMateriaX>2){System.out.print("\nPassou com media" + Trem_mediaNotasMateriaX); <br>
+}<br>
+}<br>
+}<br>
+
+## Exemplo 3:
+
+import java.util.Scanner;<br>
+public class CodigoTraduzido {<br>
+static Scanner scanner = new Scanner(System.in);<br>
+public static void main(String[] args) {<br>
+double Trem_limiteSaque = 2000.00; <br>
+double Trem_transferencia = 2.5; <br>
+int Trem_maxTentativasSenha = 3; <br>
+String Trem_nome = "Beatriz"; <br>
+String Trem_numeroConta = "12345-6"; <br>
+double Trem_saldo = 16000.00; <br>
+int Trem_senhaCorreta = 1234; <br>
+boolean Trem_userLogado = false; <br>
+int Trem_tentativasSenha = 0; <br>
+System.out.print("bem vindo\n"); <br>
+
+while(!Trem_userLogado&&Trem_tentativasSenha<Trem_maxTentativasSenha){String Trem_senha;
+
+System.out.print("Digite a senha"); <br>
+int Trem_senhaDigitada = scanner.nextInt(); <br>
+if(Trem_senhaDigitada==Trem_senhaCorreta){Trem_userLogado = true; <br>
+System.out.print("login realizado\n"); <br>
+}<br>
+else{Trem_tentativasSenha = Trem_tentativasSenha+1; <br>
+int Trem_result = Trem_maxTentativasSenha-Trem_tentativasSenha; <br>
+System.out.print("senha incorreta, tentativas restantes\n" + Trem_result); <br>
+if(Trem_tentativasSenha>=Trem_maxTentativasSenha){System.out.print("conta bloqueada por excesso de tentativas");<br> 
+}<br>
+}<br>
+}<br>
+boolean Trem_sistemaAtivo = true; <br>
+while(Trem_sistemaAtivo&&Trem_userLogado){System.out.print(" MENU PRINCIPAL\n"); <br>
+System.out.print("\nCliente: " + Trem_nome); <br>
+System.out.print("\nConta: " + Trem_numeroConta); <br>
+System.out.print("\nSaldo: R$ " + Trem_saldo); <br>
+System.out.print("\n1 - Saque"); <br>
+System.out.print("\n0 - Sair"); <br>
+System.out.print("\nEscolha uma opcao:"); <br>
+System.out.print("\nDigite a opcao"); <br>
+int Trem_opcao = scanner.nextInt(); <br>
+if(Trem_opcao==1){System.out.print("\nDigite o valor do saque"); <br>
+double Trem_valorSaque = scanner.nextDouble(); <br>
+if(Trem_valorSaque>0&&Trem_valorSaque<=Trem_saldo){if(Trem_valorSaque<=Trem_limiteSaque){Trem_saldo = Trem_valorSaque-Trem_saldo; <br>
+System.out.print("Saque  realizado com sucesso no valor de R$ " + Trem_valorSaque); <br>
+System.out.print("Novo saldo: R$ " + Trem_saldo); <br>
+}<br>
+else{System.out.print("Valor excede o limite de saque de R$" + Trem_limiteSaque); <br>
+}<br>
+}<br>
+}<br>
+else if(Trem_opcao==0){System.out.print("tchau"); <br>
+Trem_sistemaAtivo = false; <br>
+}<br>
+}<br>
+}<br>
 }<br>
 
 
-# Tradução equivalente para Java:
+## Exemplo 4:
+
+import java.util.Scanner;<br>
+public class CodigoTraduzido {<br>
+static Scanner scanner = new Scanner(System.in);<br>
+public static void main(String[] args) {<br>
+System.out.print("---------requisitos do projeto realizados em codigo----------\n"); <br>
+int Trem_contador = 1; <br>
+int Trem_soma = 0; <br>
+boolean Trem_v = true; <br>
+boolean Trem_f = false; <br>
+double Trem_d = 1.5; <br>
+int Trem_i2 = 1+3; <br>
+String Trem_n = "Digite um numero"; <br>
+System.out.print(Trem_n); <br>
+int Trem_input = scanner.nextInt(); <br>
+double Trem_grande = ((Trem_i2/2)+(Trem_d*8))-1; <br>
+System.out.print("\n Antes da potencia:" + Trem_grande); <br>
+double Trem_expressao = Math.pow(Trem_grande,3); <br>
+System.out.print("\n expressao matematica grande\n " + Trem_expressao); <br>
+System.out.print("\n ---Contagem crescente: (evidencia para)---\n"); <br>
+for(int Trem_i = 1;Trem_i<=5;Trem_i++){System.out.print("Numero: " + Trem_i); <br>
+}<br>
+System.out.print("\n ---verifica se um numero eh par (evidencia ifs encadeados e funcao)---\n"); <br>
+VerificarPar(Trem_input); <br>
+System.out.print("\n---soma dos primeiros 10 numeros (evidencia lacoEnquanto)---\n"); <br>
+while(Trem_contador<=10){Trem_soma = Trem_soma+Trem_contador; <br>
+Trem_contador = Trem_contador+1; <br>
+}<br>
+System.out.print("\nSoma dos primeiros 10 n meros: " + Trem_soma); <br>
+System.out.print("\n---tabuada(evidencia lacos encadeados)---\n"); <br>
+TabuadaCompleta(); <br>
+}<br>
+
+public static boolean VerificarPar(int Trem_input){ <br>
+int Trem_resto = Trem_input-((Trem_input/2)*2); <br>
+if(Trem_input<20){System.out.print("\n numero digitado eh menor que 20 entao verificarei se   par"); <br>
+if(Trem_resto==0){System.out.print("\n eh par " + Trem_input + "\n"); <br>
+}<br>
+else{System.out.print("\n nao eh par " + Trem_input + "\n"); <br>
+}<br>
+}<br>
+else if(Trem_input>20){System.out.print("maior que 20, nao farei conta para ver se   par"); <br>
+}<br>
+return true; <br>
+} <br>
+public static void TabuadaCompleta(){ <br>
+for(int Trem_tabuada = 1;Trem_tabuada<=10;Trem_tabuada++){System.out.print("\nTabuada do " + Trem_tabuada + ":"); <br>
+for(int Trem_multiplicador = 1;Trem_multiplicador<=10;Trem_multiplicador++){int Trem_resultado = Trem_tabuada*Trem_multiplicador; <br>
+System.out.print(Trem_tabuada + " x " + Trem_multiplicador + " = " + Trem_resultado); <br>
+}<br>
+}<br>
+}<br> 
+}<br>
