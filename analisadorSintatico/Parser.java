@@ -18,6 +18,8 @@ public class Parser {
   Token token;
   Map<String, Set<String>> firsts = new HashMap<>();
   Map<String, Set<String>> follows = new HashMap<>();
+  //set: colecao de elementos unicos, so armazena chaves 
+  Set<String> tokensSincronizacao = new HashSet<>();
   Map<String, String> tabelaInformacoesIdentificadores = new HashMap<>();
   /*armazeno nome dos identificadores e seus tipos para, na hora de o retorno de uma funcao ser identificador, eu verifico o tipo dele aqui 
   e traduzo para o tipo certo em java*/
@@ -47,6 +49,7 @@ public class Parser {
   public Parser(List<Token> tokens) {
     this.tree = new Tree(new Node("PROGRAM")); 
     this.tokens = tokens;
+    inicializarTokensSincronizacao();
     inicializarFirsts();
     inicializarFollows();
     inicializarArquivoSaida();
@@ -129,7 +132,10 @@ public class Parser {
   private void erro(String regra) {
     System.out.println("-------------- Regra: " + regra);
     System.out.println("token inválido: " + token);
+    System.out.println("Próximo token: " + tokens.get(0));
     System.out.println("------------------------------");
+    contadorErro++;
+    recuperacaoPanico();
   }
 
   // --------------------USADO QUANDO SÓ É ANALISE SINTÁTICA, SEM AARVORE DE DERIVACAO-----------------
@@ -174,7 +180,6 @@ public class Parser {
     }
     else{
       erro("listaComandos");
-      contadorErro++;
       return false;
     }
   }
@@ -193,7 +198,6 @@ public class Parser {
       return true;
     }
     erro("comando"); 
-    contadorErro++;
     return false;
   }
    
@@ -218,7 +222,6 @@ public class Parser {
       }
     }
     erro("declaracao");
-    contadorErro++;
     return false;
   }
 
@@ -275,7 +278,6 @@ public class Parser {
         return true;
      }
     erro("se");
-    contadorErro++;
     return false;
   }
  
@@ -292,7 +294,6 @@ public class Parser {
         return true;
      }
     erro("ouSe");
-    contadorErro++;
     return false;
   }
 
@@ -308,7 +309,6 @@ public class Parser {
       return true;
      }
     erro("senao");
-    contadorErro++;
     return false;
   }
 
@@ -324,7 +324,6 @@ public class Parser {
       return true;
      }
     erro("para");
-    contadorErro++;
     return false;
   }
 
@@ -341,7 +340,6 @@ public class Parser {
         return true;
      }
     erro("lacoEnquanto");
-    contadorErro++;
     return false;
   }
 
@@ -377,7 +375,6 @@ public class Parser {
     processandoFuncao = false;
     dentroDaMain = true;
     erro("criarFuncao");
-    contadorErro++;
     return false;
   }
 
@@ -400,7 +397,6 @@ public class Parser {
       return true;
     }
     erro("chamarFuncao");
-    contadorErro++;
     return false;
   }
 
@@ -420,9 +416,8 @@ public class Parser {
       return true;
     }
     erro("chamarFuncao");
-    contadorErro++;
     return false;
-}
+  }
 
   //inicioChamarFuncao -> palavra_reservadaNomeFuncao|Entrada|Imprima
    /*
@@ -441,7 +436,6 @@ public class Parser {
     return true;
    }
     erro("inicioChamarFuncao");
-    contadorErro++;
     return false;
   }
   //argumentosChamada -> ε | valor restoArgumentosChamada
@@ -495,7 +489,6 @@ public class Parser {
       return true;
     }
     erro("parametroFuncao");
-    contadorErro++;
     return false;
   }
 
@@ -523,7 +516,6 @@ public class Parser {
       return true;
     }
     erro("parametro");
-    contadorErro++;
     return false;
   }
 
@@ -593,19 +585,7 @@ public class Parser {
       return true;
     }
     erro("condicao");
-    contadorErro++;
     return false;
-   /*
-    if((first("condicaoComparacoesBasicas") && condicaoComparacoesBasicas() && condicaoDerivada())||
-    (first("identificadores") && identificadores() && condicaoDerivada())||
-    (first("negacaoCondicao") && negacaoCondicao() && condicaoDerivada())||
-    (first("expressoesMatematicas") && expressoesMatematicas() && condicaoDerivada())){
-      System.out.println("deu match na condicao");
-      return true;
-    }
-    erro("condicao");
-    return false;
-    */
   }
 
   //condicao’ -> operacao condição condicao’| ε ????????????????? ACHO Q N FAZ SENTIDO
@@ -634,7 +614,6 @@ public class Parser {
       return true;
     }
     erro("condicaoComparacoesBasicas");
-    contadorErro++;
     return false;
   }
 
@@ -650,7 +629,6 @@ public class Parser {
       return true;
     }
     erro("comparacoesBasicas");
-    contadorErro++;
     return false;
   }
 
@@ -666,7 +644,6 @@ public class Parser {
       return true;
     }
     erro("valoresOperacao");
-    contadorErro++;
     return false;
   }
 
@@ -681,7 +658,6 @@ public class Parser {
       return true;
     }
     erro("negacaoCondicao");
-    contadorErro++;
     return false;
   }
 
@@ -696,7 +672,6 @@ public class Parser {
       return true;
     }
     erro("operacao");
-    contadorErro++;
     return false;
   }
 
@@ -712,7 +687,6 @@ public class Parser {
       return true;
     }
     erro("operadorRelacional");
-    contadorErro++;
     return false;
   }
 
@@ -727,7 +701,6 @@ public class Parser {
       return true;
     }
     erro("operacaoLogica");
-    contadorErro++;
     return false;
   }
 
@@ -760,7 +733,6 @@ public class Parser {
       return true;
     }
     erro("listaComandosInternos");
-    contadorErro++;
     return false;
   }
 
@@ -776,7 +748,6 @@ public class Parser {
         return true;
     }
     erro("atribui");
-    contadorErro++;
     return false;
   }
 
@@ -792,7 +763,6 @@ public class Parser {
       return true;
     }
     erro("expressoesMatematicas");
-    contadorErro++;
     return false;
   }
 
@@ -820,7 +790,6 @@ public class Parser {
       return expressoesMatematicas(valorNode);
     }
     erro("valor");
-    contadorErro++;
     return false;
   }
     /* 
@@ -846,7 +815,6 @@ public class Parser {
       return true;
     }
     erro("numero");
-    contadorErro++;
     return false;
   }
 
@@ -864,7 +832,6 @@ public class Parser {
       return true;
     }
     erro("comandoInterno"); 
-    contadorErro++;
     return false;
   }
   
@@ -879,7 +846,6 @@ public class Parser {
       return true;
     }
     erro("retornar");
-    contadorErro++;
     return false;
   }
 
@@ -899,7 +865,6 @@ public class Parser {
       return true;
     }
     erro("conteudos");
-    contadorErro++;
     return false;
     }
 
@@ -915,7 +880,6 @@ public class Parser {
       return true;
     }
     erro("inicializacao");
-    contadorErro++;
     return false;
   }
 
@@ -930,7 +894,6 @@ public class Parser {
       return true;
     }
     erro("precedenciaInferior");
-    contadorErro++;
     return false;
   }
 
@@ -945,7 +908,6 @@ public class Parser {
       return true;
     }
     erro("precedenciaIntermediaria");
-    contadorErro++;
     return false;
   }
 
@@ -983,7 +945,6 @@ public class Parser {
       return true;
     }
     erro("precedenciaAlta");
-    contadorErro++;
     return false;
   }
 
@@ -1018,7 +979,6 @@ public class Parser {
       return true;
     }
     erro("precedenciaSuperior");
-    contadorErro++;
     return false;
   }
 
@@ -1052,7 +1012,6 @@ public class Parser {
       return true;
     }
     erro("incremento");
-    contadorErro++;
     return false;
   }
 
@@ -1076,7 +1035,6 @@ public class Parser {
       }
     }
     erro("operacaoIncremento");
-    contadorErro++;
     return false;
 }
 
@@ -1093,7 +1051,6 @@ public class Parser {
       return true;
     }
     erro("tipoVariavel");
-    contadorErro++;
     return false;
   }
 
@@ -1112,7 +1069,6 @@ public class Parser {
       return true;
     }
     erro("decimal");
-    contadorErro++;
     return false;
   }
 
@@ -1128,7 +1084,6 @@ public class Parser {
       return true;
     }
     erro("inteiro");
-    contadorErro++;
     return false;
   }
 
@@ -1145,7 +1100,6 @@ public class Parser {
         return true;
     }
     erro("identificadores");
-    contadorErro++;
     return false;
   }
 
@@ -1159,7 +1113,6 @@ public class Parser {
       return true;
     }
     erro("texto");
-    contadorErro++;
     return false;
   }
   
@@ -1174,7 +1127,6 @@ public class Parser {
       return true;
     }
     erro("boolean");
-    contadorErro++;
     return false;
   } 
   /*
@@ -1188,7 +1140,6 @@ public class Parser {
       return true;
     }
     erro("palavraReservadaNomeFuncao");
-    contadorErro++;
     return false;
   }
 
@@ -1478,5 +1429,52 @@ public class Parser {
     }
   }
 
+//----------------------------RECUPERACAO POR PANICO------------------------------------
+
+private void inicializarTokensSincronizacao(){
+  tokensSincronizacao.add(";");
+  tokensSincronizacao.add("{");
+  tokensSincronizacao.add("}");
+  tokensSincronizacao.add("(");
+  tokensSincronizacao.add(")");
+  tokensSincronizacao.add("se");
+  tokensSincronizacao.add("ouSe");
+  tokensSincronizacao.add("senao");
+  tokensSincronizacao.add("para");
+  tokensSincronizacao.add("inteiro");
+  tokensSincronizacao.add("decimal");
+  tokensSincronizacao.add("texto");
+  tokensSincronizacao.add("verdadeiroFalso");
+  tokensSincronizacao.add("Imprima");
+  tokensSincronizacao.add("Entrada");
+  tokensSincronizacao.add("lacoEnquanto");
+  tokensSincronizacao.add("criar");
+  tokensSincronizacao.add("retorna");
+}
+
+  private void recuperacaoPanico(){
+    System.out.println("INICIANDO RECUPERAÇÃO POR PÂNICO...");
+    System.out.println("Token atual no início da recuperação: " + token);
+    //para melhor debug:
+    int tokensDescartados = 0;
+    List<String> tokensDescartadosList = new ArrayList<>();
+    //descarta tokens ate achar algum de sincronização
+    while(token != null && !token.tipo.equals("EOF") && !tokensSincronizacao.contains(token.lexema)){
+      System.out.println("descartando token: " + token.lexema);
+      tokensDescartadosList.add(token.lexema + "[" + token.tipo + "]");
+      token = getNextToken();
+      tokensDescartados++;
+    }
+    
+    //achou token de sincronização
+    if (token != null && !token.tipo.equals("EOF")) {
+      System.out.println("token de sincronização: " + token.lexema);
+      token = getNextToken(); 
+      System.out.println("quantidade de tokens descartados: " + tokensDescartados);
+      if (!tokensDescartadosList.isEmpty()) {
+        System.out.println("lista de tokens descartados: " + String.join(" ->", tokensDescartadosList));
+      }
+    }
+  }
 }
 //como compoilar um arquivo dentro do java (compilar automaticamente o CodigoTraduzido.java)
