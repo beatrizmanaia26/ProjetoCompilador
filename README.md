@@ -164,6 +164,7 @@ DIRECIONAMENTO CHARLES DESCRIÇÃO PROJETO: <br>
 - "condicao" não faz chamada de metodo e nem ()<br>
 - Da para escrever várias comparacoes (ex: se(Trem_a < 2 ou Trem_b <> Trem_c e Trem_d <-> 5){}), porém o resultado estara errado se fizer dessa forma pois não tem parenteses para determinar a ordem de comparações<br>
 - Em "condicao" posso comparar varias coisas (expressoesmatematicas de qualquer tamanho com número/"expressoesMatematicas" de qualquer tamanho, identificadores...)<br>
+- Se for usar expressao matematica, apos a operacao só pode ter os "tipos" que estao em condicao, ou seja, nao pode comparar diretamente expressao amteamtica com valor (ex:(2+3<8))
 
 ## Sobre funcões:
 

@@ -534,7 +534,6 @@ public class Parser {
     }
     // Token IDENTIFIER - lookahead melhorado
     if (token != null && "IDENTIFIER".equals(token.tipo)) {
-      System.out.println("entrou em identificadores");
       // Lookahead para ver se há operadores matemáticos OU relacionais nos próximos tokens
       boolean encontrouMatematico = false;
       boolean encontrouRelacional = false;
@@ -558,7 +557,6 @@ public class Parser {
       }
       // Se encontrou operador relacional, é comparação básica
       else if (encontrouRelacional) {
-        System.out.println("entrou em comparacesbasicas");
         return condicaoComparacoesBasicas(condicaoNode) && condicaoDerivada(condicaoNode);
       }
       else{
