@@ -14,7 +14,7 @@ public class Main{
     public static void main(String[] args){
         String code = "";
 
-        String nomeArquivo = "/workspaces/ProjetoCompilador/analisadorLexico/script_teste2.txt";
+        String nomeArquivo = "/workspaces/ProjetoCompilador/analisadorLexico/script.txt";
 
         try {
             code = lerArquivo(nomeArquivo);

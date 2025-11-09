@@ -213,15 +213,19 @@ public class Parser {
    */
   private boolean declaracao(Node root){
     Node declaracaoNode = root.addNode("declaracao");
+    
     if(first("declaracao") && tipoVariavel(declaracaoNode) && identificadores(declaracaoNode)) { //uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
     // Pode ser: tipo var; OU tipo var -> valor;
-
+    
+      // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
       if (token.lexema.equals(";") || token.lexema.equals("; \n")) {
         registrarVariavel(declaracaoTipoAtual, declaracaoIdentAtual);
       }else if (token.lexema.equals("->") || token.lexema.equals(" = ")) {
         registrarVariavel(declaracaoTipoAtual, declaracaoIdentAtual);
       }
-      
+      // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+
+
       if(matchL(";","; \n", declaracaoNode)) {
         
         return true; // declaracao simples
@@ -444,6 +448,17 @@ public class Parser {
       separadorArgumentosAtual = ajusteTraducaoArgumentosChamada(token);
     }
     Node inicioChamarFuncaoNode = root.addNode("inicioChamarFuncao");
+
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+    // Informa se tiver alguma chamada de função para não da erro no analisador semantico
+    if(token.tipo.equals("FUNCTION_NAME")||token.lexema.equals("Entrada")|| token.lexema.equals("Imprima")){
+      funtion_name_controle = true;
+    }else{
+      funtion_name_controle = false;
+    }
+    // ---------------------------- FIM -------------------------
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+
     if((first("palavraReservadaNomeFuncao") && palavraReservadaNomeFuncao(inicioChamarFuncaoNode))||
     matchL("Entrada","scanner.next"+tipoScannerAtual,inicioChamarFuncaoNode)||
     matchL("Imprima","System.out.print",inicioChamarFuncaoNode)){
@@ -459,6 +474,24 @@ public class Parser {
    */
   private boolean argumentosChamada(Node root){
     Node argumentosChamadaNode = root.addNode("argumentosChamada");
+
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+    boolean encontrado = false;
+
+    if (token.tipo.equals("IDENTIFIER")) {
+      for (String[] tokens : tabelaSemantica) {
+        if (token.lexema.equals(tokens[1])) {
+            System.out.println("Variavel declarada");
+            encontrado = true;
+        }
+      }
+      if (!encontrado) {
+        erroSemantico(token.lexema + " não encontrado" );
+        //System.out.println(token.lexema + " não encontrado" );
+      }
+    }
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+    
     if(first("valor") && valor(argumentosChamadaNode) && restoArgumentosChamada(argumentosChamadaNode)){
       return true;
     }
@@ -543,9 +576,11 @@ public class Parser {
   
   String tipoPrimeiraVariavel;
   String nomePrimeiraVariavel;
+
   private boolean condicao(Node root) {
     Node condicaoNode = root.addNode("condicao");
     
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
     //System.out.println(token.lexema + " " + token.tipo);
     // --------------------------- MARCAÇÃO DO TOKEN ----------------------------
     if (token.tipo.equals("INTEGER")) {
@@ -558,7 +593,7 @@ public class Parser {
       tipoPrimeiraVariavel = "verdadeiroFalso";
     } else if(token.tipo.equals("IDENTIFIER")){
       nomePrimeiraVariavel = token.lexema;
-      System.out.println(token.lexema);
+      //System.out.println(token.lexema);
       for(String[] tokens : tabelaSemantica){
         if(nomePrimeiraVariavel.equals(tokens[1])){
           tipoPrimeiraVariavel = tokens[0];
@@ -567,7 +602,11 @@ public class Parser {
     }
     // --------------------------- MARCAÇÃO DO TOKEN ----------------------------
     //System.out.println(tipoPrimeiraVariavel);
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+
+
     // Negação
+
     if (token != null && "!".equals(token.lexema)) {
         return negacaoCondicao(condicaoNode) && condicaoDerivada(condicaoNode);
     }
@@ -681,47 +720,21 @@ public class Parser {
    /*
    * simbulos          first
    * valoresOperacao   first é first dessas regras: identificadores, numero, isBoolean
+   * 
    */
+
+
+  // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
   String tipoSegundaVariavel;
   String nomeSegundaVariavel;
+  // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+
 
   private boolean valoresOperacao(Node root){ //funcoes atomicas(verificam diretamente tokens), n preciso colocar first
     Node valoresOperacaoNode = root.addNode("valoresOperacao");
 
-    //System.out.println(token.lexema + " " + token.tipo);
-    // --------------------------- MARCAÇÃO DO TOKEN ----------------------------
-    if (token.tipo.equals("INTEGER")) {
-      tipoSegundaVariavel = "inteiro";
-    }else if (token.tipo.equals("DECIMAL")){
-      tipoSegundaVariavel = "decimal";
-    }else if(token.tipo.equals("TEXT")){
-      tipoSegundaVariavel = "texto";
-    }else if(token.tipo.equals("PALAVRA_RESERVADA")){
-      tipoSegundaVariavel = "verdadeiroFalso";
-    } else if(token.tipo.equals("IDENTIFIER")){
-      nomeSegundaVariavel = token.lexema;
-      //System.out.println(token.lexema);
-      for(String[] tokens : tabelaSemantica){
-        if(nomeSegundaVariavel.equals(tokens[1])){
-          tipoSegundaVariavel = tokens[0];
-        }
-      }
-    }
-    // --------------------------- MARCAÇÃO DO TOKEN ----------------------------
-    System.out.println(tipoPrimeiraVariavel);
-    System.out.println(tipoSegundaVariavel);
-
-    if(((tipoPrimeiraVariavel.equals("inteiro") || tipoPrimeiraVariavel.equals("decimal")) && 
-      (tipoSegundaVariavel.equals("inteiro") || tipoSegundaVariavel.equals("decimal"))) ||
-      tipoPrimeiraVariavel.equals(tipoSegundaVariavel))
-      {
-      System.out.println("Ok, tipos iguais");
-    }else{
-      erro("Tipos para condição difentes: " + nomePrimeiraVariavel + " <> " + nomeSegundaVariavel);
-      //System.out.println("Tipos diferentes: " + tipoPrimeiraVariavel + " <-> " + tipoSegundaVariavel);
-    }
     if(first("identificadores") && identificadores(valoresOperacaoNode)|| first("numero") && numero(valoresOperacaoNode)|| first("isBoolean") &&
-     isBoolean(valoresOperacaoNode)){
+     isBoolean(valoresOperacaoNode) || first("texto") && texto(valoresOperacaoNode)){
       return true;
     }
     erro("valoresOperacao");
@@ -747,8 +760,11 @@ public class Parser {
    * simbulos              first
    * operacao            first é first dessas regras: operacaoRelacional, operacaoLogica
    */
+
+ 
   private boolean operacao(Node root){
     Node operacaoNode = root.addNode("operacao");
+
     if(first("operacaoRelacional") && operacaoRelacional(operacaoNode) || first("operacaoLogica") && operacaoLogica(operacaoNode)){
       return true;
     }
@@ -763,8 +779,48 @@ public class Parser {
    */
   private boolean operacaoRelacional(Node root){
     Node operacaoRelacionalNode = root.addNode("operacaoRelacional");
+    
     if(matchL("<","<",operacaoRelacionalNode)|| matchL(">",">",operacaoRelacionalNode) || matchL("<>","!=",operacaoRelacionalNode) ||
      matchL("<->","==",operacaoRelacionalNode)|| matchL("<=","<=",operacaoRelacionalNode)|| matchL(">=",">=",operacaoRelacionalNode)){
+      
+      // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+      // System.out.println(controle_e_ou);
+      // System.out.println(token.lexema + " " + token.tipo);
+      //--------------------------- MARCAÇÃO DO TOKEN ----------------------------
+      
+      if (token.tipo.equals("INTEGER")) {
+        tipoSegundaVariavel = "inteiro";
+      }else if (token.tipo.equals("DECIMAL")){
+        tipoSegundaVariavel = "decimal";
+      }else if(token.tipo.equals("TEXT")){
+        tipoSegundaVariavel = "texto";
+      }else if(token.tipo.equals("PALAVRA_RESERVADA")){
+        tipoSegundaVariavel = "verdadeiroFalso";
+      } else if(token.tipo.equals("IDENTIFIER")){
+        nomeSegundaVariavel = token.lexema;
+        //System.out.println(token.lexema);
+        for(String[] tokens : tabelaSemantica){
+          if(nomeSegundaVariavel.equals(tokens[1])){
+            tipoSegundaVariavel = tokens[0];
+          }
+        }
+      }
+      //System.out.println(nomePrimeiraVariavel + " <-> " + nomeSegundaVariavel);
+      if(((tipoPrimeiraVariavel.equals("inteiro") || tipoPrimeiraVariavel.equals("decimal")) && 
+        (tipoSegundaVariavel.equals("inteiro") || tipoSegundaVariavel.equals("decimal"))) ||
+        tipoPrimeiraVariavel.equals(tipoSegundaVariavel)){
+
+        System.out.println("Ok, tipos iguais");
+      }else{
+        erroSemantico("Tipos para condição difentes: " + nomePrimeiraVariavel + " <> " + nomeSegundaVariavel);
+        //System.out.println("Tipos diferentes: " + tipoPrimeiraVariavel + " <-> " + tipoSegundaVariavel);
+      }
+      
+      // --------------------------- MARCAÇÃO DO TOKEN ----------------------------
+      // System.out.println(tipoPrimeiraVariavel);
+      // System.out.println(tipoSegundaVariavel);
+      // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+
       return true;
     }
     erro("operadorRelacional");
@@ -776,8 +832,10 @@ public class Parser {
    * simbulos              first
    * operacaoLogica       e,ou,!
    */
+ 
   private boolean operacaoLogica(Node root){
     Node operacaoLogicaNode = root.addNode("operacaoLogica");
+
     if(matchL("e","&&",operacaoLogicaNode)||matchL("ou","||",operacaoLogicaNode)||matchL("!","!",operacaoLogicaNode)){
       return true;
     }
@@ -853,50 +911,63 @@ public class Parser {
    * simbulos       first
    * valor          first é first dessas regras: numero,texto,isBoolean, identificadores,expressoesMatematicas
    */
+  // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+   boolean funtion_name_controle = false;
+  // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
   private boolean valor(Node root){ 
     
     Node valorNode = root.addNode("valor");
     //tokens é a lista com os proximos tokens             //quando quero chamar funcao e tem texto no comeco // argumento da chamada (ultimo argumento)// quando tem mais argumentos
-
-    // ---------------------------------- Analise Semantica ------------------------------------------------
+    
+    
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
     // marcação para ver se a variavel existe na tabela para atribuição
     boolean encontrado = false;
     // percorre a lista de declarações
-    for(String[] variaveis : tabelaSemantica) {
-      // verifica se o identificador atual existe na tabela
-      if (declaracaoIdentAtual.equals(variaveis[1])) {
-        encontrado = true;
-        // -------------------------------- Tipagem de variavel --------------------------------------------------
-        // Verifica o tipo da variavel para atribuição (Tipagem das variaveis)
+    if (!funtion_name_controle) {
+      funtion_name_controle = false;
+      for(String[] variaveis : tabelaSemantica) {
+        // verifica se o identificador atual existe na tabela
         if (declaracaoIdentAtual.equals(variaveis[1])) {
-          if(token.tipo.equals("INTEGER") && variaveis[0].equals("inteiro") 
-            ||(token.tipo.equals("DECIMAL") && variaveis[0].equals("decimal")|| token.tipo.equals("INTEGER") && variaveis[0].equals("decimal"))
-            ||token.tipo.equals("TEXT") && variaveis[0].equals("texto")
-            ||token.tipo.equals("PALAVRA_RESERVADA") && variaveis[0].equals("verdadeiroFalso")) {
-              atribuicaoSomaIdentificador = declaracaoIdentAtual;
-              System.out.println(declaracaoIdentAtual + " Passou na atribuicao semantica Tipo -> " + token.tipo);
-            //System.out.println(variaveis[0] + " " + token.tipo + " " + declaracaoTipoAtual + " " + variaveis[1]);
-          } 
-          // caso os tipos estejam diferentes
-          else{
-              //System.out.println("Tipos diferentes: " + "id -> " + declaracaoIdentAtual + "; tipo -> " + variaveis[0] + "; tipo atribuido -> " + token.tipo);
-              erro("Tipos diferentes: " + "id -> " + declaracaoIdentAtual + "; tipo -> " + variaveis[0] + "; tipo atribuido -> " + token.tipo);
-              //System.out.println(declaracaoIdentAtual + " " + declaracaoTipoAtual + " " + token.tipo + " " + variaveis[0] + " " + variaveis[1]  + " " +"Errado");
-          }
+          encontrado = true;
           // -------------------------------- Tipagem de variavel --------------------------------------------------
-          // para o for quando encontrar a variavel
-          break;
+          // Verifica o tipo da variavel para atribuição (Tipagem das variaveis)
+          if (declaracaoIdentAtual.equals(variaveis[1])) {
+            if(token.tipo.equals("INTEGER") && variaveis[0].equals("inteiro") 
+              ||(token.tipo.equals("DECIMAL") && variaveis[0].equals("decimal")|| token.tipo.equals("INTEGER") && variaveis[0].equals("decimal"))
+              ||token.tipo.equals("TEXT") && variaveis[0].equals("texto")
+              ||token.tipo.equals("PALAVRA_RESERVADA") && variaveis[0].equals("verdadeiroFalso")
+              ||token.tipo.equals("PALAVRA_RESERVADA")) {
+                atribuicaoSomaIdentificador = declaracaoIdentAtual;
+                System.out.println(declaracaoIdentAtual + " Passou na atribuicao semantica Tipo -> " + token.tipo);
+              //System.out.println(variaveis[0] + " " + token.tipo + " " + declaracaoTipoAtual + " " + variaveis[1]);
+            }
+            else if(token.lexema.equals("(") || token.lexema.equals(")")){
+              continue;
+            } 
+            // caso os tipos estejam diferentes
+            else{
+                //System.out.println("Tipos diferentes: " + "id -> " + declaracaoIdentAtual + "; tipo -> " + variaveis[0] + "; tipo atribuido -> " + token.tipo);
+                erroSemantico("Tipos diferentes: " + "id -> " + declaracaoIdentAtual + "; tipo -> " + variaveis[0] + "; tipo atribuido -> " + token.tipo);
+                //System.out.println(declaracaoIdentAtual + " " + declaracaoTipoAtual + " " + token.tipo + " " + variaveis[0] + " " + variaveis[1]  + " " +"Errado");
+            }
+            // -------------------------------- Tipagem de variavel --------------------------------------------------
+            // para o for quando encontrar a variavel
+            break;
+          }
         }
       }
+      // -------------------------------- Escopo e existencia de variavel --------------------------------------------------
+      // verifica se o identificador existe na tabela de variaveis (Escopo ou não declarado)
+      if (!encontrado) {
+        erroSemantico(declaracaoIdentAtual + " não esta na tabela");
+        //System.out.println(declaracaoIdentAtual + " não esta na tabela");
+      }
+      // -------------------------------- Tipagem de variavel --------------------------------------------------
     }
-    // -------------------------------- Escopo e existencia de variavel --------------------------------------------------
-    // verifica se o identificador existe na tabela de variaveis (Escopo ou não declarado)
-    if (!encontrado) {
-      erro(declaracaoIdentAtual + " não esta na tabela");
-      //System.out.println(declaracaoIdentAtual + " não esta na tabela");
-    }
-    // -------------------------------- Tipagem de variavel --------------------------------------------------
-    // ---------------------------------- Analise Semantica ------------------------------------------------
+    
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+    
     
     if(tokens.get(0).lexema.equals(";") || token.tipo.equals("TEXT") || tokens.get(0).lexema.equals(")") ||  tokens.get(0).lexema.equals(",") ){//se proximo token da lista for ; é declaracao simples e pode ser numero/texto/isboolean/identificadores
       
@@ -909,6 +980,7 @@ public class Parser {
     else if (firsts.get("operacao").contains(token.lexema) || firsts.get("operacao").contains(tokens.get(0).lexema)){//se token atual for algum dos tokens do first operacao ou prox token for algum dos tokens do first de operacao
       return condicaoComparacoesBasicas(valorNode);
     }
+    
     else if(token.tipo.equals("FUNCTION_NAME")||token.lexema.equals("Entrada")|| token.lexema.equals("Imprima")){
       return chamarFuncaoSemFim(valorNode);
     }
@@ -1099,16 +1171,20 @@ public class Parser {
    * simbulos                     first
     * precedenciaSuperior       "(", first é first dessa regra: identificadores,numero
    */
+
+   // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
   // nome da variavel armazenada
   String atribuicaoSoma;
   // nome da variavel que realizara a soma
   String atribuicaoSomaIdentificador;
   // tipo da variavel que esta armazenada
   String atribuicaoSomaIdentificadorTipo;
+// -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
 
   private boolean precedenciaSuperior(Node root){
     Node precedenciaSuperiorNode = root.addNode("precedenciaSuperior");
 
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
     // --------------------------------------- Analisador Semantico para expressões matematicas ----------------------------------------- 
     boolean encontrado = false;
     // verifica se o token é um identificador
@@ -1125,18 +1201,18 @@ public class Parser {
           encontrado = true;
           //System.out.println("VARIAVEL ENCONTRADA : " + variacel);
 
-          if (variaveis[0].equals("texto")) {
-            erro("Tipos incompatíveis para operação entre " + atribuicaoSomaIdentificador + " e " + atribuicaoSoma);
-          }
-        } 
-      }
+            if (atribuicaoSomaIdentificadorTipo.equals("texto")) {
+              erroSemantico("Tipos incompatíveis para operação entre " + atribuicaoSomaIdentificador + " e " + atribuicaoSoma);
+            }
+          } 
+        }
         if (!encontrado) {
-            erro(atribuicaoSoma + " não foi declarada");
+            erroSemantico(atribuicaoSoma + " não foi declarada");
             //System.out.println(declaracaoIdentAtual + " não esta na tabela");
-          }
+        }
       }
       // --------------------------------------- Analisador Semantico para expressões matematicas -----------------------------------------
-    
+      // -----------------------------------ANALISADOR SEMANTICO ----------------------------------------------------------------------------
 
     if((first("identificadores") && identificadores(precedenciaSuperiorNode))||(first("numero") && numero(precedenciaSuperiorNode))||
      ((matchL("(","(",precedenciaSuperiorNode) && expressoesMatematicas(precedenciaSuperiorNode) && matchL(")",")",precedenciaSuperiorNode)))){
@@ -1210,7 +1286,11 @@ public class Parser {
   private boolean tipoVariavel(Node root){
     tipoScannerAtual = getTipoScanner(token.lexema);
     Node tipoVariavelNode = root.addNode("tipoVariavel");
+
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
     declaracaoTipoAtual = token.lexema;
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+
     if(matchL("inteiro","int ",tipoVariavelNode)||matchL("decimal","double ",tipoVariavelNode)||matchL("texto","String ",tipoVariavelNode)||
     matchL("verdadeiroFalso","boolean ",tipoVariavelNode)){ 
       return true;
@@ -1271,7 +1351,9 @@ public class Parser {
     Node identificadoresNode = root.addNode("identificadores");
     //verifica se prox token é ^ - ^se for nao traduz aqui (para token apenas aparecer dentro o math.pow)
     boolean proximoEhPotencia = !tokens.isEmpty() && tokens.get(0).lexema.equals("^");
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
     declaracaoIdentAtual = token.lexema;
+    // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
     if(matchT("IDENTIFIER", proximoEhPotencia ? "" : token.lexema, identificadoresNode)){
         return true;
     }
@@ -1431,12 +1513,14 @@ public class Parser {
     if(token.lexema.equals(tipo)){
       node.addNode(token.lexema);
 
+      // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
       if(tipo.equals('{')){
         nivelEscopo++;
       }
       else if (tipo.equals('}')) {
         nivelEscopo--;
       }
+      // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
 
       token = getNextToken();
       return true;
@@ -1451,6 +1535,7 @@ public class Parser {
       traduz(newcode);
       node.addNode(token.lexema);
 
+      // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
       if (token.lexema.equals("{")) {
         nivelEscopo++;
       }
@@ -1458,7 +1543,8 @@ public class Parser {
         removerVariaveisDoNivel(nivelEscopo);
         nivelEscopo--;
       }
-
+      // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+      
       token = getNextToken();
       return true;
     }
@@ -1680,36 +1766,31 @@ private void inicializarTokensSincronizacao(){
   }
   //como compoilar um arquivo dentro do java (compilar automaticamente o CodigoTraduzido.java)
 
+
+
+  // --------------------------------- ANALISADOR SEMANTICO ---------------------------------------------------
+
+  // Funções com analise semantica: 
+  //                                inicioChamarFuncao -> tras se tem function como a "Imprimir" para não da erro no semantico
+  //                                argumentosChamada -> verifica se o item chamado na função existe Imprima("Trem_valor1")
+  //                                condicao -> guardo o tipo da variavel utilizada para verificar com a proxima chamada se são iguais
+  //                                operacaoRelacional -> marca o tipo da segunda variavel para a condição e verifica se são iguais os tipos
+  //                                valor  -> Verifica o tipo de atribuição que sera feita para a variavel, e se condiz com oque foi declarado a ela
+  //                                precedenciaSuperior -> verifica se os tipos de variaveis são numericas para realizar as operações matematicas
+  //                                declaração -> salvo a a variavel na pilha
+  //                                tipoVariavel -> marco o tipo da variavel
+  //                                identificadores -> marco o nome da variavel
+  //                                matchL -> marcação do nivel das variaveis
+  //
+  //
+  //
+
   private List<String[]> tabelaSemantica = new ArrayList<>(); // tabela para armazenar as declarações
   private int nivelEscopo = 0; // nivel da variavel para identificar o scopo dela
 
   private String declaracaoTipoAtual; // armazena a declaracao atual para evitar duplicidade
   private String declaracaoIdentAtual;
-  // private String //declaracaoValorAtual;
-  // private int existeDeclaracaoIgual = 0;
-  // private int tiposCompatíveis = 0;
-  //private String declaracaoIdentComparacaoTipo;
-
-  // //Verifica se a variavel existe na tabela semantica
-  // private void verificarVariavelDeclarada(String tipo, String identificador){
-
-  //   for(String[] declaracoes : tabelaSemantica){
-  //     if(declaracoes[1].equals(identificador) && nivelEscopo == Integer.parseInt(declaracoes[2])){
-  //       //System.out.println("Erro Semântico: Variável '" + identificador + "' já declarada");
-  //       existeDeclaracaoIgual = 1;
-  //     }
-  //   }
-  // }
-
-  // // verifica se os tipos são compatíveis
-  // private void verificarTipagemVariavel(String tipo, String identificador){
-  //   if(//declaracaoValorAtual.equals(declaracaoTipoAtual)){
-  //     //System.out.println("Erro Semântico: Tipo incompatível na atribuição para a variável '" + identificador + "'");
-  //     tiposCompatíveis = 1;
-  //   }
-  // }
-
-  // registra a variavel na tabela semantica
+  
   private void registrarVariavel(String tipo, String identificador) {
     
     System.out.println("Registrando variável: " + "id: " + identificador + ", tipo: " + tipo + ", nível de escopo: " + nivelEscopo); // + " tipo do valor atribuido: " + //declaracaoValorAtual
@@ -1734,6 +1815,14 @@ private void inicializarTokensSincronizacao(){
     System.out.println("------------------------------------------");
   }
 
-  
+  private void erroSemantico(String regra) {
+    //System.out.println("-------------- Regra: " + regra);
+    System.out.println("token inválido: " + token);
+    System.out.println("Próximo token: " + tokens.get(0));
+    System.out.println("------------------------------");
+    //contadorErro++;
+    //recuperacaoPanico();
+  }
+  // --------------------------------- ANALISADOR SEMANTICO ---------------------------------------------------
 }
 

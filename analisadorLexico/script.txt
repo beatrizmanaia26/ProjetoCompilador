@@ -12,7 +12,7 @@ verdadeiroFalso Trem_userLogado -> false;
 inteiro Trem_tentativasSenha -> 0;  
 Imprima("bem vindo\n");  
 
-lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){
+lacoEnquanto(Trem_tentativasSenha < Trem_maxTentativasSenha){
 
     texto Trem_senha;
 
@@ -21,12 +21,12 @@ lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){
 
     se(Trem_senhaDigitada <-> Trem_senhaCorreta){
 
-    Trem_userLogado -> true;
+        Trem_userLogado -> true;
+        
 
         Imprima("login realizado\n");
 
     }
-
     senao{
 
         Trem_tentativasSenha -> Trem_tentativasSenha + 1;
@@ -42,7 +42,7 @@ lacoEnquanto(!Trem_userLogado e Trem_tentativasSenha < Trem_maxTentativasSenha){
         }
 
     }
-
+   
 }
 
 verdadeiroFalso Trem_sistemaAtivo -> true;  
@@ -57,18 +57,18 @@ lacoEnquanto(Trem_sistemaAtivo e Trem_userLogado){
     Imprima("\nDigite a opcao");
     inteiro Trem_opcao ->Entrada();  
     se(Trem_opcao <-> 1){  
-    Imprima("\nDigite o valor do saque");  
-    decimal Trem_valorSaque -> Entrada();  
-    se(Trem_valorSaque > 0 e Trem_valorSaque <= Trem_saldo){  
-        se(Trem_valorSaque <= Trem_limiteSaque){  
-            Trem_saldo -> Trem_valorSaque - Trem_saldo;  
-            Imprima("Saque  realizado com sucesso no valor de R$ ", Trem_valorSaque);  
-            Imprima("Novo saldo: R$ ", Trem_saldo);  
-        }  
-        senao{  
-            Imprima("Valor excede o limite de saque de R$", Trem_limiteSaque);  
-        }  
-    } 
+        Imprima("\nDigite o valor do saque");  
+        decimal Trem_valorSaque -> Entrada();  
+        se(Trem_valorSaque > 0 e Trem_valorSaqueTrem <= Trem_saldo){  
+            se(Trem_valorSaque <= Trem_limiteSaque){  
+                Trem_saldo -> Trem_valorSaque - Trem_saldo;  
+                Imprima("Saque  realizado com sucesso no valor de R$ ", Trem_valorSaque);  
+                Imprima("Novo saldo: R$ ", Trem_saldo);  
+            }  
+            senao{  
+                Imprima("Valor excede o limite de saque de R$", Trem_limiteSaque);  
+            }  
+        } 
     }
      ouSe(Trem_opcao <-> 0){
         Imprima("tchau");
