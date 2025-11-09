@@ -9,7 +9,7 @@ boolean Trem_verdade = true;
 Trem_valor1 = 15; 
 Trem_texto3 = "10"; 
 double Trem_soma = 10+5.5+Trem_valor1+Trem_valor2; 
-if(5>Trem_texto3){Trem_valor1 = 20; 
+if(Trem_texto3==Trem_texto3){Trem_valor1 = 20; 
 }
 }
 

@@ -540,10 +540,33 @@ public class Parser {
    */
 
   //implementação do lookahead para pegar o prox token e distinguir se é identificadores, expressoesMatematicas ou condicoesComparacoesBasicas
-
+  
+  String tipoPrimeiraVariavel;
+  String nomePrimeiraVariavel;
   private boolean condicao(Node root) {
     Node condicaoNode = root.addNode("condicao");
-  
+    
+    //System.out.println(token.lexema + " " + token.tipo);
+    // --------------------------- MARCAÇÃO DO TOKEN ----------------------------
+    if (token.tipo.equals("INTEGER")) {
+      tipoPrimeiraVariavel = "inteiro";
+    }else if (token.tipo.equals("DECIMAL")){
+      tipoPrimeiraVariavel = "decimal";
+    }else if(token.tipo.equals("TEXT")){
+      tipoPrimeiraVariavel = "texto";
+    }else if(token.tipo.equals("PALAVRA_RESERVADA")){
+      tipoPrimeiraVariavel = "verdadeiroFalso";
+    } else if(token.tipo.equals("IDENTIFIER")){
+      nomePrimeiraVariavel = token.lexema;
+      System.out.println(token.lexema);
+      for(String[] tokens : tabelaSemantica){
+        if(nomePrimeiraVariavel.equals(tokens[1])){
+          tipoPrimeiraVariavel = tokens[0];
+        }
+      }
+    }
+    // --------------------------- MARCAÇÃO DO TOKEN ----------------------------
+    //System.out.println(tipoPrimeiraVariavel);
     // Negação
     if (token != null && "!".equals(token.lexema)) {
         return negacaoCondicao(condicaoNode) && condicaoDerivada(condicaoNode);
@@ -659,10 +682,34 @@ public class Parser {
    * simbulos          first
    * valoresOperacao   first é first dessas regras: identificadores, numero, isBoolean
    */
+  String tipoSegundaVariavel;
+  String nomeSegundaVariavel;
 
   private boolean valoresOperacao(Node root){ //funcoes atomicas(verificam diretamente tokens), n preciso colocar first
     Node valoresOperacaoNode = root.addNode("valoresOperacao");
-    
+
+    //System.out.println(token.lexema + " " + token.tipo);
+    // --------------------------- MARCAÇÃO DO TOKEN ----------------------------
+    if (token.tipo.equals("INTEGER")) {
+      tipoSegundaVariavel = "inteiro";
+    }else if (token.tipo.equals("DECIMAL")){
+      tipoSegundaVariavel = "decimal";
+    }else if(token.tipo.equals("TEXT")){
+      tipoSegundaVariavel = "texto";
+    }else if(token.tipo.equals("PALAVRA_RESERVADA")){
+      tipoSegundaVariavel = "verdadeiroFalso";
+    } else if(token.tipo.equals("IDENTIFIER")){
+      nomeSegundaVariavel = token.lexema;
+      //System.out.println(token.lexema);
+      for(String[] tokens : tabelaSemantica){
+        if(nomeSegundaVariavel.equals(tokens[1])){
+          tipoSegundaVariavel = tokens[0];
+        }
+      }
+    }
+    // --------------------------- MARCAÇÃO DO TOKEN ----------------------------
+    System.out.println(tipoPrimeiraVariavel);
+    System.out.println(tipoSegundaVariavel);
     if(first("identificadores") && identificadores(valoresOperacaoNode)|| first("numero") && numero(valoresOperacaoNode)|| first("isBoolean") &&
      isBoolean(valoresOperacaoNode)){
       return true;
