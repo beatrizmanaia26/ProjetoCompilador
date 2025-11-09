@@ -790,6 +790,7 @@ public class Parser {
             System.out.println("Passou");
           //System.out.println(variaveis[0] + " " + token.tipo + " " + declaracaoTipoAtual + " " + variaveis[1]);
         } 
+        // continuar daqui o analisador semantico
         else{
             System.out.println(declaracaoIdentAtual + " " + declaracaoTipoAtual + " " + token.tipo + " " + variaveis[0] + " " + variaveis[1]  + " " +"Errado");
         }
