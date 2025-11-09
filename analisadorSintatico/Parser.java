@@ -214,10 +214,14 @@ public class Parser {
     Node declaracaoNode = root.addNode("declaracao");
     if(first("declaracao") && tipoVariavel(declaracaoNode) && identificadores(declaracaoNode)) { //uso first declaracao pq é igual ao first de tipovariavel, ai n tenho que criar outra regra pros mesmos firsts
     // Pode ser: tipo var; OU tipo var -> valor;
+      
+       
       if(matchL(";","; \n", declaracaoNode)) {
+        registrarVariavel(declaracaoTipoAtual, declaracaoIdentAtual); //registra variavel na tabela semantica
         return true; // declaracao simples
-      } 
+      }
       else if(matchL("->"," = ",declaracaoNode)&& valor(declaracaoNode) && matchL(";","; \n",declaracaoNode)) {
+        registrarVariavel(declaracaoTipoAtual, declaracaoIdentAtual); //registra variavel na tabela semantica
         return true; // declaracao com atribuicao
       }
     }
@@ -744,6 +748,7 @@ public class Parser {
    */
   private boolean atribui(Node root){ 
     Node atribuiNode = root.addNode("atribui");
+    
     if(first("identificadores") && identificadores(atribuiNode) && matchL("->"," = ",atribuiNode) && valor(atribuiNode) && matchL(";","; \n",atribuiNode)){
         return true;
     }
@@ -772,11 +777,30 @@ public class Parser {
    * valor          first é first dessas regras: numero,texto,isBoolean, identificadores,expressoesMatematicas
    */
   private boolean valor(Node root){ 
+    
     Node valorNode = root.addNode("valor");
     //tokens é a lista com os proximos tokens             //quando quero chamar funcao e tem texto no comeco // argumento da chamada (ultimo argumento)// quando tem mais argumentos
+    //System.out.println(declaracaoTipoAtual + " " + declaracaoIdentAtual + " " + token.tipo + " " + token.lexema);
+    for(String[] variaveis : tabelaSemantica) {
+      if (declaracaoIdentAtual.equals(variaveis[1])) {
+        if(token.tipo.equals("INTEGER") && variaveis[0].equals("inteiro") 
+          ||token.tipo.equals("INTEGER") && variaveis[0].equals("decimal")
+          ||token.tipo.equals("TEXT") && variaveis[0].equals("texto")
+          ||token.tipo.equals("BOOLEAN") && variaveis[0].equals("verdadeiroFalso")) {
+            System.out.println("Passou");
+          //System.out.println(variaveis[0] + " " + token.tipo + " " + declaracaoTipoAtual + " " + variaveis[1]);
+        } 
+        else{
+            System.out.println(declaracaoIdentAtual + " " + declaracaoTipoAtual + " " + token.tipo + " " + variaveis[0] + " " + variaveis[1]  + " " +"Errado");
+        }
+      }
+    }
+    //exibirTabelaSemantica();
     if(tokens.get(0).lexema.equals(";") || token.tipo.equals("TEXT") || tokens.get(0).lexema.equals(")") ||  tokens.get(0).lexema.equals(",") ){//se proximo token da lista for ; é declaracao simples e pode ser numero/texto/isboolean/identificadores
+      
       if((first("numero") && numero(valorNode))||(first("texto") && texto(valorNode))||(first("isBoolean") && isBoolean(valorNode))||
       (first("identificadores") && identificadores(valorNode))){
+        
         return true;
       }
     }
@@ -811,6 +835,7 @@ public class Parser {
    */
   private boolean numero(Node root){ 
     Node numeroNode = root.addNode("numero");
+    
     if(first("decimal") && decimal(numeroNode)||first("inteiro") && inteiro(numeroNode)){
       return true;
     }
@@ -1046,6 +1071,7 @@ public class Parser {
   private boolean tipoVariavel(Node root){
     tipoScannerAtual = getTipoScanner(token.lexema);
     Node tipoVariavelNode = root.addNode("tipoVariavel");
+    declaracaoTipoAtual = token.lexema;
     if(matchL("inteiro","int ",tipoVariavelNode)||matchL("decimal","double ",tipoVariavelNode)||matchL("texto","String ",tipoVariavelNode)||
     matchL("verdadeiroFalso","boolean ",tipoVariavelNode)){ 
       return true;
@@ -1062,9 +1088,14 @@ public class Parser {
    * decimal       DECIMAL
    */
   private boolean decimal(Node root){ 
+
+    
     Node decimalNode = root.addNode("decimal");
     //verifica se prox token é ^ - ^se for nao traduz aqui (para token apenas aparecer dentro o math.pow)
+    declaracaoValorAtual = "decimal";
     boolean proximoEhPotencia = !tokens.isEmpty() && tokens.get(0).lexema.equals("^");
+   
+
     if(matchT("DECIMAL",proximoEhPotencia ? "" : token.lexema, decimalNode )){
       return true;
     }
@@ -1077,9 +1108,14 @@ public class Parser {
    * inteiro       INTEIRO
    */
   private boolean inteiro(Node root){ 
+
+    
     Node inteiroNode = root.addNode("inteiro");
     //verifica se prox token é ^ - ^se for nao traduz aqui (para token apenas aparecer dentro o math.pow)
+    declaracaoValorAtual = "inteiro";
     boolean proximoEhPotencia = !tokens.isEmpty() && tokens.get(0).lexema.equals("^");
+     
+
     if(matchT("INTEGER", proximoEhPotencia ? "" : token.lexema,inteiroNode)){
       return true;
     }
@@ -1096,6 +1132,7 @@ public class Parser {
     Node identificadoresNode = root.addNode("identificadores");
     //verifica se prox token é ^ - ^se for nao traduz aqui (para token apenas aparecer dentro o math.pow)
     boolean proximoEhPotencia = !tokens.isEmpty() && tokens.get(0).lexema.equals("^");
+    declaracaoIdentAtual = token.lexema;
     if(matchT("IDENTIFIER", proximoEhPotencia ? "" : token.lexema, identificadoresNode)){
         return true;
     }
@@ -1108,7 +1145,12 @@ public class Parser {
    * texto        TEXT
    */
   private boolean texto(Node root){ 
+
+    
+
     Node textoNode = root.addNode("texto");
+    declaracaoValorAtual = "texto";
+
     if(matchT("TEXT","\""+token.lexema+"\"",textoNode)){
       return true;
     }
@@ -1122,7 +1164,11 @@ public class Parser {
    * boolean      true, false
    */
   private boolean isBoolean(Node root){
+
+    
     Node isBooleanNode = root.addNode("isBoolean");
+    declaracaoValorAtual = "isBoolean";
+
     if(matchL("true","true",isBooleanNode)||matchL("false","false",isBooleanNode)){
       return true;
     }
@@ -1245,6 +1291,14 @@ public class Parser {
   private boolean matchL(String tipo, Node node){
     if(token.lexema.equals(tipo)){
       node.addNode(token.lexema);
+
+      if(tipo.equals('{')){
+        nivelEscopo++;
+      }
+      else if (tipo.equals('}')) {
+        nivelEscopo--;
+      }
+
       token = getNextToken();
       return true;
     }
@@ -1257,6 +1311,15 @@ public class Parser {
     if(token.lexema.equals(tipo)){
       traduz(newcode);
       node.addNode(token.lexema);
+
+      if (token.lexema.equals("{")) {
+        nivelEscopo++;
+      }
+      else if (token.lexema.equals("}")) {
+        removerVariaveisDoNivel(nivelEscopo);
+        nivelEscopo--;
+      }
+
       token = getNextToken();
       return true;
     }
@@ -1476,5 +1539,72 @@ private void inicializarTokensSincronizacao(){
       }
     }
   }
+  //como compoilar um arquivo dentro do java (compilar automaticamente o CodigoTraduzido.java)
+
+  private List<String[]> tabelaSemantica = new ArrayList<>(); // tabela para armazenar as declarações
+  private int nivelEscopo = 0; // nivel da variavel para identificar o scopo dela
+
+  private String declaracaoTipoAtual; // armazena a declaracao atual para evitar duplicidade
+  private String declaracaoIdentAtual;
+  private String declaracaoValorAtual;
+  private int existeDeclaracaoIgual = 0;
+  private int tiposCompatíveis = 0;
+  //private String declaracaoIdentComparacaoTipo;
+
+  //Verifica se a variavel existe na tabela semantica
+  private void verificarVariavelDeclarada(String tipo, String identificador){
+
+    for(String[] declaracoes : tabelaSemantica){
+      if(declaracoes[1].equals(identificador) && nivelEscopo == Integer.parseInt(declaracoes[2])){
+        //System.out.println("Erro Semântico: Variável '" + identificador + "' já declarada");
+        existeDeclaracaoIgual = 1;
+      }
+    }
+  }
+
+  // verifica se os tipos são compatíveis
+  private void verificarTipagemVariavel(String tipo, String identificador){
+    if(declaracaoValorAtual.equals(declaracaoTipoAtual)){
+      //System.out.println("Erro Semântico: Tipo incompatível na atribuição para a variável '" + identificador + "'");
+      tiposCompatíveis = 1;
+    }
+  }
+
+  // registra a variavel na tabela semantica
+  private void registrarVariavel(String tipo, String identificador) {
+
+    verificarVariavelDeclarada(tipo, identificador);
+    if (existeDeclaracaoIgual == 1) {
+      erro("Erro Semântico: Variável '" + identificador + "' já declarada");
+    }
+
+    verificarTipagemVariavel(tipo, identificador);
+    if (tiposCompatíveis == 0) {
+      erro("Erro Semântico: Tipo incompatível na atribuição para a variável '" + identificador + "'");
+    }
+    
+    System.out.println("Registrando variável: " + "id: " + identificador + ", tipo: " + tipo + ", nível de escopo: " + nivelEscopo + " tipo do valor atribuido: " + declaracaoValorAtual);
+    // armazena na array a declaracão da variavel
+    tabelaSemantica.add(new String[]{tipo, identificador, String.valueOf(nivelEscopo)});
+    exibirTabelaSemantica();
+    
+  }
+
+  private void removerVariaveisDoNivel(int nivel) {
+    tabelaSemantica.removeIf(linha -> Integer.parseInt(linha[2]) == nivel);
+    exibirTabelaSemantica();
+  }
+
+  private void exibirTabelaSemantica(){
+    // imprime a tabela semantica
+    System.out.println("----- TABELA SEMÂNTICA DE DECLARAÇÕES ----");
+    System.out.println("TIPO       IDENTIFICADOR       NÍVEL DE ESCOPO");
+    for (String[] entrada : tabelaSemantica) {
+        System.out.printf("%-10s %-20s %-15s%n", entrada[0], entrada[1], entrada[2]);
+    }
+    System.out.println("------------------------------------------");
+  }
+
+  
 }
-//como compoilar um arquivo dentro do java (compilar automaticamente o CodigoTraduzido.java)
+

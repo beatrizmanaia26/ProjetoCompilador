@@ -1,0 +1,13 @@
+inteiro Trem_valor1 -> 10;
+decimal Trem_valor2 -> 5.5;
+
+texto Trem_texto3 -> "Hello World";
+
+verdadeiroFalso Trem_verdade -> true;
+criar FuncaoTeste(){
+    inteiro Trem_conta -> 10;
+
+}
+
+Trem_texto3 -> 10;
+Trem_conta -> 5;
