@@ -710,6 +710,16 @@ public class Parser {
     // --------------------------- MARCAÇÃO DO TOKEN ----------------------------
     System.out.println(tipoPrimeiraVariavel);
     System.out.println(tipoSegundaVariavel);
+
+    if(((tipoPrimeiraVariavel.equals("inteiro") || tipoPrimeiraVariavel.equals("decimal")) && 
+      (tipoSegundaVariavel.equals("inteiro") || tipoSegundaVariavel.equals("decimal"))) ||
+      tipoPrimeiraVariavel.equals(tipoSegundaVariavel))
+      {
+      System.out.println("Ok, tipos iguais");
+    }else{
+      erro("Tipos para condição difentes: " + nomePrimeiraVariavel + " <> " + nomeSegundaVariavel);
+      //System.out.println("Tipos diferentes: " + tipoPrimeiraVariavel + " <-> " + tipoSegundaVariavel);
+    }
     if(first("identificadores") && identificadores(valoresOperacaoNode)|| first("numero") && numero(valoresOperacaoNode)|| first("isBoolean") &&
      isBoolean(valoresOperacaoNode)){
       return true;
