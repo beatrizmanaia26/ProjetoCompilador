@@ -242,7 +242,9 @@ public class Parser {
    */
   private boolean seCompleto(Node root){
     Node seCompletoNode = root.addNode("seCompleto");
+      //System.out.println("ENTROU NA REGRA SE COMPLETO: " + token.lexema);
       if(first("se")&& se(seCompletoNode) && listaOuSe(seCompletoNode) && senaoOpcional(seCompletoNode)){
+        
         return true;
       }
     return false; // n tem erro especifico pq a regra especifcia (se, ouse e senao) darao o erro
@@ -255,6 +257,7 @@ public class Parser {
    */
   private boolean listaOuSe(Node root){
     Node listaOuSeNode = root.addNode("listaOuSe");
+    
     if(first("ouSe") && ouSe(listaOuSeNode) && listaOuSe(listaOuSeNode)){
       return true;
     }
@@ -282,6 +285,7 @@ public class Parser {
   */
   private boolean se(Node root){ 
     Node seNode = root.addNode("se");
+    //System.out.println("ENTROU NA REGRA SE: " + token.lexema);
      if (matchL("se","if",seNode) && matchL("(","(",seNode) && condicao(seNode) && matchL(")",")",seNode) &&
       matchL("{","{",seNode) &&
       listaComandosInternos(seNode) && matchL("}","}\n",seNode)){
@@ -536,14 +540,18 @@ public class Parser {
    */
 
   //implementação do lookahead para pegar o prox token e distinguir se é identificadores, expressoesMatematicas ou condicoesComparacoesBasicas
+
   private boolean condicao(Node root) {
     Node condicaoNode = root.addNode("condicao");
+  
     // Negação
     if (token != null && "!".equals(token.lexema)) {
         return negacaoCondicao(condicaoNode) && condicaoDerivada(condicaoNode);
     }
+    
     // Token IDENTIFIER - lookahead melhorado
     if (token != null && "IDENTIFIER".equals(token.tipo)) {
+      
       // Lookahead mais inteligente: verifica se há operadores matemáticos antes de relacionais
       if (!tokens.isEmpty()) {
         // Procura por operadores matemáticos OU relacionais nos próximos tokens
@@ -562,11 +570,13 @@ public class Parser {
             break;
           }
         }
+        
         // Se encontrou operador matemático, é expressão matemática
         if (encontrouMatematico) {
           return expressoesMatematicas(condicaoNode) && condicaoDerivada(condicaoNode);
         }
         // Se encontrou operador relacional, é comparação básica
+        
         else if (encontrouRelacional) {
           return condicaoComparacoesBasicas(condicaoNode) && condicaoDerivada(condicaoNode);
         }
@@ -583,6 +593,7 @@ public class Parser {
       // Lookahead para ver se é número sozinho ou parte de comparação
       if (!tokens.isEmpty()) {
         Token nextToken = tokens.get(0);
+        
         if (firsts.get("operacaoRelacional").contains(nextToken.lexema)) {
           return condicaoComparacoesBasicas(condicaoNode) && condicaoDerivada(condicaoNode);
         }
@@ -619,6 +630,7 @@ public class Parser {
    */
   private boolean condicaoComparacoesBasicas(Node root){
     Node condicaoComparacoesBasicasNode = root.addNode("condicaoComparacoesBasicas");
+   
     if((first("condicaoComparacoesBasicas") && comparacoesBasicas(condicaoComparacoesBasicasNode))|| (matchL("!","!",condicaoComparacoesBasicasNode) &&
      identificadores(condicaoComparacoesBasicasNode))){
       return true;
@@ -647,8 +659,10 @@ public class Parser {
    * simbulos          first
    * valoresOperacao   first é first dessas regras: identificadores, numero, isBoolean
    */
+
   private boolean valoresOperacao(Node root){ //funcoes atomicas(verificam diretamente tokens), n preciso colocar first
     Node valoresOperacaoNode = root.addNode("valoresOperacao");
+    
     if(first("identificadores") && identificadores(valoresOperacaoNode)|| first("numero") && numero(valoresOperacaoNode)|| first("isBoolean") &&
      isBoolean(valoresOperacaoNode)){
       return true;
@@ -785,9 +799,8 @@ public class Parser {
   private boolean valor(Node root){ 
     
     Node valorNode = root.addNode("valor");
-    
     //tokens é a lista com os proximos tokens             //quando quero chamar funcao e tem texto no comeco // argumento da chamada (ultimo argumento)// quando tem mais argumentos
-    
+
     // ---------------------------------- Analise Semantica ------------------------------------------------
     // marcação para ver se a variavel existe na tabela para atribuição
     boolean encontrado = false;
@@ -800,9 +813,10 @@ public class Parser {
         // Verifica o tipo da variavel para atribuição (Tipagem das variaveis)
         if (declaracaoIdentAtual.equals(variaveis[1])) {
           if(token.tipo.equals("INTEGER") && variaveis[0].equals("inteiro") 
-            ||token.tipo.equals("DECIMAL") && variaveis[0].equals("decimal")
+            ||(token.tipo.equals("DECIMAL") && variaveis[0].equals("decimal")|| token.tipo.equals("INTEGER") && variaveis[0].equals("decimal"))
             ||token.tipo.equals("TEXT") && variaveis[0].equals("texto")
             ||token.tipo.equals("PALAVRA_RESERVADA") && variaveis[0].equals("verdadeiroFalso")) {
+              atribuicaoSomaIdentificador = declaracaoIdentAtual;
               System.out.println(declaracaoIdentAtual + " Passou na atribuicao semantica Tipo -> " + token.tipo);
             //System.out.println(variaveis[0] + " " + token.tipo + " " + declaracaoTipoAtual + " " + variaveis[1]);
           } 
@@ -1028,8 +1042,45 @@ public class Parser {
    * simbulos                     first
     * precedenciaSuperior       "(", first é first dessa regra: identificadores,numero
    */
+  // nome da variavel armazenada
+  String atribuicaoSoma;
+  // nome da variavel que realizara a soma
+  String atribuicaoSomaIdentificador;
+  // tipo da variavel que esta armazenada
+  String atribuicaoSomaIdentificadorTipo;
+
   private boolean precedenciaSuperior(Node root){
     Node precedenciaSuperiorNode = root.addNode("precedenciaSuperior");
+
+    // --------------------------------------- Analisador Semantico para expressões matematicas ----------------------------------------- 
+    boolean encontrado = false;
+    // verifica se o token é um identificador
+    if(token.tipo.equals("IDENTIFIER")){
+      // atribui o nome do identificador atual
+      atribuicaoSoma = token.lexema;
+      // percorrer a tabela semantica
+      for(String[] variaveis : tabelaSemantica) {
+        // procura o identificador na tabela semantica
+        if (atribuicaoSoma.equals(variaveis[1])) {
+          String variacel = variaveis[1];
+          // atribui o tipo do identificador encontrado
+          atribuicaoSomaIdentificadorTipo = variaveis[0];
+          encontrado = true;
+          //System.out.println("VARIAVEL ENCONTRADA : " + variacel);
+
+          if (variaveis[0].equals("texto")) {
+            erro("Tipos incompatíveis para operação entre " + atribuicaoSomaIdentificador + " e " + atribuicaoSoma);
+          }
+        } 
+      }
+        if (!encontrado) {
+            erro(atribuicaoSoma + " não foi declarada");
+            //System.out.println(declaracaoIdentAtual + " não esta na tabela");
+          }
+      }
+      // --------------------------------------- Analisador Semantico para expressões matematicas -----------------------------------------
+    
+
     if((first("identificadores") && identificadores(precedenciaSuperiorNode))||(first("numero") && numero(precedenciaSuperiorNode))||
      ((matchL("(","(",precedenciaSuperiorNode) && expressoesMatematicas(precedenciaSuperiorNode) && matchL(")",")",precedenciaSuperiorNode)))){
       return true;

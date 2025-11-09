@@ -8,7 +8,9 @@ String Trem_texto3 = "Hello World";
 boolean Trem_verdade = true; 
 Trem_valor1 = 15; 
 Trem_texto3 = "10"; 
-int Trem_soma = 10+5+3; 
+double Trem_soma = 10+5.5+Trem_valor1+Trem_valor2; 
+if(5>Trem_texto3){Trem_valor1 = 20; 
+}
 }
 
 
