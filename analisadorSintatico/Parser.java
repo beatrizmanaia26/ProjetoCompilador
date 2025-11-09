@@ -615,12 +615,46 @@ public class Parser {
     if (token != null && "IDENTIFIER".equals(token.tipo)) {
       
       // Lookahead mais inteligente: verifica se há operadores matemáticos antes de relacionais
-      if (!tokens.isEmpty()) {
-        // Procura por operadores matemáticos OU relacionais nos próximos tokens
-        boolean encontrouMatematico = false;
-        boolean encontrouRelacional = false;
+      System.out.println("entrou em identificadores");
+      // Lookahead para ver se há operadores matemáticos OU relacionais nos próximos tokens
+      boolean encontrouMatematico = false;
+      boolean encontrouRelacional = false;
       
-        for (int i = 0; i < Math.min(3, tokens.size()); i++) {//min pra ter operacao matematica
+      for (int i = 0; i < Math.min(3, tokens.size()); i++) {
+        Token nextToken = tokens.get(i);
+        String lexema = nextToken.lexema;
+        if (Set.of("+", "-", "*", "/", "^").contains(lexema)) {
+          encontrouMatematico = true;
+          break;
+        }
+        if (Set.of("<", ">", "<>", "<->", "<=", ">=").contains(lexema)) {
+          System.out.println("encontrou operador matematico");
+          encontrouRelacional = true;
+          break;
+        }
+      }
+      // Se encontrou operador matemático, é expressão matemática
+      if (encontrouMatematico) {
+        return expressoesMatematicas(condicaoNode) && condicaoDerivada(condicaoNode);
+      }
+      // Se encontrou operador relacional, é comparação básica
+      else if (encontrouRelacional) {
+        System.out.println("entrou em comparacesbasicas");
+        return condicaoComparacoesBasicas(condicaoNode) && condicaoDerivada(condicaoNode);
+      }
+      else{
+        // Se não encontrou nenhum operador, é identificador sozinho
+        return identificadores(condicaoNode) && condicaoDerivada(condicaoNode);
+      }
+    }
+    // Números
+    if (token != null && (token.tipo.equals("INTEGER") || token.tipo.equals("DECIMAL"))) {
+      // Lookahead para ver se tem operador matemático OU relacional
+      boolean encontrouMatematico = false;
+      boolean encontrouRelacional = false;
+      
+        if (!tokens.isEmpty()) {
+        for (int i = 0; i < Math.min(3, tokens.size()); i++) {
           Token nextToken = tokens.get(i);
           String lexema = nextToken.lexema;
           if (Set.of("+", "-", "*", "/", "^").contains(lexema)) {
@@ -648,19 +682,10 @@ public class Parser {
     }
     // expressões matemáticas que começam com (
     if (token != null && "(".equals(token.lexema)) {
-      return expressoesMatematicas(condicaoNode) && condicaoDerivada(condicaoNode);
-    }
-    // números - verifica se são parte de comparações
-    if (token != null && (token.tipo.equals("INTEGER") || token.tipo.equals("DECIMAL"))) {
-      // Lookahead para ver se é número sozinho ou parte de comparação
-      if (!tokens.isEmpty()) {
-        Token nextToken = tokens.get(0);
-        
-        if (firsts.get("operacaoRelacional").contains(nextToken.lexema)) {
-          return condicaoComparacoesBasicas(condicaoNode) && condicaoDerivada(condicaoNode);
-        }
-      }
-      // Se não tem operador relacional, trata como expressão matemática
+      boolean encontrouMatematico = false;
+      System.out.println("TOKENS"+tokens);
+      System.out.println("tokens.get(1)"+tokens.get(1));
+      //if(tokens.get().lexema.equals)
       return expressoesMatematicas(condicaoNode) && condicaoDerivada(condicaoNode);
     }
     // outros casos de comparações básicas
@@ -1544,7 +1569,7 @@ public class Parser {
         nivelEscopo--;
       }
       // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
-      
+
       token = getNextToken();
       return true;
     }
