@@ -908,7 +908,7 @@ public class Parser {
    */
   private boolean atribui(Node root){ 
     Node atribuiNode = root.addNode("atribui");
-    
+    System.out.println();
     if(first("identificadores") && identificadores(atribuiNode) && matchL("->"," = ",atribuiNode) && valor(atribuiNode) && matchL(";","; \n",atribuiNode)){
         return true;
     }
@@ -1376,9 +1376,11 @@ public class Parser {
     Node identificadoresNode = root.addNode("identificadores");
     //verifica se prox token é ^ - ^se for nao traduz aqui (para token apenas aparecer dentro o math.pow)
     boolean proximoEhPotencia = !tokens.isEmpty() && tokens.get(0).lexema.equals("^");
+
     // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
     declaracaoIdentAtual = token.lexema;
     // -----------------------------------ANALISADOR SEMANTICO --------------------------------------------------
+
     if(matchT("IDENTIFIER", proximoEhPotencia ? "" : token.lexema, identificadoresNode)){
         return true;
     }
@@ -1841,12 +1843,12 @@ private void inicializarTokensSincronizacao(){
   }
 
   private void erroSemantico(String regra) {
-    //System.out.println("-------------- Regra: " + regra);
+    System.out.println("-------------- Regra: " + regra);
     System.out.println("token inválido: " + token);
     System.out.println("Próximo token: " + tokens.get(0));
     System.out.println("------------------------------");
-    //contadorErro++;
-    //recuperacaoPanico();
+    contadorErro++;
+    recuperacaoPanico();
   }
   // --------------------------------- ANALISADOR SEMANTICO ---------------------------------------------------
 }

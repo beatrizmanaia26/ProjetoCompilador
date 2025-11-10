@@ -11,6 +11,7 @@ criar FuncaoTeste(){
 Trem_valor1 -> 15;
 Trem_texto3 -> "10";
 
+
 decimal Trem_soma -> 10 + 5.5 + Trem_valor1 + Trem_valor2;
 
 se(Trem_valor2 <-> Trem_valor1){
